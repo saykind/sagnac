@@ -19,8 +19,9 @@ function [ax, phase, offset] = plot_kerr(logdata, varargin)
     addParameter(p, 'showOffset', false, @islogical);
     addParameter(p, 'showLegend', false, @islogical);
     addParameter(p, 'showRefline', true, @islogical);
+    addParameter(p, 'hold', false, @islogical);
     addParameter(p, 'verbose', false, @islogical);
-    addParameter(p, 'color', [0, 0, .75], @isnumeric);
+    addParameter(p, 'color', [0, 0, .75]);
     addParameter(p, 'axes', []);
 
     parse(p, varargin{:});
@@ -35,7 +36,9 @@ function [ax, phase, offset] = plot_kerr(logdata, varargin)
         fig = figure('Name', 'Kerr angle vs Temperature');
         ax = axes(fig, 'FontSize', 14);
     end
-    cla(ax);
+    if ~parameters.hold
+        cla(ax);
+    end
     
     % Calculate phase shift and kerr angle offset
     idx = find(temp > box(1) & temp < box(2));
