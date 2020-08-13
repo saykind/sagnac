@@ -35,7 +35,7 @@ function obj = save(obj, path)
     end
     
     data.logdata = logData;
-    save(filepath, '-struct', 'data');    
+    save(filepath, '-struct', 'data');
     
     if isfile(filepath)
         fprintf("Overwitten: %s\n", filepath);

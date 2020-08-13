@@ -2,10 +2,42 @@ function [ax, phase, offset] = plot_kerr(logdata, varargin)
     %Plot kerr angle versus temperature.
     
     % Collect data
-    v1x = logdata.first;
-    v1y = logdata.firstY;
-    v2 = logdata.second;
-    temp = logdata.temperature;
+    firstHarmonicXFields = ["first", "X"];
+    firstHarmonicXField = firstHarmonicXFields(1);
+    for field = firstHarmonicXFields
+        if isfield(logdata, field)
+            firstHarmonicXField = field;
+        end
+    end
+    
+    firstHarmonicYFields = ["firstY", "Y", "firsty"];
+    firstHarmonicYField = firstHarmonicYFields(1);
+    for field = firstHarmonicYFields
+        if isfield(logdata, field)
+            firstHarmonicYField = field;
+        end
+    end
+    
+    secondHarmonicFields = ["second", "AUX1"];
+    secondHarmonicField = secondHarmonicFields(1);
+    for field = secondHarmonicFields
+        if isfield(logdata, field)
+            secondHarmonicField = field;
+        end
+    end
+    
+    temperatureFields = ["temp", "temperature", "sampletemperature"];
+    temperatureField = temperatureFields(1);
+    for field = temperatureFields
+        if isfield(logdata, field)
+            temperatureField = field;
+        end
+    end
+    
+    v1x = logdata.(firstHarmonicXField);
+    v1y = logdata.(firstHarmonicYField);
+    v2 = logdata.(secondHarmonicField);
+    temp = logdata.(temperatureField);
     
     % Acquire parameters
     p = inputParser;

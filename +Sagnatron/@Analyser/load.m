@@ -21,11 +21,27 @@ function obj = load(obj, arg)
         obj.path = arg;
         data = load(arg);
         obj.data = data.logdata;
-        obj.comments = data.comments;
+        
+        commentsFields = ["comments", "info"];
+        commentsField = commentsFields(1);
+        for field = commentsFields
+            if isfield(data, field)
+                commentsField = field;
+            end
+        end
+        obj.comments = data.(commentsField);
     else
         error('Wrong path/logdata structure');
     end
     
     % Change parameter default values
-    obj.offsetRange = [.5, 1]*max(obj.data.temperature);
+    temperatureFields = ["temp", "temperature", "sampletemperature"];
+    temperatureField = temperatureFields(1);
+    for field = temperatureFields
+        if isfield(obj.data, field)
+            temperatureField = field;
+        end
+    end
+    
+    obj.offsetRange = [.5, 1]*max(obj.data.(temperatureField));
 end
