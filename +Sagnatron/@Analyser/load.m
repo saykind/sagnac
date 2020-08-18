@@ -17,31 +17,34 @@ function obj = load(obj, arg)
     
     if isstruct(arg)
         obj.data = arg;
+        obj.fieldNames = Sagnatron.determine_field_names(obj.data);
     elseif ischar(arg) || isstring(arg)
         obj.path = arg;
-        data = load(arg);
-        obj.data = data.logdata;
+        temp = split(obj.path, '/');
+        obj.filename = temp{end};
+        
+        fileData = load(arg);
+        obj.data = fileData.logdata;
+        obj.fieldNames = Sagnatron.determine_field_names(obj.data);
         
         commentsFields = ["comments", "info"];
         commentsField = commentsFields(1);
         for field = commentsFields
-            if isfield(data, field)
+            if isfield(fileData, field)
                 commentsField = field;
             end
         end
-        obj.comments = data.(commentsField);
+        obj.comments = fileData.(commentsField);
     else
         error('Wrong path/logdata structure');
     end
     
-    % Change parameter default values
-    temperatureFields = ["temp", "temperature", "sampletemperature"];
-    temperatureField = temperatureFields(1);
-    for field = temperatureFields
-        if isfield(obj.data, field)
-            temperatureField = field;
-        end
-    end
+    % Flush datafile comments
+    fprintf(repmat('~',1,100)+"\n");
+    fprintf("Loaded %s\n\n", obj.filename);
+    disp(obj.comments);
+    fprintf("\n");
     
-    obj.offsetRange = [.5, 1]*max(obj.data.(temperatureField));
+    % Change parameter default values
+    obj.offsetRange = [.5, 1]*max(obj.data.(obj.fieldNames.temperature));
 end

@@ -20,8 +20,10 @@ classdef (Sealed = true) Analyser < handle
     
     properties
         path;                       %   Path to data.mat file 
+        filename;                   %   Last part of the path
         data;                       %   Main data structure  
         comments;                   %   Comments from data.mat file
+        fieldNames;                 %   Names of the logdata structure fields
         
         tempFigure;                 %   Handle to the last used figure
         timeFigure;                 %   Handle to the last used figure

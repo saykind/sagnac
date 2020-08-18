@@ -20,6 +20,7 @@ classdef (Sealed = true) SR844 < handle
         gpib;                       %   GPIB address
         idn;                        %   Unique name
         handle;                     %   VISA-GPIB handle
+        remote = false;             %   Whether instrument in local/remote mode
         
         timeConstant;               %   Time constant (sec)
         
@@ -55,6 +56,7 @@ classdef (Sealed = true) SR844 < handle
             
             % Set to REMOTE (if not set already)
             fprintf(handle, 'locl 1');
+            obj.remote = true;
             
             % Test read
             obj.fields = {'X', 'Y', 'AUX1', 'AUX2'};

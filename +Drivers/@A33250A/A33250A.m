@@ -1,5 +1,5 @@
-classdef (Sealed = true) AMI420 < handle
-    %Driver for American Magnetics, 420
+classdef (Sealed = true) A33250A < handle
+    %Driver for Agilent 33220A Wavefunction Generator
     %   Release August 1, 2020 (v0.1)
     %
     %   This class was created in Kapitulnik research group.
@@ -11,23 +11,29 @@ classdef (Sealed = true) AMI420 < handle
     %
     %
     %   Usage example:
-    %   magnet = Drivers.AMI420();
-    %   magnet.set('rate', 10);
-    %   magnet.run();
-    %   magnet.read();
+    %   wavegenerator = Drivers.Agilent33220A();
+    %   wavegenerator.set('fequency', 5e6);
+    %   wavegenerator.set('amplitude', 1);
+    %   freq = wavegenerator.read('fequency');
+    %   
+    %   wavegenerator.sweep(startfreq, stepfreq, stopfreq);
     
     properties
-        name = 'AMI420';
+        name = 'A33250A';
         gpib;                       %   GPIB address
-        idn;                        %   Unique name
         handle;                     %   VISA-GPIB handle
+        idn;                        %   Unique name
         remote = false;             %   Whether instrument in local/remote mode
         
-        fields;
+        fields;                     %   Fields to read
+        functionform;               %   Waveform (sine, square, etc.)
+        frequency;                  %   Waveform frequency (Hz)
+        amplitude;                  %   Waveform peak-to-peak amplitude (V)
+        offset;                     %   Voltage offset
     end
-
+    
     methods
-        function obj = AMI420(gpib, handle, varargin)
+        function obj = A33250A(gpib, handle, varargin)
             %Agilent33220A construct class
             %   If more than one argument ispresent, 
             %   the rest arguments are passed to set method
@@ -40,7 +46,7 @@ classdef (Sealed = true) AMI420 < handle
             end
             
             if ~isa(handle, 'visa')
-                error("AMI420 requires valid visa handle or GPIB address.");
+                error("Agilent33250A constructor accepts visa handles only.");
             end
             
             obj.gpib = gpib;
@@ -52,8 +58,8 @@ classdef (Sealed = true) AMI420 < handle
             obj.remote = true;
             
             % Test read
-            obj.fields = {'X', 'Y', 'AUX1', 'AUX2'};
-            %obj.read(obj.fields{:});
+            obj.fields = {'frequency', 'amplitude'};
+            obj.read(obj.fields{:});
             
             if nargin > 2
                 obj = obj.set(varargin{2:end});
@@ -63,6 +69,7 @@ classdef (Sealed = true) AMI420 < handle
         obj = set(obj, varargin);
         varargout = read(obj, varargin);
         
+        obj = local(obj);
     end
 end
 

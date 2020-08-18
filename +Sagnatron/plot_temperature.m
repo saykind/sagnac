@@ -1,10 +1,14 @@
-function fig = plot_temperature(logdata, varargin)
+function fig = plot_temperature(logdata, fieldNames, varargin)
     % Collect data
-    v1x = logdata.first;
-    v1y = logdata.firstY;
-    v2 = logdata.second;
-    temp = logdata.temperature;
-    kerr = logdata.kerr2/2;
+    v1x = logdata.(fieldNames.firstHarmonicX);
+    v1y = logdata.(fieldNames.firstHarmonicY);
+    v2 = logdata.(fieldNames.secondHarmonic);
+    temp = logdata.(fieldNames.temperature);
+    if strcmp(fieldNames.kerr, "kerr2")
+        kerr = logdata.(fieldNames.kerr)/2;
+    else
+        kerr = logdata.(fieldNames.kerr);
+    end
     
     % Acquire parameters
     p = inputParser;
@@ -70,7 +74,7 @@ function fig = plot_temperature(logdata, varargin)
     ylabel(ax3, 'Im V_{1\omega} (\muV)');
 
     % Plot of second harmonic vs temperature
-    title(ax4, '(Re) Second harmonic amplitude');
+    title(ax4, '(Abs) Second harmonic amplitude');
     plot(ax4, temp, v2, '.', 'MarkerSize', .5, ...
         'Color', [1, .85, .85], 'DisplayName', 'Raw data');
     plot(ax4, T, V2, 'LineWidth', 1.5, 'Color', [1, 0, 0], ...

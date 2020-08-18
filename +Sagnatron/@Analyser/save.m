@@ -10,7 +10,7 @@ function obj = save(obj, path)
     end
     
     range = obj.tempRange;
-    temp = obj.data.temperature;
+    temp = obj.data.(obj.fieldNames.temperature);
     
     % Check if it makes sence to crop the data.
     if (max(temp) <= range(2) && range(1) <= min(temp))
