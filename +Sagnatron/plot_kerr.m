@@ -41,15 +41,21 @@ function [ax, phase, offset] = plot_kerr(logdata, fieldNames, varargin)
     end
     
     % Calculate phase shift and kerr angle offset
-    idx = find(temp > box(1) & temp < box(2));
-    if parameters.autoPhase
+    idx = [];
+    if ~isempty(box)
+        idx = find(temp > box(1) & temp < box(2));
+    end
+    if ~isempty(idx) && parameters.autoPhase
         phase = Sagnatron.calculate_phase(v1x(idx), v1y(idx), v2(idx));
     end
 
     % Shift and coarse grain data, phase sign convention was inherited
     v1 = (v1x+v1y*1i)*exp(-1i*phase); 
     kerr = Sagnatron.calculate_kerr(real(v1), v2);
-    offset = mean(kerr(idx));
+    offset = 0;
+    if ~isempty(idx)
+        offset = mean(kerr(idx));
+    end
     kerr = kerr - offset;
     
     % Dump parameters into the terminal
@@ -82,7 +88,7 @@ function [ax, phase, offset] = plot_kerr(logdata, fieldNames, varargin)
     errorbar(ax, T, K, K_err, 'o', 'Color', parameters.color);
     
     % Add dashed box
-    if parameters.showOffset && any(box ~= [-inf, inf])
+    if parameters.showOffset && ~isempty(box) && any(box ~= [-inf, inf]) && ~isempty(idx)
         [kerr1, kerr2] = bounds( K(T > box(1) & T < box(2)) );
         line(ax, [box(1), box(1), box(2), box(2), box(1)], ...
             1.5*[kerr1, kerr2, kerr2, kerr1, kerr1], ...

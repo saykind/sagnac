@@ -21,48 +21,61 @@ classdef (Sealed = true) AMI420 < handle
         gpib;                       %   GPIB address
         idn;                        %   Unique name
         handle;                     %   VISA-GPIB handle
+        fields;                     %   Fields to record
         remote = false;             %   Whether instrument in local/remote mode
         
-        fields;
+        state;                      %   Magnet state (ramping/holding/paused)
+        %timeUnits;                  
+        coilConstant;               %   Coil constant (T/A)  
+        fieldUnits;                 %   Field units (T or kG)
+        programmedField;            %   Programmed field (in field units)
+        programmedCurrent;          %   Programmed current (in A)
+        
+        rampRateField;              %   Ramp rate (in fieldUnits/timeUnits)
+        rampRateCurrent;            %   Ramp rate (in A/timeUnits)
+        
+        field;                      %   Measured field (requries coil const)
+        current;                    %   Measured current (in A)
+        voltage;                    %   Magnet voltage (in V)
+        voltageSupply;              %   Power supply voltage (in V)
+        
+        pswitchState;               %   Whether pswitch is on
+        pswitchVoltage;             %   Persistent switch heater voltage
+        pswitchTime;                %   Persistent switch time
     end
 
     methods
-        function obj = AMI420(gpib, handle, varargin)
+        function obj = AMI420(varargin)
             %Agilent33220A construct class
             %   If more than one argument ispresent, 
             %   the rest arguments are passed to set method
+            obj.fields = {'field'};
+            
             if ~nargin
                 return
             end
             
             if nargin == 1
-                handle = Drivers.find_instrument(gpib);
+                obj.load(varargin{1});
+                return;
             end
             
-            if ~isa(handle, 'visa')
-                error("AMI420 requires valid visa handle or GPIB address.");
-            end
-            
-            obj.gpib = gpib;
-            obj.handle = handle;
-            obj.idn = sprintf("%s_%02d", obj.name, obj.gpib);
-            
-            % Set to REMOTE (if not set already)
-            fprintf(handle, 'system:remote');
-            obj.remote = true;
-            
-            % Test read
-            obj.fields = {'X', 'Y', 'AUX1', 'AUX2'};
-            %obj.read(obj.fields{:});
+            obj.load(varargin{1:2});
             
             if nargin > 2
-                obj = obj.set(varargin{2:end});
+                obj = obj.set(varargin{3:end});
             end
         end
         
+        % Methods
+        obj = load(obj, gpib, handle);
         obj = set(obj, varargin);
         varargout = read(obj, varargin);
+        obj = update(obj);
         
+        obj = local(obj);
+        obj = ramp(obj);
+        obj = pswitch(obj);
     end
 end
 
