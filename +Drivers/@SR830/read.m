@@ -30,9 +30,13 @@ function varargout = read(obj, varargin)
                 obj.R = r;
                 varargout{i} = r;
             case {'Q', 'theta'}
-                q = str2double(query(obj.handle, "outp?5"));
+                q = str2double(query(obj.handle, "outp?4"));
                 obj.Q = q;
                 varargout{i} = q;
+            case {'freq', 'frequency'}
+                f = str2double(query(obj.handle, "freq?"));
+                obj.frequency = f;
+                varargout{i} = f;
         end
     end
 

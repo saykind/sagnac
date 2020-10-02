@@ -23,6 +23,7 @@ classdef (Sealed = true) SR830 < handle
         remote = false;             %   Whether instrument in local/remote mode
         
         timeConstant;               %   Time constant (sec)
+        frequency;                  %   Internal frequency
         
         fields;                     %   Fields to read
         X;
@@ -42,10 +43,10 @@ classdef (Sealed = true) SR830 < handle
             
             if nargin == 1
                 handle = Drivers.find_instrument(gpib);
-            end
-            
-            if ~isa(handle, 'visa')
-                error("Stanford Research 844 constructor accepts visa handles only.");
+            else
+                if ~isa(handle, 'visa')
+                    error("Stanford Research 830 constructor accepts visa handles only.");
+                end
             end
             
             obj.gpib = gpib;

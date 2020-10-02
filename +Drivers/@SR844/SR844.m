@@ -44,10 +44,10 @@ classdef (Sealed = true) SR844 < handle
             
             if nargin == 1
                 handle = Drivers.find_instrument(gpib);
-            end
-            
-            if ~isa(handle, 'visa')
-                error("Stanford Research 844 constructor accepts visa handles only.");
+            else
+                if ~isa(handle, 'visa')
+                    error("Stanford Research 844 constructor accepts visa handles only.");
+                end
             end
             
             obj.gpib = gpib;

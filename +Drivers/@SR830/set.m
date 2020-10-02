@@ -9,6 +9,7 @@ function obj = set(obj, varargin)
     p = inputParser;
     
     addParameter(p, 'timeConstant', NaN, @isnumeric);
+    addParameter(p, 'frequency', NaN, @isnumeric);
     
     parse(p, varargin{:});
     parameters = p.Results;
@@ -21,6 +22,12 @@ function obj = set(obj, varargin)
         end
         obj.timeConstant = tc;
         fprintf(obj.handle, "oflt %f", tc);
+    end
+    
+    if ~isnan(parameters.frequency)
+        f = parameters.frequency;
+        obj.frequency = f;
+        fprintf(obj.handle, "freq %f", f);
     end
     
 end
