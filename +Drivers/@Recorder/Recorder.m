@@ -71,7 +71,7 @@ classdef (Sealed = true) Recorder < handle
         obj = timer_fcn(obj, thisEvent);
         obj = stop_fcn(obj, thisEvent);
         
-        obj = sweep_pm(obj, varargin);
+        logdata = sweep_pm(obj, frequency, amplitude, varargin);
     end
 
 end

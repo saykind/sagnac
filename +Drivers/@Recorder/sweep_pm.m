@@ -26,7 +26,7 @@ function logdata = sweep_pm(obj, frequency, amplitude, varargin)
     
     % Savefile path
     date = datestr(now(), 'yyyy-mm-dd_HH-MM');
-    path = fullfile(pwd(), "fmsweep_" + date + ".mat");
+    path = fullfile(pwd(), "pmsweep_" + date + ".mat");
     
     % Finishing time estimation
     estTime = n*m*(waitTime+numPoints*pauseTime);
@@ -55,10 +55,10 @@ function logdata = sweep_pm(obj, frequency, amplitude, varargin)
     end
     
     % Main loop
-    textprogressbar('Frequency sweep: ');
+    Utilities.textprogressbar('Frequency sweep: ', 0);
     for i = 1:n
         for j0 = 1:m
-            textprogressbar(100*((i-1)*m+j0)/n/m);
+            Utilities.textprogressbar(100*((i-1)*m+j0)/n/m);
             
             % Loop over 2D array in snake manner
             if mod(i,2)
@@ -91,7 +91,7 @@ function logdata = sweep_pm(obj, frequency, amplitude, varargin)
         end
         save(path, '-struct', 'logdata');
     end
-    textprogressbar(' ');
+    Utilities.textprogressbar(' ');
     
     % Set saved parameteres
     generator.set('frequency', f0, 'amplitude', a0);
