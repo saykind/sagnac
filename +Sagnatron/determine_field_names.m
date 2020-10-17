@@ -26,7 +26,7 @@ function fieldNames = determine_field_names(logdata)
             end
         end
         if isempty(fieldNames.(field))
-            fprintf("Field <<%s>> is not present.\n", field);
+            %fprintf("Field <<%s>> is not present.\n", field);
         end
     end
     

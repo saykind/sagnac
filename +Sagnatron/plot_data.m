@@ -1,11 +1,17 @@
-function plot_data(logdata)
+function plot_data(arg)
     %Kerr data analysis method
     %   Plots content of the logdata file.
     
     % Check that correct argument is present
     if nargin < 1 
-        disp('Please supply logdata structure.');
+        disp('Please supply logdata structure or path to datafile.');
         return;
+    end
+    
+    if isstring(arg) || all(ischar(arg))
+        logdata = load(arg).logdata;
+    else
+        logdata = arg;
     end
     
     % Create figure with tabs
@@ -52,9 +58,9 @@ function plot_data(logdata)
         end
         currentTab = uitab(tg, 'Title', yFieldName);
         ax = axes(currentTab);
-        plot(ax, logdata.(xFieldName), logdata.(yFieldName), ...
+        plot(ax, logdata.(xFieldName)/60, logdata.(yFieldName), ...
             '.', 'MarkerSize', 20);
-        xlabel(ax, 'Time, sec');
+        xlabel(ax, 'Time, min');
         ylabel(ax, yFieldName);
         grid(ax, 'on');
     end
