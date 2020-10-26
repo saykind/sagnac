@@ -1,4 +1,4 @@
-function [ax, phase] = plot_kerr(logdata, fieldNames, varargin)
+function [ax, phase, offset] = plot_kerr(logdata, fieldNames, varargin)
     %Plot kerr angle versus temperature.
     
     % Collect data
@@ -45,7 +45,11 @@ function [ax, phase] = plot_kerr(logdata, fieldNames, varargin)
     if ~isempty(box)
         idx = find(temp > box(1) & temp < box(2));
         v1x = v1x - mean(v1x(idx));
-        v1y = v1y - mean(v1y(idx));
+        v1x = v1x - mean(v1y(idx));
+    end
+    if ~isempty(idx)
+        v1xOffset = mean(v1x(idx));
+        v1yOffset = mean(v1y(idx));
     end
     if ~isempty(idx) && parameters.autoPhase
         phase = Sagnatron.calculate_phase(v1x(idx), v1y(idx), v2(idx));
@@ -54,6 +58,11 @@ function [ax, phase] = plot_kerr(logdata, fieldNames, varargin)
     % Shift and coarse grain data, phase sign convention was inherited
     v1 = (v1x+v1y*1i)*exp(-1i*phase); 
     kerr = Sagnatron.calculate_kerr(real(v1), v2);
+    offset = 0;
+    if ~isempty(idx)
+        offset = mean(kerr(idx));
+    end
+    kerr = kerr - offset;
     
     % Dump parameters into the terminal
     if parameters.verbose
