@@ -2,16 +2,24 @@ function plot_data(arg)
     %Kerr data analysis method
     %   Plots content of the logdata file.
     
-    % Check that correct argument is present
+    % If no argument is given, open file browser
     if nargin < 1 
-        disp('Please supply logdata structure or path to datafile.');
-        return;
+        [file, folder] = uigetfile('*.mat', 'Select data file');
+        if file == 0
+            disp('Please supply logdata structure or path to datafile.');
+            return;
+        end
+        filepath = fullfile(folder, file);
+        logdata = load(filepath).logdata;
     end
     
-    if isstring(arg) || all(ischar(arg))
-        logdata = load(arg).logdata;
-    else
-        logdata = arg;
+    % Check that correct argument is present
+    if nargin == 1
+        if isstring(arg) || all(ischar(arg))
+            logdata = load(arg).logdata;
+        else
+            logdata = arg;
+        end
     end
     
     % Create figure with tabs
