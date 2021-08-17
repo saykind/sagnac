@@ -61,7 +61,7 @@ function [ax, phase] = plot_kerr(logdata, fieldNames, varargin)
         fprintf("range \t= [%.1f K, %.1f K]\n", parameters.range);
         fprintf("phase \t= %.2f deg\n", rad2deg(phase));
         fprintf("offset range \t= [%.1f K, %.1f K]\n", box);
-        fprintf("offset value \t= %.2f microrad\n", offset);
+        fprintf("offset value \t= %.2f microrad\n", parameters.offset);
     end
     
     % Coarse grain data
