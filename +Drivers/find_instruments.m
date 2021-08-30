@@ -18,6 +18,7 @@ instrumentIDN = struct(...
     'AMI420',   "AMERICAN MAGNETICS INC.,MODEL 420", ...
     'LSCI331',  "LSCI,MODEL331S,373212,120407", ...
     'LSCI340',  "LSCI,MODEL340,340403,061407", ...
+    'ILX3724',  "ILX Lightwave,3724C,37244074", ...
     'SR830',    "Stanford_Research_Systems,SR830", ...
     'SR844',    "Stanford_Research_Systems,SR844");
 
@@ -28,13 +29,14 @@ instrumentNames = struct(...
     'AMI420',   "American Magnetics 420 Power Supply", ...
     'LSCI331',  "Lakeshore 331 Temperature Controller", ...
     'LSCI340',  "Lakeshore 340 Temperature Controller", ...
+    'ILX3724',  "ILX Lightwave 3724C Laser Diode Controler", ...
     'SR830',    "Stanford Research 830 Lock-in amplifier", ...
     'SR844',    "Stanford Research 844 Lock-in amplifier");
 
 % Structure of instrument handles list
-indecies = fieldnames(instrumentIDN);
-numIndecies = length(indecies);
-instruments = cell2struct(cell(numIndecies, 1), indecies);
+indices = fieldnames(instrumentIDN);
+numIndecies = length(indices);
+instruments = cell2struct(cell(numIndecies, 1), indices);
 
 % Reset and recconect all instruments
 if nargin && (varargin{1} == 0)
@@ -83,7 +85,7 @@ for instrument = instrList
         fprintf('Unknown instrument <<%s>> was detected\n', name);
         continue;
     end 
-    index = indecies{indexBool};
+    index = indices{indexBool};
 
     % Save instruemnt
     eval(sprintf("instrum = Drivers.%s(gpib, instrument);", index));
@@ -93,6 +95,6 @@ end
 
 % Delete empty lists from instruments structure
 idxEmpty = structfun(@isempty, instruments);
-instruments = rmfield(instruments, indecies(idxEmpty));
+instruments = rmfield(instruments, indices(idxEmpty));
 
 end
