@@ -1,10 +1,10 @@
-function [X, varargout] = coarse_grain(dx, x, varargin)
+function [X, varargout] = coarse_grain(dx, x1, x2, varargin)
     %Average data in bins of the given size.
     %   Example:
-    %   [X, Y, Z, Y2] = coarse_grain(bin, x, y, z)
-    %   X -- array of averaged x values with step bin.
-    %   Y, Z -- averaged y and z arrays.
-    %   Y2 -- array of standard errors of averaged values.
+    %   [X, Y1, Y2, Y1_err, Y2_err] = coarse_grain(bin, x1, x2, y1, y2)
+    %   X -- array evenly spaced z values with step bin.
+    %   Y1, Y2 -- averaged y1 and y2 arrays.
+    %   Y1_err -- array of standard errors of averaged values Y1.
     
     xmin = dx*round(min(x)/dx);
     xmax = dx*round(max(x)/dx);
@@ -26,8 +26,7 @@ function [X, varargout] = coarse_grain(dx, x, varargin)
     i = 1;
     for z = xmin+d : d : xmax-d
         idx = find(x>=z-d & x<z+d);
-        %X(i) = mean(x(idx));
-        X(i) = z;
+        X(i) = mean(x(idx));
         for j = 1:num_in
             y = varargin{j};
             Y{j}(i) = mean(y(idx));
