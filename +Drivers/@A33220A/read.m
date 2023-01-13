@@ -7,7 +7,7 @@ function varargout = read(obj, varargin)
 
     for i = 1:(nargin-1)
         switch varargin{i}
-            case 'frequency'
+            case {'frequency', 'freq'}
                 f = str2double(query(obj.handle, "frequency?"));
                 obj.frequency = f;
                 varargout{i} = f;

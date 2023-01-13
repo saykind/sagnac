@@ -17,6 +17,10 @@ function varargout = read(obj, varargin)
                 res = res*power(10,tc/2);
                 obj.timeConstant = res;
                 varargout{i} = res;
+            case {'phase', 'Phase'}
+                phase = str2double(query(obj.handle, "phas?"));
+                obj.phase = phase;
+                varargout{i} = phase;
             case {'x', 'X'}
                 x = str2double(query(obj.handle, "outp?1"));
                 obj.X = x;

@@ -28,7 +28,7 @@ end
 
 if isempty(strCR) && ~ischar(c),
     % Progress bar must be initialized with a string
-    error('The text progress must be initialized with a string');
+    error('The text progress must be initialized with a char-string');
 elseif isempty(strCR) && ischar(c),
     % Progress bar - initialization
     fprintf('%s',c);

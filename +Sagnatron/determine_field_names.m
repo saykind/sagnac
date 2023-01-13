@@ -35,5 +35,4 @@ function fieldNames = determine_field_names(logdata)
             %fprintf("Field <<%s>> is not present.\n", field);
         end
     end
-    
 end 

@@ -1,6 +1,6 @@
-classdef (Sealed = true) SR844 < handle
-    %Driver for Stanford Reasearch 844 Lock-in amplifier
-    %   Release August 5, 2020 (v0.1)
+classdef (Sealed = true) KEPCO < handle
+    %Driver for KEPCO Lock-in amplifier
+    %   Release November 6, 2022 (v0.1)
     %
     %   This class was created in Kapitulnik research group.
     %   Written by David Saykin (saykind@itp.ac.ru)
@@ -11,31 +11,27 @@ classdef (Sealed = true) SR844 < handle
     %
     %
     %   Usage example:
-    %   lockin = Drivers.SR844();
-    %   lockin.set('time constant', 1);
-    %   [X, Y] = lockin.read('X', 'Y');
+    %   magnetpowersupply = Drivers.KEPCO();
+    %   magnetpowersupply.set('current', .1);
+    %   [I, V] = magnetpowersupply.read('I', 'V');
     
     properties
-        name = 'SR844';
+        name = 'KEPCO'
         gpib;                       %   GPIB address
         idn;                        %   Unique name
         handle;                     %   VISA-GPIB handle
         remote = false;             %   Whether instrument in local/remote mode
         
-        timeConstant;               %   Time constant (sec)
-        phase;                      %   Overall phase shift
+        voltageLimit;               %   
+        currentLimit;               %   
         
         fields;                     %   Fields to read
-        X;
-        Y;
-        R;
-        Q;
-        AUX1;
-        AUX2;
+        I;
+        V;
     end
     
     methods
-        function obj = SR844(gpib, handle, varargin)
+        function obj = KEPCO(gpib, handle, varargin)
             %Agilent33220A construct class
             %   If more than one argument ispresent, 
             %   the rest arguments are passed to set method
@@ -47,7 +43,7 @@ classdef (Sealed = true) SR844 < handle
                 handle = Drivers.find_instrument(gpib);
             else
                 if ~isa(handle, 'visa')
-                    error("Stanford Research 844 constructor accepts visa handles only.");
+                    error("KEPCO constructor accepts visa handles only.");
                 end
             end
             
@@ -55,12 +51,9 @@ classdef (Sealed = true) SR844 < handle
             obj.handle = handle;
             obj.idn = sprintf("%s_%02d", obj.name, obj.gpib);
             
-            % Set to REMOTE (if not set already)
-            fprintf(handle, 'locl 1');
-            obj.remote = true;
             
             % Test read
-            obj.fields = {'X', 'Y', 'AUX1', 'AUX2'};
+            obj.fields = {'I', 'V'};
             obj.read(obj.fields{:});
             
             if nargin > 2

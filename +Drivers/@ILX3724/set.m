@@ -18,14 +18,12 @@ function obj = set(obj, varargin)
     % Set values
     if ~isnan(parameters.output)
         output = parameters.output;
-        obj.
         fprintf(obj.handle, "LAS:OUT %d", output);
     end
     
-    if ~isnan(parameters.frequency)
-        f = parameters.frequency;
-        obj.frequency = f;
-        fprintf(obj.handle, "freq %f", f);
+    if ~isnan(parameters.current)
+        current = parameters.current;
+        fprintf(obj.handle, "LAS:LDI %d", current);
     end
     
 end

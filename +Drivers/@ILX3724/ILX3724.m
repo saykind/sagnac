@@ -65,7 +65,7 @@ classdef (Sealed = true) ILX3724 < handle
         out = send(obj, msg);
         out = query(obj, msg);
         obj = set(obj, varargin);
-        varargout = get(obj, varargin);
+        varargout = read(obj, varargin);
         
     end
 end

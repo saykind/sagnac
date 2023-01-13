@@ -10,6 +10,9 @@ function obj = set(obj, varargin)
     
     addParameter(p, 'timeConstant', NaN, @isnumeric);
     addParameter(p, 'function', '', @(s)mustBeMember(s,{'', 'sin', 'square'}));
+    addParameter(p, 'heater', NaN, @isnumeric);
+    addParameter(p, 'I', NaN, @isnumeric);
+    addParameter(p, 'output', '', @ischar);
     
     parse(p, varargin{:});
     parameters = p.Results;
@@ -22,6 +25,30 @@ function obj = set(obj, varargin)
         end
         obj.timeConstant = tc;
         fprintf(obj.handle, "oflt %f", tc);
+    end
+    
+    if ~isnan(parameters.heater)
+        fprintf(obj.handle, "mout 1, %.1f", parameters.heater);
+    end
+    
+    if ~isnan(parameters.I)
+        power = 100*parameters.I; 
+        % Current in percents of 1 A.
+        if power > 100
+            power = 100;
+        end
+        fprintf(obj.handle, "mout 1, %.2f", power);
+    end
+    
+    if ~isempty(parameters.output)
+        if strcmp(parameters.output, 'on')
+            fprintf(obj.handle, "cmode 1, 3");
+            fprintf(obj.handle, "range 5");
+        end
+        if strcmp(parameters.output, 'off')
+            fprintf(obj.handle, "cmode 1, 1");
+            fprintf(obj.handle, "range 0");
+        end
     end
     
 end

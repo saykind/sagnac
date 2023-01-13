@@ -15,6 +15,9 @@ function varargout = read(obj, varargin)
                 tb = str2double(query(obj.handle, "krdg?b"));
                 obj.tempB = tb;
                 varargout{i} = tb;
+            case {'h', 'htr', 'heater', 'HTR'}
+                h = str2double(query(obj.handle, "htr?"));
+                varargout{i} = h;
         end
     end
 

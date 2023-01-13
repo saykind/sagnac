@@ -10,7 +10,7 @@ instrList = instrfind();
 for instr = instrList
     if instr.PrimaryAddress == gpib
         instrument = instr;
-        fprintf('GPIB %d: \tALREADY CONNECTED\n', gpib);
+        %fprintf('GPIB %d: \tALREADY CONNECTED\n', gpib);
         % Open instrument if it is closed
         if strcmp(instrument.status, 'closed')
             fopen(instrument);
@@ -45,6 +45,6 @@ end
 
 % Assuming there is such an instrument
 name = string(name(1:end-2));
-fprintf('GPIB %d: \tCONNECTED\n', gpib);
+%fprintf('GPIB %d: \tCONNECTED\n', gpib);
 
 end
