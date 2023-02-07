@@ -1,9 +1,8 @@
-classdef (Sealed = true) SR830 < handle
-    %Driver for Stanford Reasearch 844 Lock-in amplifier
-    %   Release August 5, 2020 (v0.1)
-    %
+classdef SR830 < Drivers.Device
+    %Driver for Stanford Reasearch 830 lock-in amplifiers.
+    %   Release date: February, 2023.
     %   This class was created in Kapitulnik research group.
-    %   Written by David Saykin (saykind@itp.ac.ru)
+    %   Written by David Saykin (saykind@itp.ac.ru).
     %
     %   Matlab 2018b or higher is required.
     %   The following packages are used:
@@ -16,59 +15,30 @@ classdef (Sealed = true) SR830 < handle
     %   [X, Y] = lockin.read('X', 'Y');
     
     properties
-        name = 'SR830'
-        gpib;                       %   GPIB address
-        idn;                        %   Unique name
-        handle;                     %   VISA-GPIB handle
-        remote = false;             %   Whether instrument in local/remote mode
-        
+        % Instrument Parameters 
+        % (can be set and read)
+        frequency;                  %   Internal frequency (Hz)
+        phase;                      %   Phase offset (deg)
+        amplitude;                  %   Output amplitude (V)
         timeConstant;               %   Time constant (sec)
-        frequency;                  %   Internal frequency
-        
-        fields;                     %   Fields to read
-        X;
-        Y;
-        R;
-        Q;
+        % Instrument Fields 
+        % (cannot be set, can be read)
+        X;                          %   Re part of the signal
+        Y;                          %   Im part of the signal
+        R;                          %   Signal Magnitude
+        Q;                          %   Signal Phase
+        AUX1;
+        AUX2;
     end
     
     methods
-        function obj = SR830(gpib, handle, varargin)
-            %Agilent33220A construct class
-            %   If more than one argument ispresent, 
-            %   the rest arguments are passed to set method
-            if ~nargin
-                return
-            end
-            
-            if nargin == 1
-                handle = Drivers.find_instrument(gpib);
-            else
-                if ~isa(handle, 'visa')
-                    error("Stanford Research 830 constructor accepts visa handles only.");
-                end
-            end
-            
-            obj.gpib = gpib;
-            obj.handle = handle;
-            obj.idn = sprintf("%s_%02d", obj.name, obj.gpib);
-            
-            % Set to REMOTE (if not set already)
-            fprintf(handle, 'locl 1');
+        function obj = SR830(varargin)
+            obj = obj.init(varargin{:});
+            obj.rename("SR830");
             obj.remote = true;
-            
-            % Test read
-            obj.fields = {'X', 'Y'};
-            obj.read(obj.fields{:});
-            
-            if nargin > 2
-                obj = obj.set(varargin{2:end});
-            end
+            obj.fields = {'X', 'Y', 'R', 'Q', 'AUX1', 'AUX2'};
+            obj.parameters = {'freq', 'phase', 'ampl', 'tc'};
         end
-        
-        obj = set(obj, varargin);
-        varargout = read(obj, varargin);
-        
     end
 end
 

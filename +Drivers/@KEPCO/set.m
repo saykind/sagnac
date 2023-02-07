@@ -17,13 +17,13 @@ function obj = set(obj, varargin)
     
     % Set values
     if ~isnan(parameters.V)
-        fprintf(obj.handle, "VOLT %.4f", parameters.V);
+        obj.write(sprintf( "VOLT %.4f", parameters.V));
     end
     if ~isnan(parameters.I)
-        fprintf(obj.handle, "CURR %.4f", parameters.I);
+        obj.write(sprintf( "CURR %.4f", parameters.I));
     end
     if ~isnan(parameters.output)
-        fprintf(obj.handle, 'OUTPUT %s', parameters.output);
+        obj.write(sprintf('OUTPUT %s', parameters.output));
     end
      
 end

@@ -1,6 +1,16 @@
-function fig = snapshot(varargin)
+function fig = plot(varargin)
     %Kerr data plot method
     %   Plots content of the logdata file.
+    %   Arguments:
+    %   - filename {''}
+    %   - range {[-inf, inf]}
+    %   - dT {1}
+    %   - domain {temp}:
+    %       * time      (sample T, magnet T, dc, second vs time)
+    %       * temp      (kerr signal, dc, first, second vs temp)
+    %       * transport
+    %       * parameter
+    %   - parameter {'Parameter'}
     
     % Acquire parameters
     p = inputParser;
@@ -82,7 +92,7 @@ function fig = snapshot_time(fig, logdata, range)
     ylabel(ax1, 'Magnet T (K)');
     yyaxis(ax1, 'left');
     
-    % Plot of dc and 2nd harmonic vs temperature
+    % Plot of dc and 2nd harmonic vs time
     title(ax2, 'Reflectivity');
     plot(ax2, time, dc, '-', 'LineWidth', 1.5, ...
         'Color', [.75, 0, 0], 'DisplayName', 'Raw data');
@@ -123,6 +133,7 @@ function fig = snapshot_temp(fig, logdata, dT, range)
         plot_field = 0;
         curr = dc;
     end
+    plot_field = 0;
     if strcmp(fieldNames.kerr, "kerr2")
         kerr = logdata.(fieldNames.kerr)/2;
     else

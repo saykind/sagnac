@@ -1,4 +1,4 @@
-function fig = plot_transport(varargin)
+function fig = plot_kerr(varargin)
     %Kerr data plot method
     %   Plots kerr data from several files.
     
@@ -7,12 +7,14 @@ function fig = plot_transport(varargin)
     addParameter(p, 'filenames', [], @isstring);
     addParameter(p, 'range', [-inf, inf], @isnumeric);
     addParameter(p, 'dT', .4, @isnumeric);
+    addParameter(p, 'legend', [], @isstring);
     parse(p, varargin{:});
     parameters = p.Results;
     
     filenames = parameters.filenames;
     dT = parameters.dT;
     range = parameters.range;
+    legends = parameters.legend;
     
     % If no filename is given, open file browser
     if isempty(filenames)
@@ -23,14 +25,14 @@ function fig = plot_transport(varargin)
             filename = fullfile(folder, basefilename);
             filenames = [filenames, string(filename)];
         end
+        filenames(end) = [];
     end
-    filenames(end) = [];
     
     % Create figure
     fig = figure('Name', 'Transport', ...
         'Units', 'centimeters', ...
-        'Position', [0 0 10.5 12.9]);
-    set(fig, 'PaperUnits', 'centimeters', 'PaperSize', [11 9]);
+        'Position', [0 0 17 10]);
+    set(fig, 'PaperUnits', 'centimeters', 'PaperSize', [9 16]);
     ax = axes(fig);
     hold(ax, 'on'); 
     grid(ax, 'on');
@@ -40,18 +42,26 @@ function fig = plot_transport(varargin)
         filename = filenames(i);
         [~, name, ~] = fileparts(filename);
         logdata = load(filename).logdata;
-        temp = logdata.magnettemperature;
-        x = 1e3*logdata.transportX;
-        [T, X] = ...
-            Utilities.coarse_grain(dT, temp, x);
-        plot(ax, T, X, '.', 'LineWidth', 1.5, 'DisplayName', name);
+        temp = logdata.sampletemperature;
+        kerr = logdata.kerr;
+        idx = find(temp > 20 & temp < 30);
+        kerr_offset = mean(kerr(idx));
+        disp(kerr_offset);
+        kerr = kerr - kerr_offset;
+        [T, K] = ...
+            Utilities.coarse_grain(dT, temp, kerr);
+        plot(ax, T, K, '.', 'LineWidth', 1.5, 'DisplayName', name);
     end
     
-    ylabel(ax, 'Resistance (mOhms)');
+    ylabel(ax, 'Kerr (urad)');
     xlabel(ax, 'Temperature (K)');
-    legend(ax);
+    if isempty(legends)
+        legend(ax);
+    else
+        legend(ax, legends);
+    end
     
     [~, name, ~] = fileparts(filenames(1));
-    saveas(fig, sprintf('output/%s_t.png', name), 'png');
+    saveas(fig, sprintf('output/%s_k.png', name), 'png');
 end
     

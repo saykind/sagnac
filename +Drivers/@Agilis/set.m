@@ -10,8 +10,8 @@ function out = set(obj, varargin)
     
     addParameter(p, 'hometype', NaN, @isnumeric);
     addParameter(p, 'position', NaN, @isnumeric);
-    addParameter(p, 'neglimit', NaN, @isnumeric);
-    addParameter(p, 'poslimit', NaN, @isnumeric);
+    addParameter(p, 'neglim', NaN, @isnumeric);
+    addParameter(p, 'poslim', NaN, @isnumeric);
     
     parse(p, varargin{:});
     parameters = p.Results;
@@ -38,6 +38,18 @@ function out = set(obj, varargin)
             obj.st();
             obj.ps();
         end
+    end
+    if ~isnan(parameters.neglim)
+        %if parameters.neglim > 0
+        %    error("Negative limit has to be negative.")
+        %end
+        obj.write(sprintf("1SL%d", parameters.neglim));
+    end
+    if ~isnan(parameters.poslim)
+        if parameters.poslim < 0
+            error("Positive limit has to be positive.")
+        end
+        obj.write(sprintf("1SR%d", parameters.poslim));
     end
     out = obj.get('error');
 end

@@ -80,6 +80,18 @@ function varargout = get(obj, varargin)
                 pos = str2num(extractAfter(pos_str,3));
                 obj.position = pos;
                 varargout{i} = pos;
+                
+            case {'neglim', 'nlim', 'negativelimit'}
+                lim_str = obj.query("1SL?");
+                lim = str2num(extractAfter(lim_str,3));
+                obj.neglim = lim;
+                varargout{i} = lim;
+                
+            case {'poslim', 'plim', 'positivelimit'}
+                lim_str = obj.query("1SR?");
+                lim = str2num(extractAfter(lim_str,3));
+                obj.poslim = lim;
+                varargout{i} = lim;
         end
     end
 

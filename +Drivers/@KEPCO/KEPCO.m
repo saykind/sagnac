@@ -42,7 +42,7 @@ classdef (Sealed = true) KEPCO < handle
             if nargin == 1
                 handle = Drivers.find_instrument(gpib);
             else
-                if ~isa(handle, 'visa')
+                if ~isa(handle, 'visa') && ~isa(handle, 'visalib.GPIB')
                     error("KEPCO constructor accepts visa handles only.");
                 end
             end

@@ -4,16 +4,13 @@ function out = query(obj, msg)
     %   Usage example:
     %   id = obj.query('*IDN?');
     
-    % Set values
     if ~isstring(msg)
         error("Argument must be a string.");
-        return
     end
     if isa(obj.handle, 'visa')
         out = query(obj.handle, msg);
     elseif isa(obj.handle, 'visalib.GPIB')
-        writeline(obj.handle, msg);
-        out = readline(obj.handle);
+        out = writeread(obj.handle, msg);
     else
         error(strcat("Unsupported handle: ", class(obj.handle)));
     end

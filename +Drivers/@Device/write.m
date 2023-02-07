@@ -1,19 +1,17 @@
-function out = query(obj, msg)
+function out = write(obj, msg)
     %GPIB message sending
     %
     %   Usage example:
-    %   id = obj.query('*IDN?');
+    %   obj.write("*IDN?");
     
     % Set values
-    if ~isstring(msg)
+    if ~isstring(msg) && ~ischar(msg)
         error("Argument must be a string.");
-        return
     end
     if isa(obj.handle, 'visa')
-        out = query(obj.handle, msg);
+        out = fprintf(obj.handle, msg);
     elseif isa(obj.handle, 'visalib.GPIB')
         writeline(obj.handle, msg);
-        out = readline(obj.handle);
     else
         error(strcat("Unsupported handle: ", class(obj.handle)));
     end

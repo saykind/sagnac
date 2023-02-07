@@ -1,6 +1,6 @@
 classdef (Sealed = true) Recorder < handle
     %Kerr agnle data recorder class
-    %   Release August 5, 2020 (v1.0)
+    %   Release January, 2023 (v1.0)
     %
     %   This class was created for anlysis of Sagnac interferometer data in
     %   Kapitulnik research group.
@@ -12,7 +12,7 @@ classdef (Sealed = true) Recorder < handle
     %
     %
     %   Usage example:
-    %   rec = Sagnatron.Analyser();
+    %   rec = Drivers.Recorder();
     %   rec.start(1000);
     
     properties

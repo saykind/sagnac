@@ -38,6 +38,8 @@ classdef (Sealed = true) Agilis < handle
         hometype;                   %   Home search type
                                     %       1: current position is home
                                     %       4: negative end is home
+        neglim;                     %   Negative motion limit
+        poslim;                     %   Positive motion limit
         
         wait = 1;                   %   Whether probram sleeps during motion 
         fields;                     %   Fields to read
@@ -77,7 +79,8 @@ classdef (Sealed = true) Agilis < handle
             % Test read
             obj.fields = {'id', 'state',...
                 'error', 'factor', 'unit',...
-                'deadband', 'home', 'position'};
+                'deadband', 'home', 'position',...
+                'neglim', 'poslim'};
             obj.get(obj.fields{:});
             
             % Test move
@@ -131,6 +134,11 @@ classdef (Sealed = true) Agilis < handle
         
         function out = st(obj)
             out = obj.get('state');
+        end
+        
+        function out = update(obj)
+            obj.get(obj.fields{:});
+            out = obj.get('error');
         end
     end
 end
