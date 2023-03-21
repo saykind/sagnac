@@ -44,9 +44,11 @@ function fig = plot_kerr(varargin)
         logdata = load(filename).logdata;
         temp = logdata.sampletemperature;
         kerr = logdata.kerr;
-        idx = find(temp > 20 & temp < 30);
+        idx = temp > 20 & temp < 30;
         kerr_offset = mean(kerr(idx));
-        disp(kerr_offset);
+        if ~isempty(legends)
+            fprintf("%s: offset %.2d\n", legends(i), kerr_offset);
+        end
         kerr = kerr - kerr_offset;
         [T, K] = ...
             Utilities.coarse_grain(dT, temp, kerr);

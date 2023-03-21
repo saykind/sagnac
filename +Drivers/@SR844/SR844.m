@@ -37,6 +37,7 @@ classdef SR844 < Drivers.Device
             obj.remote = true;
             obj.fields = {'X', 'Y', 'R', 'Q', 'AUX1', 'AUX2'};
             obj.parameters = {'freq', 'phase', 'tc'};
+            obj.update();
         end
     end
 end

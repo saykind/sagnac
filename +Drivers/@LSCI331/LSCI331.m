@@ -1,6 +1,6 @@
-classdef (Sealed = true) LSCI331 < handle
-    %Driver for Stanford Reasearch 844 Lock-in amplifier
-    %   Release August 5, 2020 (v0.1)
+classdef (Sealed = true) LSCI331 < Drivers.Device
+    %Driver for Lakeshore 331 temperature controller
+    %   Release February 2023
     %
     %   This class was created in Kapitulnik research group.
     %   Written by David Saykin (saykind@itp.ac.ru)
@@ -11,57 +11,27 @@ classdef (Sealed = true) LSCI331 < handle
     %
     %
     %   Usage example:
-    %   lockin = Drivers.SR844();
-    %   lockin.set('time constant', 1);
-    %   [X, Y] = lockin.read('X', 'Y');
+    %   temp = Drivers.LSCI331();
+    %   [tempA, tempB] = temp.get('tempA', 'tempB');
     
     properties
-        name = 'LSCI331';
-        gpib;                       %   GPIB address
-        idn;                        %   Unique name
-        handle;                     %   VISA-GPIB handle
-        
-        fields;                     %   Fields to read
         tempA;                      %   Temperature A (K)
         tempB;                      %   Temperature B (K)
+        setTemp;                    %   Set temperature
+        heater;
     end
     
     methods
-        function obj = LSCI331(gpib, handle, varargin)
-            %Agilent33220A construct class
-            %   If more than one argument ispresent, 
-            %   the rest arguments are passed to set method
-            if ~nargin
-                return
-            end
-            
-            if nargin == 1
-                handle = Drivers.find_instrument(gpib);
-            end
-            
-            if ~isa(handle, 'visa')
-                error("LakeShore 331 constructor accepts visa handles only.");
-            end
-            
-            obj.gpib = gpib;
-            obj.handle = handle;
-            obj.idn = sprintf("%s_%02d", obj.name, obj.gpib);
-            
-            % Set to REMOTE (if not set already)
-            %fprintf(handle, 'locl 1');
-            
-            % Test read
-            obj.fields = {'temp'};
-            obj.read(obj.fields{:});
-            
-            if nargin > 2
-                obj = obj.set(varargin{2:end});
-            end
+        function obj = LSCI331(varargin)
+            %LSCI331 class constructor class
+            obj.interface = "visa";
+            obj = obj.init(varargin{:});
+            obj.rename("LSCI331");
+            obj.remote = true;
+            obj.fields = {'A', 'B'};
+            obj.parameters = {'setTemp', 'heater'};
+            obj.update();
         end
-        
-        obj = set(obj, varargin);
-        varargout = read(obj, varargin);
-        
     end
 end
 

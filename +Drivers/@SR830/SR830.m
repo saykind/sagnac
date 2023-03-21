@@ -37,7 +37,8 @@ classdef SR830 < Drivers.Device
             obj.rename("SR830");
             obj.remote = true;
             obj.fields = {'X', 'Y', 'R', 'Q', 'AUX1', 'AUX2'};
-            obj.parameters = {'freq', 'phase', 'ampl', 'tc'};
+            obj.parameters = {'frequency', 'phase', 'amplitude', 'timeConstant'};
+            obj.update();
         end
     end
 end

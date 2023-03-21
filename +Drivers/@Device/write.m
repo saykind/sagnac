@@ -1,4 +1,4 @@
-function out = write(obj, msg)
+function write(obj, msg)
     %GPIB message sending
     %
     %   Usage example:
@@ -8,8 +8,8 @@ function out = write(obj, msg)
     if ~isstring(msg) && ~ischar(msg)
         error("Argument must be a string.");
     end
-    if isa(obj.handle, 'visa')
-        out = fprintf(obj.handle, msg);
+    if isa(obj.handle, 'visa') || isa(obj.handle, 'gpib')
+        fprintf(obj.handle, msg);
     elseif isa(obj.handle, 'visalib.GPIB')
         writeline(obj.handle, msg);
     else

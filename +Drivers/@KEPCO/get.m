@@ -1,4 +1,4 @@
-function varargout = read(obj, varargin)
+function varargout = get(obj, varargin)
     %Parameter set method
     %
     %   Usage example:
@@ -15,6 +15,14 @@ function varargout = read(obj, varargin)
                 V = str2num(obj.query("MEAS:VOLT?"));
                 obj.V = V;
                 varargout{i} = V;
+            case {'Vlim', 'voltageLimit', 'voltlim'}
+                vlim =str2double(obj.query("voltage:limit:high?"));
+                obj.voltageLimit = vlim;
+                varargout{i} = vlim;
+            case {'Ilim', 'currentLimit', 'currlim'}
+                ilim =str2double(obj.query("current:limit:high?"));
+                obj.currentLimit = ilim;
+                varargout{i} = ilim;
         end
     end
 

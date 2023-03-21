@@ -12,7 +12,7 @@ function out = read(obj)
         out = readline(obj.handle);
         return
     end
-    if isa(obj.handle, 'visa')
+    if isa(obj.handle, 'visa') || isa(obj.handle, 'gpib')
         out = fscanf(obj.handle);
         return
     end

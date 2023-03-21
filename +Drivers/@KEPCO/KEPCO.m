@@ -1,4 +1,4 @@
-classdef (Sealed = true) KEPCO < handle
+classdef (Sealed = true) KEPCO < Drivers.Device
     %Driver for KEPCO Lock-in amplifier
     %   Release November 6, 2022 (v0.1)
     %
@@ -16,54 +16,26 @@ classdef (Sealed = true) KEPCO < handle
     %   [I, V] = magnetpowersupply.read('I', 'V');
     
     properties
-        name = 'KEPCO'
-        gpib;                       %   GPIB address
-        idn;                        %   Unique name
-        handle;                     %   VISA-GPIB handle
-        remote = false;             %   Whether instrument in local/remote mode
-        
-        voltageLimit;               %   
-        currentLimit;               %   
-        
-        fields;                     %   Fields to read
+        % Instrument Parameters 
+        % (can be set and read)
+        voltageLimit;
+        currentLimit;
+        % Instrument Fields 
+        % (cannot be set, can be read)
         I;
         V;
     end
     
     methods
-        function obj = KEPCO(gpib, handle, varargin)
-            %Agilent33220A construct class
-            %   If more than one argument ispresent, 
-            %   the rest arguments are passed to set method
-            if ~nargin
-                return
-            end
-            
-            if nargin == 1
-                handle = Drivers.find_instrument(gpib);
-            else
-                if ~isa(handle, 'visa') && ~isa(handle, 'visalib.GPIB')
-                    error("KEPCO constructor accepts visa handles only.");
-                end
-            end
-            
-            obj.gpib = gpib;
-            obj.handle = handle;
-            obj.idn = sprintf("%s_%02d", obj.name, obj.gpib);
-            
-            
-            % Test read
+        function obj = KEPCO(varargin)
+            %KEPCO class constructor class
+            obj = obj.init(varargin{:});
+            obj.rename("KEPCO");
+            obj.remote = true;
             obj.fields = {'I', 'V'};
-            obj.read(obj.fields{:});
-            
-            if nargin > 2
-                obj = obj.set(varargin{2:end});
-            end
+            obj.parameters = {'voltageLimit', 'currentLimit'};
+            obj.update();
         end
-        
-        obj = set(obj, varargin);
-        varargout = read(obj, varargin);
-        
     end
 end
 

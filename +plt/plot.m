@@ -68,18 +68,21 @@ function fig = plot(varargin)
 end
 
 function fig = snapshot_time(fig, logdata, range)
-    layout = [2, 1];
+    layout = [3, 1];
     t = tiledlayout(fig, layout(1), layout(2)); 
-    ax1 = nexttile(t); ax2 = nexttile(t);
+    ax1 = nexttile(t); ax2 = nexttile(t); ax3 = nexttile(t);
     hold(ax1, 'on'); grid(ax1, 'on'); box(ax1, 'on');
     hold(ax2, 'on'); grid(ax2, 'on'); box(ax2, 'on');
-    xlim(ax1, range); xlim(ax2, range);
+    hold(ax3, 'on'); grid(ax3, 'on'); box(ax3, 'on');
+    xlim(ax1, range); xlim(ax2, range); xlim(ax3, range);
     
     time = logdata.time;
     sampletemperature = logdata.sampletemperature;
     magnettemperature = logdata.magnettemperature;
     dc = 1e3*logdata.dc;
     second = 1e3*logdata.second;
+    kerr = logdata.kerr;
+    firstX = logdata.first;
     
     title(ax1, 'Temperature');
     plot(ax1, time, sampletemperature, '-', 'LineWidth', 1.5, ...
@@ -93,6 +96,7 @@ function fig = snapshot_time(fig, logdata, range)
     yyaxis(ax1, 'left');
     
     % Plot of dc and 2nd harmonic vs time
+    
     title(ax2, 'Reflectivity');
     plot(ax2, time, dc, '-', 'LineWidth', 1.5, ...
         'Color', [.75, 0, 0], 'DisplayName', 'Raw data');
@@ -104,8 +108,30 @@ function fig = snapshot_time(fig, logdata, range)
     ylabel(ax2, '|V_{2\omega}| (mV)');
     yyaxis(ax2, 'left');
     ax2.YColor = 'r';
-    xlabel(ax2, 'Time (sec)');
+    %xlabel(ax2, 'Time (sec)');
     
+    % Plot of Kerr angle vs time
+    
+    title(ax3, 'Reflectivity');
+    plot(ax3, time, kerr, '-', 'LineWidth', 1.5, ...
+        'Color', [.75, 0, 0], 'DisplayName', 'Raw data');
+    ylabel(ax3, '\theta_K (\murad)');
+    yyaxis(ax3, 'right');
+    ax3.YColor = 'b';
+    plot(ax3, time, firstX, '-', 'LineWidth', 1.5, ...
+        'Color', [0, 0, 1], 'DisplayName', 'Raw data');
+    ylabel(ax3, 'V_{\omega}^y (mV)');
+    yyaxis(ax3, 'left');
+    ax3.YColor = 'r';
+    xlabel(ax3, 'Time (sec)');
+    
+    %{
+    title(ax2, 'Magnet current');
+    plot(ax2, time, 1e3*logdata.magnet_current, '-', 'LineWidth', 1.5, ...
+        'Color', [.75, 0, 0], 'DisplayName', 'Raw data');
+    ylabel(ax2, 'I (mA)');
+    xlabel(ax2, 'Time (sec)');
+    %}
 end
 
 
@@ -251,11 +277,17 @@ function fig = snapshot_parameter(fig, logdata, dT, range, parametername)
     fieldNames = determine_field_names(logdata);
     T = logdata.parameter;
     FirstX = logdata.(fieldNames.firstHarmonicX);
-    FirstX = FirstX - mean(FirstX);
+    %FirstX = FirstX - mean(FirstX);
     FirstY = logdata.(fieldNames.firstHarmonicY);
     Second = logdata.(fieldNames.secondHarmonic);
     DC = 1e3*logdata.(fieldNames.dc);
-    K = Sagnatron.calculate_kerr(FirstX, Second);
+    %K = Sagnatron.calculate_kerr(FirstX, Second);
+    K = logdata.(fieldNames.kerr);
+    
+    % Hysteresis
+    %fit_result = @(x) -28.720506*x;
+    %K_background = fit_result(T);
+    %K = K - K_background;
     
     
     % Plot of kerr angle vs temperature

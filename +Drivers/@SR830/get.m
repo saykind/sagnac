@@ -37,7 +37,7 @@ function varargout = get(obj, varargin)
                 a = str2double(obj.query("slvl?"));
                 obj.amplitude = a;
                 varargout{i} = a;
-            case {'tc', 'timeConstant', 'time constant', 'time_constant'}
+            case {'tc', 'timeConstant', 'time_constant'}
                 tc = str2double(obj.query("oflt?"))-10;
                 res = 1;
                 if mod(tc,2)

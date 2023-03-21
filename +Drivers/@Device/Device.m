@@ -12,7 +12,7 @@ classdef Device < handle
     %   - Instrument Control Toolbox
     %
     %
-    %   Use this class define subclasses:
+    %   Use this class to define subclasses:
     %   classdef SR830 < Device
     %       ...
     %
@@ -24,8 +24,14 @@ classdef Device < handle
     properties
         name;
         address;                    %   GPIB address
-        id;                         %   Unique name = "name_GPIB"
-        handle;                     %   visalib.GPIB or visa handle
+        interface = "visa"          %   Drivers.(interface)(address) is
+                                    %   used to find instrument handle
+                                    %   Allowed options:
+                                    %    - gpib
+                                    %    - visa
+                                    %    - visadev
+        id;                         %   Unique name = "name_address"
+        handle;                     %   visalib.GPIB or visa or gpib handle
         remote = false;             %   If instrument in local/remote mode
         fields;                     %   Fields to read using get method
         parameters;                 %   Parameters to set using set method
@@ -48,13 +54,14 @@ classdef Device < handle
             obj.parameters = {};
         end
         function out = idn(obj), out = strtrim(obj.query("*IDN?")); end
-        % Following two methods are instrument specific
+        % Following methods are instrument specific
         function set(obj, varargin), obj.parameters = {}; end
         function out = get(obj, varargin), obj.fields = {}; out = []; end
+        function local(obj), obj.remote; end
+        obj = init(obj, address, handle, varargin)
     end
     
     methods (Sealed)
-        obj = init(obj, address, handle, varargin)
         write(obj, msg);
         out = read(obj);
         out = query(obj, msg);
@@ -62,7 +69,7 @@ classdef Device < handle
             obj.name = new_name;
             obj.id = sprintf("%s_%02d", obj.name, obj.address);
         end
-        function update(obj)
+        function obj = update(obj)
             obj.get(obj.parameters{:});
             obj.get(obj.fields{:});
         end
