@@ -13,7 +13,7 @@ classdef Device < handle
     %
     %
     %   Use this class to define subclasses:
-    %   classdef SR830 < Device
+    %   classdef SR830 < Drivers.Device
     %       ...
     %
     %   Use this class to create generic instruments:
@@ -22,10 +22,10 @@ classdef Device < handle
     %   lockin.query("outp?1");
     
     properties
-        name;
+        name;                       %   Instrument specific name
         address;                    %   GPIB address
-        interface = "visa"          %   Drivers.(interface)(address) is
-                                    %   used to find instrument handle
+        interface = "visa";         %   Drivers.(interface)(address)
+                                    %   is used to find instrument handle
                                     %   Allowed options:
                                     %    - gpib
                                     %    - visa
@@ -35,16 +35,16 @@ classdef Device < handle
         remote = false;             %   If instrument in local/remote mode
         fields;                     %   Fields to read using get method
         parameters;                 %   Parameters to set using set method
+        units;                      %   Physical units.
     end
     
     methods
         function obj = Device(varargin)
-            %Class constructor
-            %   See Device.init() method for more information
+            %Constructor. See Device.init() method for more information
             
             %Child classes always call superclass constructor.
-            %hence it's required to control action of the superclass
-            %constructor whe it's called without arguments.
+            %Hence it's required to control action of the superclass
+            %constructor when it's called without arguments.
             if ~nargin, return, end
             
             obj = obj.init(varargin{:});
@@ -53,12 +53,12 @@ classdef Device < handle
             obj.fields = {};
             obj.parameters = {};
         end
+        obj = init(obj, address, handle, varargin)
         function out = idn(obj), out = strtrim(obj.query("*IDN?")); end
         % Following methods are instrument specific
         function set(obj, varargin), obj.parameters = {}; end
         function out = get(obj, varargin), obj.fields = {}; out = []; end
         function local(obj), obj.remote; end
-        obj = init(obj, address, handle, varargin)
     end
     
     methods (Sealed)
@@ -66,10 +66,12 @@ classdef Device < handle
         out = read(obj);
         out = query(obj, msg);
         function rename(obj, new_name)
+        %Change obj.name and obj.id
             obj.name = new_name;
             obj.id = sprintf("%s_%02d", obj.name, obj.address);
         end
         function obj = update(obj)
+        %Read fields and parameters
             obj.get(obj.parameters{:});
             obj.get(obj.fields{:});
         end

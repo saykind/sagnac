@@ -1,7 +1,7 @@
-function info = make_info(instruments, schema)
+function loginfo = loginfo(instruments, schema)
 %Reads instrumets' paramters and returns them as structure.
 
-info = struct();
+loginfo = struct();
 
 if ~nargin, return, end
 
@@ -17,15 +17,17 @@ for i = 1:numel(names)
     name = names{i};
     instrument = instruments.(name);
     
-    info.(name).driver = instrument.name;
-    info.(name).interface = instrument.interface;
-    info.(name).address = instrument.address;
+    loginfo.(name).driver = instrument.name;
+    loginfo.(name).interface = instrument.interface;
+    loginfo.(name).address = instrument.address;
     
     parameters = parameterSets{i};
     if isempty(parameters), parameters = instrument.parameters; end
     if isnan(parameters{1}), continue; end
     for j = 1:numel(parameters)
         parameter = parameters{j};
-        info.(name).(parameter) = instrument.get(parameter);
+        loginfo.(name).(parameter) = instrument.get(parameter);
     end
 end
+
+loginfo.timer = struct();

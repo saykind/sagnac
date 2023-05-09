@@ -73,7 +73,8 @@ classdef (Sealed = true) Agilis < handle
             
             % Setting up home position
             obj.reset();
-            obj.set('hometype', 4);
+            %obj.set('hometype', 4);
+            obj.set('hometype', 1);
             obj.ready();
             
             % Test read
@@ -84,7 +85,7 @@ classdef (Sealed = true) Agilis < handle
             obj.get(obj.fields{:});
             
             % Test move
-            obj.set('position', 13);
+            %obj.set('position', 13);
             obj.ps();
             
             if nargin > 2

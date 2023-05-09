@@ -16,7 +16,17 @@ for i = 1:numel(names)
     if isnan(fields{1}), continue; end
     for j = 1:numel(fields)
         field = fields{j};
-        obj.logdata.(name).(field) = [obj.logdata.(name).(field), instrument.get(field)];
+        obj.logdata.(name).(field) = [obj.logdata.(name).(field); instrument.get(field)];
     end
 end
-obj.logdata.timer.time = [obj.logdata.timer.time, clock()];
+
+
+obj.logdata.magnet.polarity = [obj.logdata.magnet.polarity; obj.polarity];
+
+c = clock();
+obj.logdata.timer.datetime = [obj.logdata.timer.datetime; c];
+
+d0 = obj.logdata.timer.datetime(1,:); 
+t = Sweeper.datetimeToSeconds(c-d0);
+obj.logdata.timer.time = [obj.logdata.timer.time; t];
+

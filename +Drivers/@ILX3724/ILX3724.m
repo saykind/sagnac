@@ -1,6 +1,6 @@
-classdef (Sealed = true) ILX3724 < handle
-    %Driver for Stanford Reasearch 844 Lock-in amplifier
-    %   Release August 15, 2021 (v0.1)
+classdef (Sealed = true) ILX3724 < Drivers.Device
+    %Driver for ILX LightWave LDC-3724C laser diode controller
+    %   Release April, 2023 (v1)
     %
     %   This class was created in Kapitulnik research group.
     %   Written by David Saykin (saykind@itp.ac.ru)
@@ -11,62 +11,50 @@ classdef (Sealed = true) ILX3724 < handle
     %
     %
     %   Usage example:
-    %   laser = Drivers.SR844();
+    %   laser = Drivers.ILX3724();
     %   laser.set('current', 100);
     %   curr = lockin.get('current');
     
     properties
-        name = 'ILX3724';
-        gpib;                       %   GPIB address
-        idn;                        %   Unique name
-        handle;                     %   VISA-GPIB handle
-        remote = false;             %   Whether instrument in remote mode
+        las;                        %   Whether laser is ON(1) or OFF(0)
+        lasmode;                    %   Laser mode:
+                                    %       1 = current (low-BW), 
+                                    %       2 = power, 
+                                    %       3 = high-BW current.
         
-        mode;                       %   Output mode 
-                                    %   1 = current, 
-                                    %   2 = power, 
-                                    %   3 = high-BW current.
-        
-        fields;                     %   Fields to read
-        output;                     %   Whether the laser in ON/OFF (1/0)
         current;                    %   Output current
+        voltage;                    %   Diode voltage
+        
+        tec;                        %   Whether TEC is ON(1) or OFF(0)
+        tecmode;                    %   TEC mode:
+                                    %       1 = Temperature, 
+                                    %       2 = Resistance, 
+                                    %       3 = Current (I_TE).
+        temperature;                %   Thermistor-based temp
+        resistance;                 %   Thermistor resistance
     end
     
     methods
-        function obj = ILX3724(gpib, handle, varargin)
-            %ILX3724 construct class
-            %   If more than two arguments are present, 
-            %   the rest arguments are passed to set method
-            if ~nargin
-                return;
-            end
-            
-            if nargin == 1
-                handle = Drivers.find_instrument(gpib);
+        function obj = ILX3724(varargin)
+        %ILX3724 constructor
+            obj = obj.init(varargin{:});
+            obj.rename("ILX3724");
+            obj.remote = true;
+            obj.fields = {};
+            obj.parameters = {'las', 'lasmode', 'current', 'voltage', ...
+                'tec', 'tecmode', 'temperature', 'resistance'};
+            obj.update();
+        end
+        function output(obj, current)
+        %Turn output on if it's off and vice versa.
+            if nargin == 2
+                obj.set('current', current);
+                obj.set('las', 1);
             else
-                if ~isa(handle, 'visa')
-                    error("Instrument constructor accepts visa handles only.");
-                end
-                % Open instrument if it is closed
-                if strcmp(handle.status, 'closed')
-                    fopen(handle);
-                end
-            end
-            
-            obj.gpib = gpib;
-            obj.handle = handle;
-            obj.idn = sprintf("%s_%02d", obj.name, obj.gpib);
-            
-            if nargin > 2
-                obj = obj.set(varargin{2:end});
+                out = double(~obj.get('on'));
+                obj.set('las', out);
             end
         end
-        
-        out = send(obj, msg);
-        out = query(obj, msg);
-        obj = set(obj, varargin);
-        varargout = read(obj, varargin);
-        
     end
 end
 

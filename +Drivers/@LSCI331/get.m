@@ -6,14 +6,10 @@ function varargout = get(obj, varargin)
 
     for i = 1:(nargin-1)
         switch varargin{i}
-            case {'a', 'A', 'tA', 'tempA', 'temperatureA', 'temp', 'temperature'}
-                temp = str2num(obj.query("KRDG?A"));
-                obj.tempA = temp;
-                varargout{i} = temp;
-            case {'b', 'B', 'tB', 'tempB', 'temperatureB'}
-                temp = str2num(obj.query("KRDG?B"));
-                obj.tempB = temp;
-                varargout{i} = temp;
+            %Parameters:
+            %   - ramp rate
+            %   - set temperature
+            %   - heater
             case {'h', 'heater', 'htr'}
                 h = str2num(obj.query("HTR?"));
                 obj.heater = h;
@@ -22,6 +18,17 @@ function varargout = get(obj, varargin)
                 s = str2num(obj.query("SETP?"));
                 obj.setTemp = s;
                 varargout{i} = s;
+            %Fields:
+            %   - tempA
+            %   - tempB
+            case {'a', 'A', 'tA', 'tempA', 'temperatureA', 'temp', 'temperature'}
+                temp = str2num(obj.query("KRDG?A"));
+                obj.tempA = temp;
+                varargout{i} = temp;
+            case {'b', 'B', 'tB', 'tempB', 'temperatureB'}
+                temp = str2num(obj.query("KRDG?B"));
+                obj.tempB = temp;
+                varargout{i} = temp;
         end
     end
 

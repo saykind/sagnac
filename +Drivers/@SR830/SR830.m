@@ -33,11 +33,19 @@ classdef SR830 < Drivers.Device
     
     methods
         function obj = SR830(varargin)
+        %SR830 Constructor.
             obj = obj.init(varargin{:});
             obj.rename("SR830");
             obj.remote = true;
+            
             obj.fields = {'X', 'Y', 'R', 'Q', 'AUX1', 'AUX2'};
+            fieldsUnits = {'V', 'V', 'V', 'deg', 'V', 'V'};
             obj.parameters = {'frequency', 'phase', 'amplitude', 'timeConstant'};
+            parametersUnits = {'Hz',    'deg',      'V',        's'};
+            tempUnits = [[obj.fields, obj.parameters]; ...
+                [fieldsUnits, parametersUnits]];
+            obj.units = struct(tempUnits{:});
+            
             obj.update();
         end
     end

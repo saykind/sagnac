@@ -1,4 +1,4 @@
-classdef (Sealed = true) LSCI340 < handle
+classdef (Sealed = true) LSCI340 < Drivers.Device% FIXME
     %Driver for Stanford Reasearch 844 Lock-in amplifier
     %   Release August 5, 2020 (v0.1)
     %

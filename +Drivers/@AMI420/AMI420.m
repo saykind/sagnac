@@ -1,4 +1,4 @@
-classdef (Sealed = true) AMI420 < handle
+classdef (Sealed = true) AMI420 < handle %FIXME
     %Driver for American Magnetics, 420
     %   Release August 1, 2020 (v0.1)
     %

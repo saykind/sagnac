@@ -28,7 +28,7 @@ classdef (Sealed = true) KEPCO < Drivers.Device
     
     methods
         function obj = KEPCO(varargin)
-            %KEPCO class constructor class
+        %KEPCO constructor
             obj = obj.init(varargin{:});
             obj.rename("KEPCO");
             obj.remote = true;

@@ -1,8 +1,8 @@
-function obj = StartFcn(obj, event)
+function StartFcn(obj, event)
     %Timer start function
     
     if isempty(obj.schema)
-        fprintf("[%s] instrument SCHEMA is required.\n", obj.title);
+        fprintf("[Sweeper.start] instrument SCHEMA is required.\n");
         obj.timer.stop();
         return
     end
@@ -19,15 +19,27 @@ function obj = StartFcn(obj, event)
                 datestr(stopTime, 'dd-mmm-yyyy HH:MM:SS'));
         end
     end
-   
-    obj.instruments = Recorder.make_instruments(obj.schema);
-    obj.logdata = Recorder.make_logdata(obj.instruments, obj.schema);
-    obj.info = Recorder.make_info(obj.instruments, obj.schema);
+    
+    try
+        obj.instruments_init();
+    catch
+        fprintf("[Sweeper.start] Failed to initialize instruments.");
+        obj.stop();
+    end
+    obj.graphics_init();
+    obj.logdata = Sweeper.make_logdata(obj.instruments, obj.schema);
+    obj.loginfo = Sweeper.make_loginfo(obj.instruments, obj.schema);
+    
     
     % Add timer parametrs to info structure.
-    parameters = filednames(obj.timer);
+    % Do not do this: parameters = fieldnames(obj.timer);
+    parameters = {'Name', 'ExecutionMode', ...
+        'Period', 'AveragePeriod', 'InstantPeriod', ...
+        'TasksToExecute', 'TasksExecuted'};
     for j = 1:numel(parameters)
         parameter = parameters{j};
-        obj.info.timer.(parameter) = obj.timer.parameter;
+        obj.loginfo.timer.(parameter) = obj.timer.(parameter);
     end
+    
+    obj.cnt = 0;
 end

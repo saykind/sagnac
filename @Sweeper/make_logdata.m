@@ -1,7 +1,11 @@
 function logdata = make_logdata(instruments, schema)
-%Create logdata.
+%Create logdata structure with correct fields.
 
 logdata = struct();
+logdata.timer = struct();
+logdata.timer.time = [];
+logdata.timer.datetime = [];
+
 names = schema.name;
 for i = 1:numel(names)
     name = names{i};
@@ -16,5 +20,5 @@ for i = 1:numel(names)
         logdata.(name).(field) = [];
     end
 end
-logdata.timer = struct();
-logdata.timer.time = [];
+
+logdata.magnet.polarity = [];

@@ -48,7 +48,7 @@ function handle = gpib(address)
         return
     end
     
-    handle.Timeout = 1;
+    handle.Timeout = 2;
 
     % Assuming there is such an instrument
     %name = string(name(1:end-2));

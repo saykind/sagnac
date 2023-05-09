@@ -1,0 +1,19 @@
+function logClear(obj)
+    try
+        isvalid(obj.logger);
+    catch
+        fprintf("[Recorder] logger property is not a handle.\n");
+        return
+    end
+    if ~isvalid(obj.logger)
+        fprintf("[Recorder] logger object is invalid.\n");
+        return
+    end
+    if strcmp(obj.logger.Running, 'on')
+        obj.logger.stop();
+        fprintf([obj.logger.Name, ' stopped.\n']);
+    end
+    fprintf([obj.logger.Name, ' deleted.\n']);
+    delete(obj.logger);
+    obj.logger = [];
+end

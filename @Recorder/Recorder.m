@@ -14,21 +14,36 @@ classdef (Sealed = true) Recorder < handle
     %   Usage example:
     %   experiment = Recorder('hall');
     %   experiment.start();
+    %   experiment.stop();
     
     properties
+        key;                        %   (numeric) pre-defined experiment id
         title;                      %   Name of the experiment
-        readme;                     %   Experiment description
-        info;                       %   Intrument parameters
+        seed;                       %   user-provided experiment id
         
         schema;                     %   Instrument configuration
         instruments;                %   Structure with instrument handles
+        rate;                       %   Structure with action frequencies
+        sweep;                      %   Structure with sweep info
         
         foldername;                 %   Path to folder with datafiles
         filename;                   %   Path to data.mat file
         
+        loginfo;                    %   Intrument parameters
         logdata;                    %   Main data structure
         
-        timer;                      %   Timer object
+        graphics;                   %   Handles to figure and axes
+        
+        logger;                     %   logging timer object
+        loggerName;                 %   makes it possible to find timer
+        cnt;                        %   Executed steps counter
+        rec;                        %   Record flag
+        
+        verbose;                    %   Print info to the command line
+                                    %       0:      No messages
+                                    %       1:      Start/finish messages
+                                    %       2:      Start/finish/save meassages
+                                    %       inf:    All messages
     end
     
     methods
@@ -40,45 +55,23 @@ classdef (Sealed = true) Recorder < handle
             %       'T' -   temperature (LSCI331)
             %       'k' -   Kerr (SR844)
             %       'K' -   Kerr & transport
+            %       'p' -   Optical power
             %       'A' -   all available instruments
-            
-            obj.timer = timer;
-            obj.timer.Period = 1;
-            obj.timer.TasksToExecute = inf;
-            obj.timer.ExecutionMode = 'fixedRate';
-            obj.timer.StartFcn = @(~, event)obj.StartFcn(event);
-            obj.timer.TimerFcn = @(~, event)obj.TimerFcn(event);
-            obj.timer.StopFcn = @(~, event)obj.StopFcn(event);
-            
-            obj.logdata = struct();
-            obj.instruments = struct();
-            obj.init(seed);
+            obj.construct(seed);
         end
-    end
-    
-    methods(Sealed)
-        init(obj, seed);
-        function instruments_clear(obj), obj.instruments = struct(); end
-        function instruments_init(obj)
-            obj.instruments_clear();
-            obj.instruments = Recorder.make_instruments(obj.schema);
-        end
-        function start(obj),  obj.timer.start(); end
-        function stop(obj),   obj.timer.stop(); end
-        StartFcn(obj, event);
-        TimerFcn(obj, event);
-        StopFcn(obj, event);
-        SaveFcn(obj, event);    %Non-timer function
-        datapoint(obj);
-    end
-    
-    methods(Static)
-        filename = make_filename(foldername);
-        schema = make_schema(seed);
-        instruments = make_instruments(schema);
-        info = make_info(instruments, schema);
-        logdata = make_logdata(instruments, schema);
-        function event = print_event(event), disp(event); end
+        
+        construct(obj, seed);
+        function i(obj), obj.instruments = make.instruments(obj.schema); end
+        function g(obj), obj.graphics = make.graphics(obj.key); end
+        function start(obj), obj.logInit(); obj.logger.start(); end
+        function stop(obj), obj.logger.stop(); obj.logClear(); end
+        logClear(obj);
+        logInit(obj);
+        logStart(obj, event);
+        logStep(obj, event);
+        logStop(obj, event);
+        save(obj, event);
+        record(obj);
     end
 end
 

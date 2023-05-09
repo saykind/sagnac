@@ -44,8 +44,9 @@ function fig = plot_kerr(varargin)
         logdata = load(filename).logdata;
         temp = logdata.sampletemperature;
         kerr = logdata.kerr;
-        idx = temp > 20 & temp < 30;
+        idx = temp > 5 & temp < 30;
         kerr_offset = mean(kerr(idx));
+        kerr_offset = 0;
         if ~isempty(legends)
             fprintf("%s: offset %.2d\n", legends(i), kerr_offset);
         end

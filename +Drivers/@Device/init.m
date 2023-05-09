@@ -1,5 +1,5 @@
 function obj = init(obj, address, handle, varargin)
-    %Object initializator
+    %Initialize GPIB handle
     %   Arguments:
     %   - address       Numeric GPIB address of the device
     %   - handle        Device stream of type 'gpib' or 'visa' or
@@ -8,9 +8,10 @@ function obj = init(obj, address, handle, varargin)
     if (~nargin || nargin == 1), return, end
 
     if nargin == 2
-        %handle = Drivers.gpib(address);
-        %handle = Drivers.visa(address);
-        %handle = Drivers.visadev(address);
+        %Available options:
+        %   handle = Drivers.gpib(address);
+        %   handle = Drivers.visa(address);
+        %   handle = Drivers.visadev(address);
         handle = Drivers.(obj.interface)(address);
         if isempty(handle)
             warning("GPIB connecton was unsuccessful.")

@@ -36,7 +36,7 @@ function cut(varargin)
     
     % Check if it makes sence to crop the data.
     if (max(temp) <= range(2) && range(1) <= min(temp))
-        disp('Temperature range is to wide, no point to crop.')
+        disp('Temperature range is too wide, no point to crop.')
         return
     end
     
