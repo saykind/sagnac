@@ -12,7 +12,7 @@ function new_filename = new_filename(filename, new_name, varargin)
     % Acquire parameters
     p = inputParser;
     addParameter(p, 'slash', '\', @ischar);     % Windows (\) or UNIX (/)
-    addParameter(p, 'postfix', '', @ischar);     % Windows (\) or UNIX (/)
+    addParameter(p, 'postfix', '', @ischar);
     addParameter(p, 'overwrite',  false, @islogical);
     parse(p, varargin{:});
     parameters = p.Results;

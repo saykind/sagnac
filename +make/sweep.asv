@@ -30,8 +30,8 @@ function s = sweep(key, instruments, s, cnt)
             case 14520 %xy: Kerr 2D scan
                 x0 = 0;
                 y0 = 0;
-                x = x0 + 0:.2:5;
-                y = y0 + 0:.2:5;
+                x = x0 + 0:.1:2.5;
+                y = y0 + -2.5:.1:2.5;
                 [X,Y] = meshgrid(x,y);
                 [n,m] = size(X);
                 X_flat = flatten_mesh(X);
@@ -41,19 +41,15 @@ function s = sweep(key, instruments, s, cnt)
                 s = struct('rate', 2, 'pause', 1, ...
                     'range', [X_flat; Y_flat], 'shape', [n,m]);
                 
-                
-            case 120 %x: Kerr 1D scan
-                x0 = 13;
-                x = x0 + [-2:.05:2];
-                s = struct('rate', 40, 'pause', 10, ...
-                    'range', x);
-                
             case {105, 'i'}
                 s = struct('rate', 30, 'pause', 5, 'range', 65:1:95);
-                
             case 121    %y: Hysteresis test
-                mag = 400;  % current, A
-                step = 50;
+                mag = 300;  % current, A
+                step = 20;
+                range = 1e-3*[...
+                        0:step:mag, ...
+                        (mag-step):-step:-mag, ...
+                        (-mag+step):step:0];
                 range = 1e-3*[...
                         0:step:mag, ...
                         (mag-step):-step:0];
@@ -95,8 +91,6 @@ function s = sweep(key, instruments, s, cnt)
                 val = s.range(:,1);
                 instruments.X.set('position', val(1));
                 instruments.Y.set('position', val(2));
-            case 120  %x: Kerr 1D scan
-                instruments.Y.set('position', val);
             case {105, 'i'}
                 instruments.diode.output(val);
             case {121, 'y'}
@@ -127,8 +121,6 @@ function s = sweep(key, instruments, s, cnt)
                 val = s.range(:,i);
                 instruments.X.set('position', val(1));
                 instruments.Y.set('position', val(2));
-            case 120  %x: Kerr 1D scan
-                instruments.Y.set('position', val);
             case {105, 'i'}
                 instruments.diode.output(val);
             case {121, 'y'}

@@ -20,10 +20,11 @@ classdef (Sealed = true) KEPCO < Drivers.Device
         % (can be set and read)
         voltageLimit;
         currentLimit;
-        % Instrument Fields 
-        % (cannot be set, can be read)
         I;
         V;
+        on;
+        % Internal parameters
+        coilConstant = 650; %G/A
     end
     
     methods
@@ -35,6 +36,16 @@ classdef (Sealed = true) KEPCO < Drivers.Device
             obj.fields = {'I', 'V'};
             obj.parameters = {'voltageLimit', 'currentLimit'};
             obj.update();
+        end
+        function output(obj, current)
+        %Turn output on if it's off and vice versa.
+            if nargin == 2
+                obj.set('I', current);
+                obj.set('output', 1);
+            else
+                out = double(~obj.get('on'));
+                obj.set('output', out);
+            end
         end
     end
 end

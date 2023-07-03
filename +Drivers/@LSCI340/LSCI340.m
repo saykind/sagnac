@@ -22,46 +22,27 @@ classdef (Sealed = true) LSCI340 < Drivers.Device% FIXME
         handle;                     %   VISA-GPIB handle
         
         fields;                     %   Fields to read
-        tempA;                      %   Temperature A (K)
-        tempB;                      %   Temperature B (K)
+        A;                          %   Temperature A (K)
+        B;                          %   Temperature B (K)
     end
     
     methods
-        function obj = LSCI340(gpib, handle, varargin)
-            %Agilent33220A construct class
-            %   If more than one argument ispresent, 
-            %   the rest arguments are passed to set method
-            if ~nargin
-                return
-            end
+        function obj = LSCI340(varargin)
+        %LSCI340 construct class
+            obj = obj.init(varargin{:});
+            obj.rename("LSCI340");
+            obj.remote = true;
             
-            if nargin == 1
-                handle = Drivers.find_instrument(gpib);
-            end
+            obj.fields = {'A', 'B', 'heater'};
+            fieldsUnits = {'K', 'K', '%'};
+            obj.parameters = {'setTemp'};
+            parametersUnits = {'K'};
+            units = [[obj.fields, obj.parameters]; ...
+                [fieldsUnits, parametersUnits]];
+            obj.units = struct(units{:});
             
-            if ~isa(handle, 'visa')
-                error("LakeShore 340 constructor accepts visa handles only.");
-            end
-            
-            obj.gpib = gpib;
-            obj.handle = handle;
-            obj.idn = sprintf("%s_%02d", obj.name, obj.gpib);
-            
-            % Set to REMOTE (if not set already)
-            %fprintf(handle, 'locl 1');
-            
-            % Test read
-            obj.fields = {'temp'};
-            obj.read(obj.fields{:});
-            
-            if nargin > 2
-                obj = obj.set(varargin{2:end});
-            end
+            obj.update();
         end
-        
-        obj = set(obj, varargin);
-        varargout = read(obj, varargin);
-        
     end
 end
 

@@ -13,6 +13,7 @@ function data = plot(filename)
     data = load(filename);
 
     if isfield(data, 'key') && isfield(data, 'logdata')
-        make.graphics(data.key, make.graphics(data.key), data.logdata);
+        g = make.graphics(data.key, make.graphics(data.key), data.logdata);
+        if isfield(data, 'key'), title(g.axes(1), make.title(data.key)); end
     end
 end

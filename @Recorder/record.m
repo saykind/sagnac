@@ -13,6 +13,7 @@ for i = 1:numel(names)
 
     fields = obj.schema.fields{i};
     if isempty(fields), fields = instrument.fields; end
+    if isempty(fields), continue; end
     if isnan(fields{1}), continue; end
     for j = 1:numel(fields)
         field = fields{j};
@@ -20,7 +21,9 @@ for i = 1:numel(names)
         try
             dat = instrument.get(field);
         catch
+            fprintf("Failed to get instrument data.");
         end
+        %fprintf("%s : %f\n", field, dat);
         obj.logdata.(name).(field) = [obj.logdata.(name).(field); dat];
     end
 end

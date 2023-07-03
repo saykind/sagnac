@@ -13,18 +13,18 @@ function varargout = get(obj, varargin)
             %   - channel
             %   - range
             case {'ch', 'CH', 'channel', 'CHANNEL'}
-                ch = str2num(obj.query(":sense:channel?"));
+                ch = str2double(obj.query(":sense:channel?"));
                 obj.channel = ch;
                 varargout{i} = ch;
             case {'r', 'R', 'range', 'RANGE'}
                 ch = obj.channel;
                 sa = sprintf(":sense:voltage:channel%d:range:auto?", ch);
-                a = str2num(obj.query(sa));
+                a = str2double(obj.query(sa));
                 if a == 1
                     r = 0;
                 else
                     sr = sprintf(":sense:voltage:channel%d:range?", ch);
-                    r = str2num(obj.query(sr));
+                    r = str2double(obj.query(sr));
                 end
                 obj.range = r;
                 varargout{i} = r;

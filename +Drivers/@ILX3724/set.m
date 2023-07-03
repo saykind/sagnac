@@ -18,6 +18,8 @@ function obj = set(obj, varargin)
     addParameter(p, 'I', NaN, @isnumeric);
     addParameter(p, 'current', NaN, @isnumeric);
     
+    addParameter(p, 'tec', NaN, @isnumeric);
+    
     parse(p, varargin{:});
     parameters = p.Results;
     
@@ -61,6 +63,15 @@ function obj = set(obj, varargin)
         else
             obj.write(sprintf("LAS:LDI %d", current));
             obj.current = current;
+        end
+    end
+    
+    if ~isnan(parameters.tec)
+        if ismember(parameters.tec, [0, 1])
+            obj.write(sprintf("TEC:OUT %d", parameters.tec));
+            obj.tec = out;
+        else
+            fprintf("[Drivers.ILX3724.set] Incorrect value.\n");
         end
     end
     

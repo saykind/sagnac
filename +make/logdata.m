@@ -13,6 +13,7 @@ for i = 1:numel(names)
 
     fields = schema.fields{i};
     if isempty(fields), fields = instrument.fields; end
+    if isempty(fields), continue; end
     if isnan(fields{1}), continue; end
     logdata.(name) = struct();
     for j = 1:numel(fields)

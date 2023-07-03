@@ -388,47 +388,6 @@ switch key
         surf(axisA, F, A, P0);
         surf(axisB, F, A, P2./P0);  %FIXME try contourf instead of surf
         
-    case 120 %x: Kerr 1D scan
-        axis = graphics.axes;
-        yyaxis(axis, 'left'); cla(axis); 
-        yyaxis(axis, 'right'); cla(axis);
-
-        sls = .26;  % second lockin sensitivity
-        splitter = .673;
-        
-        %x = logdata.X.position;                         % 
-        y = logdata.Y.position;                         % 
-        v0  = 1e3*logdata.voltmeter.v1;                 % DC Voltage, mV
-        V1X = 1e3*logdata.lockin.X;                     % 1st harm Power X, uW
-        V1Y = 1e3*logdata.lockin.Y;                     % 1st harm Power Y, uW
-        V2X  = 1e3*logdata.lockin.AUX1*sls;                 % 2nd harm Power R, uW
-        V2Y  = 1e3*logdata.lockin.AUX2*sls;                 % 2nd harm Power R, uW
-        V2   = sqrt(V2X.^2+V2Y.^2);
-        kerr = util.kerr(V1X, V2);
-        
-        n = numel(kerr);
-        k = logdata.sweep.rate-logdata.sweep.pause;
-        k = k(1);   %FIXME
-        m = fix(n/k);
-        if m*k ~= n
-            disp(n)
-            disp(m)
-            disp(k)
-            error("!")
-        end
-        KERR = mean(reshape(kerr, [k, m]),1);
-        KERRstd = std(reshape(kerr, [k, m]),0,1);
-        V0 = mean(reshape(v0, [k, m]),1);
-        Y = mean(reshape(y, [k, m]),1);
-        
-        yyaxis(axis, 'left');
-        plot(axis, Y, KERR, 'r.-');
-        yyaxis(axis, 'right');
-        plot(axis, Y, V0, 'b.-');
-        yyaxis(axis, 'left');
-        
-        
-        
         
     case 14520 %xy: Kerr 2D scan
         axisA = graphics.axes(1);
@@ -441,8 +400,8 @@ switch key
         sls = .26;  % second lockin sensitivity
         splitter = .673;
 
-        x = logdata.X.position;                         % 
-        y = logdata.Y.position;                         % 
+        x = logdata.X.position;                         % Amplitude Vpp, V
+        y = logdata.Y.position;                         % Frequency, Hz
         P0  = 1e3*logdata.voltmeter.v1/responsivity_dc; % DC Power, uW
         V1X = 1e3*logdata.lockin.X;                     % 1st harm Power X, uW
         V1Y = 1e3*logdata.lockin.Y;                     % 1st harm Power Y, uW
@@ -535,12 +494,12 @@ switch key
         k = k(1);
         m = fix(n/k);
         KERR = mean(reshape(kerr, [k, m]),1);
-        KERRstd = std(reshape(kerr, [k, m]),0,1);
+%         KERRstd = std(reshape(kerr, [k, m]),1);
         CURR = mean(reshape(I, [k, m]),1);
 
         yyaxis(axisA, 'left');
-%       plot(axisA, CURR, KERR, 'r.-');
-        errorbar(axisA, CURR, KERR, KERRstd, 'r.-', 'MarkerSize', 5);
+        plot(axisA, CURR, KERR, 'r.-');
+%         errorbar(axisA, CURR, KERR,KERRstd, 'r.-');
         yyaxis(axisA, 'right');
         plot(axisA, I, V0, 'b.-');
 

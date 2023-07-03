@@ -19,6 +19,8 @@ classdef (Sealed = true) Agilis < handle
     properties
         name = 'Agilis';
         port;                       %   Serial port name
+        interface = "serial";       %   Drivers.(interface)(address)
+        address = 0;                %   Drivers.(interface)(address)
         idn;                        %   Unique name
         id;                         %   Instrument identifier 
         serial;                     %   Instrument serial number
@@ -56,7 +58,11 @@ classdef (Sealed = true) Agilis < handle
             end
             
             if nargin == 1
-                handle = Drivers.find_serialport(port);
+                if isnumeric(port)
+                    obj.address = port;
+                    port = ['COM', int2str(port)];
+                end
+                handle = Drivers.serial(port);
                 if isempty(handle)
                     error("Serial port is not available.");
                 end
@@ -73,8 +79,8 @@ classdef (Sealed = true) Agilis < handle
             
             % Setting up home position
             obj.reset();
-            %obj.set('hometype', 4);
-            obj.set('hometype', 1);
+            obj.set('hometype', 4);
+            %obj.set('hometype', 1);
             obj.ready();
             
             % Test read
@@ -85,7 +91,7 @@ classdef (Sealed = true) Agilis < handle
             obj.get(obj.fields{:});
             
             % Test move
-            %obj.set('position', 13);
+            obj.set('position', 13);
             obj.ps();
             
             if nargin > 2

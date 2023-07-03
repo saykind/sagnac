@@ -49,6 +49,7 @@ classdef (Sealed = true) ILX3724 < Drivers.Device
         %Turn output on if it's off and vice versa.
             if nargin == 2
                 obj.set('current', current);
+                pause(.01);
                 obj.set('las', 1);
             else
                 out = double(~obj.get('on'));

@@ -11,6 +11,7 @@ function logInit(obj)
         obj.logger.TasksToExecute = r*n-2;
     end
     obj.logger.ExecutionMode = 'fixedRate';
+    obj.logger.StartDelay = 3;
     obj.logger.StartFcn = @(~, event)obj.logStart(event);
     obj.logger.TimerFcn = @(~, event)obj.logStep(event);
     obj.logger.StopFcn = @(~, event)obj.logStop(event);

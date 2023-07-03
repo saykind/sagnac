@@ -1,6 +1,6 @@
 function cut(varargin)
     %Data cropping/saving method
-    %   Provide new tempreture range as an argument
+    %   Provide new range as an argument
     %   Written on 2022/11/02 by saykind@stanford.edu
     
     % Acquire parameters

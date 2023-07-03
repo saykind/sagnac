@@ -1,4 +1,4 @@
-function instrument = find_serialport(port, baudrate, terminator)
+function instrument = serial(port, baudrate, terminator)
 %Find the serial port given port name
 %   Checks if serial port is already in memeory,
 %   if not, adds it to the memeory and 
