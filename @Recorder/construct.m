@@ -18,6 +18,7 @@ function obj = construct(obj, seed)
     obj.loginfo = struct([]);
     obj.logdata = struct([]);
     obj.graphics = struct([]);
+    obj.loggerDelay = 3;
     obj.cnt = 0;
     obj.rec = 1;
     obj.rate = struct('timer', 1, 'log', 2, 'plot', 4, 'save', 200);

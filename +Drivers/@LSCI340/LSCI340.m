@@ -11,17 +11,11 @@ classdef (Sealed = true) LSCI340 < Drivers.Device% FIXME
     %
     %
     %   Usage example:
-    %   lockin = Drivers.SR844();
+    %   lockin = Drivers.LSCI340();
     %   lockin.set('time constant', 1);
     %   [X, Y] = lockin.read('X', 'Y');
     
     properties
-        name = 'LSCI340';
-        gpib;                       %   GPIB address
-        idn;                        %   Unique name
-        handle;                     %   VISA-GPIB handle
-        
-        fields;                     %   Fields to read
         A;                          %   Temperature A (K)
         B;                          %   Temperature B (K)
     end

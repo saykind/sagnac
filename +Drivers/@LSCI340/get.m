@@ -1,4 +1,4 @@
-function varargout = read(obj, varargin)
+function varargout = get(obj, varargin)
     %Parameter set method
     %
     %   Usage example:
@@ -7,13 +7,13 @@ function varargout = read(obj, varargin)
 
     for i = 1:(nargin-1)
         switch varargin{i}
-            case {'temp', 'temperature', 'a', 'A'}
+            case {'temp', 'tempA', 'temperature', 'a', 'A'}
                 ta = str2double(query(obj.handle, "krdg?a"));
-                obj.tempA = ta;
+                obj.A = ta;
                 varargout{i} = ta;
-            case {'b', 'B'}
+            case {'tempB', 'b', 'B'}
                 tb = str2double(query(obj.handle, "krdg?b"));
-                obj.tempB = tb;
+                obj.B = tb;
                 varargout{i} = tb;
             case {'h', 'htr', 'heater', 'HTR'}
                 h = str2double(query(obj.handle, "htr?"));

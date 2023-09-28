@@ -25,6 +25,9 @@ classdef (Sealed = true) KEPCO < Drivers.Device
         on;
         % Internal parameters
         coilConstant = 650; %G/A
+        % Ramp timer
+        ramper;
+        rampInfo;
     end
     
     methods
@@ -37,6 +40,7 @@ classdef (Sealed = true) KEPCO < Drivers.Device
             obj.parameters = {'voltageLimit', 'currentLimit'};
             obj.update();
         end
+        
         function output(obj, current)
         %Turn output on if it's off and vice versa.
             if nargin == 2
@@ -47,6 +51,49 @@ classdef (Sealed = true) KEPCO < Drivers.Device
                 obj.set('output', out);
             end
         end
+        
+        function ramp(obj, I1, rate, period)
+        %Ramp current to specified value (Amps)
+        %at specified rate (A/s).
+        %Default rate is 0.010 A/s (2.5 G/s)
+            if nargin < 2, return; end
+            if nargin < 3, rate = 0.01; end
+            if nargin < 4, period = .5; end
+            
+            obj.rampInfo = {};
+            I0 = obj.get('I');
+            obj.rampInfo.I_initial = I0;
+            obj.rampInfo.I_final = I1;
+            obj.rampInfo.rate = rate;
+            num = fix(abs(I1-I0)/rate)/period;
+            if num < 1, num=1; end
+            obj.rampInfo.I_num = num;
+            obj.rampInfo.I_array = linspace(I0, I1, num);
+            
+            util.clearTimers(0, 'KEPCO');
+            obj.ramper = timer('Tag', 'KEPCO');
+            obj.rampInfo.name = obj.ramper.Name;
+            obj.ramper.Period = period;
+            obj.ramper.TasksToExecute = num;
+            obj.ramper.ExecutionMode = 'fixedRate';
+            obj.ramper.StartDelay = period;
+            %obj.ramper.StartFcn = @(~, event)obj.rampStart(event);
+            obj.ramper.TimerFcn = @(~, event)obj.rampStep(event);
+            %obj.ramper.StopFcn = @(~, event)obj.rampStop(event);
+            %obj.ramper.ErrorFcn = @(~, event)obj.rampStop(event);
+            
+            obj.ramper.start();
+        end
+        
+        function rampStep(obj, event)
+            try
+                i = obj.ramper.TasksExecuted;
+                obj.output(obj.rampInfo.I_array(i));
+            catch ME
+                disp(ME)
+            end
+        end
+        
     end
 end
 

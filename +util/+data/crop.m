@@ -39,19 +39,28 @@ function crop(varargin)
     logData = struct();     % new logdata structure
     
     if ~isempty(field) && ~isempty(range)
-        fields = split(field,'.');
-        temp = getfield(logdata, fields{:});
-        idx = find(temp > range(1) & temp < range(2));
-        num_extra = length(temp) - length(idx);
-
+        if strcmp(field, 'index')
+            idx = range(1):range(2);
+            num_extra = -1;
+        else
+            fields = split(field,'.');
+            temp = getfield(logdata, fields{:});
+            idx = find(temp > range(1) & temp < range(2));
+            num_extra = length(temp) - length(idx);
+        end
+        
         % Loop over structure with two level depth
         fn1 = fieldnames(logdata);
         for i = 1:numel(fn1)
+            if strcmp(fn1{i}, 'sweep')
+                logData.sweep = logdata.sweep;
+                continue
+            end
             fn2 = fieldnames(logdata.(fn1{i}));
             for j = 1:numel(fn2)
                 if ~isnumeric(logdata.(fn1{i}).(fn2{j})), continue; end
                 logData.(fn1{i}).(fn2{j}) = ...
-                    data.logdata.(fn1{i}).(fn2{j})(idx); %#ok<FNDSB>
+                    data.logdata.(fn1{i}).(fn2{j})(idx); 
             end
         end
         if verbose, fprintf("Removed %d points.\n", num_extra); end

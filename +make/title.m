@@ -6,9 +6,8 @@ function title = title(seed)
 key = make.key(seed);
 
 switch key
-    case make.key('tk')
-        title = "Kerr effect (time)";
-    case {11960, make.key('hs:')}
+    
+    case 11960 %hs: Hall sensor
         title = "Hall sensor";
     case {84, 'T', 'Temperature'}
         title = "Temperature measurement";
@@ -16,14 +15,31 @@ switch key
         title = "Diode Temperature measurement";
     case {104, 'h', 'hall'}
         title = "Hall effect measurement";
+    case 11948  %tg: Two transport lockins & gate voltage controller
+        title = "Gate voltage sweep";
+    case 11832  %tf: Frequency sweep with transport lockin
+        title = "Transport freq sweep";
+        
     case {112, 'p', 'power'}
         title = "Optical power measurement";
     case {100, 'd', 'dc'}
         title = "DC voltage, Diode current sweep";
-    case 11600 % td : dc voltage (time only)
+    case 477128 %LIV:  Laser IV characteristic
+        title = "Laser IV";
+    case 11600 %td: dc voltage (time only)
         title = "time vs dc voltage";
-    case {107, 'k', 'kerr'}
+    case 9900 %dc: dc voltage (Large number)
+        title = "time vs dc voltage";
+        
+    case 107 %k: kerr effect (main)
         title = "Kerr Effect";
+    case 12412 %tk: Kerr vs time
+        title = "Kerr effect (time)";
+    case 1290848    %kth: kerr, transport, hall (sc vorticies)
+        title = "Kerr Effect";
+    case 1278436    %ktg: Kerr, transport, gate
+        title = "Kerr Effect";
+        
     case {121, 'y'}
         title = "Hysteresis Kerr";
     case {105, 'i'}

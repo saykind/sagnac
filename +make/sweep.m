@@ -8,64 +8,78 @@ function s = sweep(key, instruments, s, cnt)
     %% Create sweep strucutre
     if nargin == 1
         switch key
-            case {112, 'p', 100, 'd'}   % d :
-                s = struct('rate', 30, 'pause', 10, ...
-                    'range', 37:1:55);
+            case {112, 100, 477128}  
+                %d: DC voltage, Keithley 2182A
+                %p: Optical power measurement, Newport 1830-C
+                %LIV:  Laser IV characteristic
+                s = struct('rate', 3, 'pause', 2, ...
+                    'range', 0:2:150);
             case {102, 'f'}
-                s = struct('rate', 20, 'pause', 18, ...
-                    'range', 1e6*[0.001, .1:.1:12]);
+                s = struct('rate', 10, 'pause', 8, ...
+                    'range', 1e6*[0.02, .15:.15:9.9]);
             case {97, 'a'}
-                s = struct('rate', 12, 'pause', 10, ...
-                    'range', [.001, .02:.02:5]);
+                s = struct('rate', 10, 'pause', 8, ...
+                    'range', [.01, .02:.02:5]);
             case 9894   %fa: Modulation 2D sweep
-                f = 1e6*(4.5:.1:5.2);
-                a = 1.1:0.05:1.3;
+                f = 1e6*(4:.01:6);
+                a = [.01, .1:.1:5];
                 [F,A] = meshgrid(f,a);
                 [n,m] = size(F);
                 F_flat = flatten_mesh(F);
                 A_flat = flatten_mesh(A);
-                s = struct('rate', 11, 'pause', 10, ...
+                s = struct('rate', 10, 'pause', 9, ...
                     'range', [F_flat; A_flat], 'shape', [n,m]);
                 
             case 14520 %xy: Kerr 2D scan
-                x0 = 0;
-                y0 = 0;
-                x = x0 + 0:.2:5;
-                y = y0 + 0:.2:5;
+                x0 = 13.45 + .78;
+                y0 = 14.3 + .28;
+                x = x0 + (-.06:.02:.06);
+                y = y0 + (-.06:.02:.06);
                 [X,Y] = meshgrid(x,y);
                 [n,m] = size(X);
                 X_flat = flatten_mesh(X);
                 Y_flat = flatten_mesh(Y);
-                %DC measurement min rate is 3s
-                %Kerr measurement min rate is ~10 s
-                s = struct('rate', 2, 'pause', 1, ...
-                    'range', [X_flat; Y_flat], 'shape', [n,m]);
-                
+                %DC measurement min rate is 3s, pause 2s
+                %Kerr measurement min rate is 9s, pause 8s
+                s = struct('rate', 30, 'pause', 8, ...
+                    'range', [X_flat; Y_flat], 'shape', [n,m], ...
+                    'origin', [x0, y0]);
                 
             case 120 %x: Kerr 1D scan
                 x0 = 13;
-                x = x0 + [-2:.05:2];
-                s = struct('rate', 40, 'pause', 10, ...
-                    'range', x);
+                x = x0 + (-.5:.02:.5);
+                s = struct('rate', 3, 'pause', 2, ...
+                    'range', x, 'origin', x0);
                 
             case {105, 'i'}
                 s = struct('rate', 30, 'pause', 5, 'range', 65:1:95);
                 
             case 121    %y: Hysteresis test
-                mag = 400;  % current, A
+                mag = 3000;  % current, mA
+                step = 300;
+                range = 1e-3*[0:step:mag, ...
+                    (mag-step):-step:0];
+                s = struct('rate', 30, 'pause', 8, 'range', range);
+                
+            case 11960  %hs: Hall sensor
+                mag = 300;
                 step = 50;
                 range = 1e-3*[...
                         0:step:mag, ...
                         (mag-step):-step:0];
-                s = struct('rate', 30, 'pause', 5, 'range', range);
+                s = struct('rate', 5, 'pause', 3, 'range', range);
                 
-            case 11960  %hs: Hall sensor
-                mag = 300;
-                step = 10;
-                range = 1e-3*[...
-                        0:step:mag, ...
-                        (mag-step):-step:0];
-                s = struct('rate', 10, 'pause', 5, 'range', range);
+            case 11948    %tg: Two transport lockins & gate voltage controller
+                mag = 1.5;  %mV
+                step = .05;  %mV
+                %range = 1e-3*[0:-step:-mag, -mag:step:mag, (mag-step):-step:0];
+                range = [2:-step:0];
+                s = struct('rate', 2, 'pause', 1, 'range', range);
+                
+            case 11832  %tf: Transport freq sweep
+                range = 1e3*[.001:.001:.019, .02:.01:1, 1.05:.05:10];
+                s = struct('rate', 9, 'pause', 8, 'range', range);
+                
             otherwise
                 s = struct([]);
         end
@@ -80,9 +94,11 @@ function s = sweep(key, instruments, s, cnt)
     if nargin == 3
         val = s.range(1);
         switch key
-            case {112, 'p', 100, 'd'}
-                instruments.diode.set('output', 1);
-                instruments.diode.set('current', val);
+            case {112, 100, 477128}
+                %d: DC voltage, Keithley 2182A
+                %p: Optical power measurement, Newport 1830-C
+                %LIV:  Laser IV characteristic
+                instruments.diode.output(val);
             case {102, 'f'}
                 instruments.waveform.set('freq', val);
             case {97, 'a'}
@@ -96,13 +112,17 @@ function s = sweep(key, instruments, s, cnt)
                 instruments.X.set('position', val(1));
                 instruments.Y.set('position', val(2));
             case 120  %x: Kerr 1D scan
-                instruments.Y.set('position', val);
+                instruments.X.set('position', val);
             case {105, 'i'}
                 instruments.diode.output(val);
             case {121, 'y'}
                 instruments.magnet.output(abs(val));
             case {11960, make.key('hs:')} % Hall sensor
                 instruments.magnet.output(abs(val));
+            case 11948    %tg: Two transport lockins & gate voltage controller
+                instruments.source.sweep_to(val);
+            case 11832  %tf: Transport freq sweep
+                instruments.lockin.set('f', val);
         end
         return
     end
@@ -110,10 +130,14 @@ function s = sweep(key, instruments, s, cnt)
     
     %% Make a sweep step
     if nargin == 4
+        %i = fix(loginfo.logger.TasksExecuted/s.rate);
         i = fix(cnt/s.rate);
         val = s.range(i);
         switch key
-            case {112, 'p', 100, 'd'}
+            case {112, 100, 477128}
+                %d: DC voltage, Keithley 2182A
+                %p: Optical power measurement, Newport 1830-C
+                %LIV:  Laser IV characteristic
                 instruments.diode.set('current', val);
             case {102, 'f'}
                 instruments.waveform.set('freq', val);
@@ -124,21 +148,30 @@ function s = sweep(key, instruments, s, cnt)
                 instruments.waveform.set('freq', val(1));
                 instruments.waveform.set('ampl', val(2));
             case 14520  %xy: Kerr 2D scan
-                val = s.range(:,i);
+                try
+                    val = s.range(:,i);
+                catch ME
+                    fprintf("[make.sweep] Failed at cnt=%d.\n", cnt);
+                    rethrow(ME);
+                end
                 instruments.X.set('position', val(1));
                 instruments.Y.set('position', val(2));
             case 120  %x: Kerr 1D scan
-                instruments.Y.set('position', val);
+                instruments.X.set('position', val);
             case {105, 'i'}
                 instruments.diode.output(val);
             case {121, 'y'}
                 instruments.magnet.output(abs(val));
-                if val == 0
-                    sound(sin(1:5000));
-                    input("Check magnet polarity. Press return to continue.", "s");
-                end
+%                 if val == 0 
+%                     sound(sin(1:5000));
+%                     input("Check magnet polarity. Press return to continue.", "s");
+%                 end
             case {11960, make.key('hs:')} % Hall sensor
                 instruments.magnet.output(abs(val));
+            case 11948    %tg: Two transport lockins & gate voltage controller
+                instruments.source.sweep_to(val);
+            case 11832  %tf: Transport freq sweep
+                instruments.lockin.set('f', val);
         end
     end
 

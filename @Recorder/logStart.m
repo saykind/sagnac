@@ -10,19 +10,23 @@ function logStart(obj, event)
     end
 
     % Make data filename
+    %letters = ['a':'z' 'A':'Z'];
+    %letter = letters(randi(numel(letters)));
     obj.filename = make.filename(obj.foldername);
     
     % Print start message
     if nargin > 1
         startTime = event.Data.time;
         if obj.verbose > 0
-            fprintf('[%s] started (%s).\n', obj.title, ...
+            fprintf('[%i] %s.\n', obj.key, obj.title);
+            fprintf('[%i] started (%s).\n', obj.key, ...
             datestr(event.Data.time, 'dd-mmm-yyyy HH:MM:SS'));
             if obj.logger.TasksToExecute < inf
                 duration = obj.logger.Period*seconds(obj.logger.TasksToExecute);
+                duration = duration + seconds(obj.loggerDelay);
                 stopTime = datetime(startTime) + duration;
-                fprintf('[%s] estimated time of completion: %s.\n', obj.title, ...
-                    datestr(stopTime, 'dd-mmm-yyyy HH:MM:SS'));
+                fprintf('[%i] estimated time of completion: %s.\n', ...
+                    obj.key, datestr(stopTime, 'dd-mmm-yyyy HH:MM:SS'));
             end
         end
     end
@@ -35,17 +39,6 @@ function logStart(obj, event)
         obj.stop();
     end
     
-    % Pre-set instrument parameters.
-    try
-        if ~isempty(obj.sweep)
-            make.sweep(obj.key, obj.instruments, obj.sweep);
-            obj.rec = 0;
-            if obj.verbose > 99, fprintf("[%s] rec=%d\n", obj.title, obj.rec); end
-        end
-    catch
-        fprintf("[Recorder.start] Failed to preset instruments.\n");
-        obj.stop();
-    end
     
     % Initialize graphics
     try

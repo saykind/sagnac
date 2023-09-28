@@ -20,6 +20,8 @@ classdef SR844 < Drivers.Device
         frequency;                  %   Internal frequency (Hz)
         phase;                      %   Phase offset (deg)
         timeConstant;               %   Time constant (sec)
+        sensitivity;                %   Range (from 1e-8 to 1)
+        harmonic;                   %   Harmonic 1f (0) or 2f (1)
         % Instrument Fields 
         % (cannot be set, can be read)
         X;                          %   Re part of the signal
@@ -36,7 +38,8 @@ classdef SR844 < Drivers.Device
             obj.rename("SR844");
             obj.remote = true;
             obj.fields = {'X', 'Y', 'R', 'Q', 'AUX1', 'AUX2'};
-            obj.parameters = {'freq', 'phase', 'tc'};
+            obj.parameters = {'freq', 'phase', 'tc', ...
+                'sensitivity', 'harmonic'};
             obj.update();
         end
     end

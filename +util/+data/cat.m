@@ -13,7 +13,7 @@ function cat(varargin)
     %       verbose     - print info (default: true)
     %
     %   Example:
-    %       util.data.cat('saveas', 'data.new.mat');
+    %       util.data.cat('saveas', 'data/new.mat');
     %       util.data.cat('filenames', ["data/1.mat", "data/2.mat"])
     
     % Acquire parameters
@@ -56,6 +56,10 @@ function cat(varargin)
         % Loop over structure with two level depth
         fn1 = fieldnames(logdata);
         for i = 1:numel(fn1)
+            if strcmp(fn1{i}, 'sweep')
+                new_logdata.sweep = logdata.sweep;
+                continue
+            end
             fn2 = fieldnames(logdata.(fn1{i}));
             for j = 1:numel(fn2)
                 if ~isnumeric(logdata.(fn1{i}).(fn2{j})), continue; end

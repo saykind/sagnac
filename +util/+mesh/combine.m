@@ -1,4 +1,4 @@
-function Z = combine_mesh(z, shape)
+function Z = combine(z, shape)
     n = shape(1);
     m = shape(2);
     n0 = n*m;

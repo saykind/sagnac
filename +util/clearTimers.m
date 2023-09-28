@@ -1,6 +1,10 @@
-function clearTimers(verbose)
+function clearTimers(verbose, tag)
     if nargin < 1, verbose = 1; end
-    timers = timerfindall();
+    if nargin < 2
+        timers = timerfindall();
+    else
+        timers = timerfindall('Tag', tag);
+    end
     if verbose && numel(timers) > 1
         disp(timers);
     end

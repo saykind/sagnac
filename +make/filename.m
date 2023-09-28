@@ -1,4 +1,4 @@
-function filename = filename(foldername)
+function filename = filename(foldername, postfix)
 %Creates filename string based on current datae and time
 
     if nargin < 1
@@ -16,8 +16,12 @@ function filename = filename(foldername)
     end
     
     c = clock();
-    filename = sprintf('%s%d-%d-%d_%d-%d.mat', ...
+    filename = sprintf('%s%d-%d-%d_%d-%d', ...
         foldername, c(1), c(2), c(3), c(4), c(5));
+    if nargin > 1
+        filename = [filename, postfix];
+    end
+    filename = [filename, '.mat'];
     
     filename_bare = filename(1:end-4);
     cnt = 0;

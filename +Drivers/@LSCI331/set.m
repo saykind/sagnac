@@ -12,7 +12,6 @@ function set(obj, varargin)
     addParameter(p, 'mode', NaN, @isnumeric);
     addParameter(p, 'pid', NaN, @isnumeric);
     addParameter(p, 'manualOutput', NaN, @isnumeric);
-    addParameter(p, 'pid', NaN, @isnumeric);
     addParameter(p, 'heaterRange', NaN, @isnumeric);
     addParameter(p, 'S', NaN, @isnumeric);
     

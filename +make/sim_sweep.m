@@ -30,6 +30,7 @@ function sim_sweep(s)
     figure();
     hold on;
     plot(val, 'r.-');
+    yyaxis 'right'
     plot(rec, 'b.');
     legend(["values", "rec"]);
 end

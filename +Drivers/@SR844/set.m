@@ -15,6 +15,10 @@ function set(obj, varargin)
     addParameter(p, 'phase', NaN, @isnumeric);
     addParameter(p, 'tc', NaN, @isnumeric);
     addParameter(p, 'timeConstant', NaN, @isnumeric);
+    addParameter(p, 'sens', NaN, @isnumeric);
+    addParameter(p, 'sensitivity', NaN, @isnumeric);
+    addParameter(p, 'harm', NaN, @isnumeric);
+    addParameter(p, 'harmonic', NaN, @(x)ismember(x,[0,1]));
     
     parse(p, varargin{:});
     parameters = p.Results;
@@ -47,5 +51,22 @@ function set(obj, varargin)
         end
         obj.timeConstant = tc;
         obj.write(sprintf("oflt %f", tc));
+    end
+    sens = NaN;
+    if ~isnan(parameters.sens), sens = parameters.sens; end
+    if ~isnan(parameters.sensitivity), sens = parameters.sensitivity; end
+    if ~isnan(sens)
+        sens = floor(log(sens)/log(10)*2+15);
+        if sens > 14, sens = 14; end
+        if sens < 0,  sens = 0;  end
+        obj.sensitivity = sens;
+        obj.write(sprintf("sens %i", sens));
+    end
+    harm = NaN;
+    if ~isnan(parameters.harm), harm = parameters.harm; end
+    if ~isnan(parameters.harmonic), seharmns = parameters.harmonic; end
+    if ~isnan(harm)
+        obj.harmonic = harm;
+        obj.write(sprintf("harm %i", harm));
     end
 end

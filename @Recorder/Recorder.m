@@ -36,6 +36,7 @@ classdef (Sealed = true) Recorder < handle
         
         logger;                     %   Logging timer object
         loggerName;                 %   Makes it possible to find timer
+        loggerDelay;                %   Start delay
         cnt;                        %   Executed steps counter
         rec;                        %   Record flag
         
@@ -66,6 +67,10 @@ classdef (Sealed = true) Recorder < handle
         construct(obj, seed);
         function i(obj), obj.instruments = make.instruments(obj.schema); end
         function g(obj), obj.graphics = make.graphics(obj.key); end
+        function s(obj)
+            obj.sweep = make.sweep(obj.key); 
+            if ~isempty(obj.sweep), obj.rate.plot = obj.sweep.rate; end
+        end
         function start(obj), obj.logInit(); obj.logger.start(); end
         function stop(obj), obj.logger.stop(); obj.logClear(); end
         function plot(obj) 
