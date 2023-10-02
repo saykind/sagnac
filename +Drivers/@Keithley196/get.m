@@ -10,7 +10,7 @@ function varargout = get(obj, varargin)
             %Fields:
             %   - v
             case {'v', 'volt', 'voltage', 'V'}
-                v = str2double(obj.query("F0?"));
+                v = str2double(obj.query('OUTPUT 707; "F0XG1X"'));
                 obj.v = v;
                 varargout{i} = v;
         end
