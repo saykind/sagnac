@@ -1,8 +1,8 @@
-classdef (Sealed = true) Keithley2000 < Drivers.Device
-    %Driver for Keithley 2000 
+classdef (Sealed = true) Keithley196 < Drivers.Device
+    %Driver for Keithley 196 
     %   Release date: October 2023
     %   This class was created in Kapitulnik research group.
-    %   Written by David Saykin (saykind@itp.ac.ru)
+    %   
     %
     %   Matlab 2018b or higher is required.
     %   The following packages are used:
@@ -10,7 +10,7 @@ classdef (Sealed = true) Keithley2000 < Drivers.Device
     %
     %
     %   Usage example:
-    %   voltmeter = Drivers.Keithley2000(7);
+    %   voltmeter = Drivers.Keithley196(7);
     %   v2 = voltmeter.get('v');
     
     properties       
@@ -21,11 +21,11 @@ classdef (Sealed = true) Keithley2000 < Drivers.Device
     end
     
     methods
-        function obj = Keithley2000(varargin)
+        function obj = Keithley196(varargin)
             %LSCI331 class constructor class
             obj.interface = "gpib";
             obj = obj.init(varargin{:});
-            obj.rename("Keithley2000");
+            obj.rename("Keithley196");
             
             obj.fields = {'v'};
             fieldsUnits = {'V'};
