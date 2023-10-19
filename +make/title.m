@@ -19,6 +19,8 @@ switch key
         title = "Gate voltage sweep";
     case 11832  %tf: Frequency sweep with transport lockin
         title = "Transport freq sweep";
+    case 116    %t: two lockins
+        title = "Transport"
         
     case {112, 'p', 'power'}
         title = "Optical power measurement";

@@ -60,7 +60,7 @@ classdef (Sealed = true) LSCI340 < Drivers.Device% FIXME
             obj.rampRate = rate;
             
             if obj.get('heaterRange') == 0
-                obj.set('heaterRange', 4);
+                obj.set('heaterRange', 3);
             end
             
             obj.write(sprintf("RAMP %d, 1, %f", obj.loop, rate));

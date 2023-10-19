@@ -13,6 +13,9 @@ function obj = set(obj, varargin)
     addParameter(p, 'heater', NaN, @isnumeric);
     addParameter(p, 'I', NaN, @isnumeric);
     addParameter(p, 'output', '', @ischar);
+    addParameter(p, 'heaterRange', NaN, @isnumeric);
+    addParameter(p, 'range', NaN, @isnumeric);
+    addParameter(p, 'S', NaN, @isnumeric);
     
     parse(p, varargin{:});
     parameters = p.Results;
@@ -49,6 +52,18 @@ function obj = set(obj, varargin)
             fprintf(obj.handle, "cmode 1, 1");
             fprintf(obj.handle, "range 0");
         end
+    end
+    
+    % Heater range
+    hr = NaN;
+    if ~isnan(parameters.heaterRange), hr = parameters.heaterRange; end
+    if ~isnan(parameters.range), hr = parameters.range; end
+    if ~isnan(hr)
+        obj.write(sprintf("range %d", parameters.range));
+    end
+    
+    if ~isempty(parameters.S)
+        obj.write(sprintf("setp 1, %d", parameters.S));
     end
     
 end

@@ -308,9 +308,9 @@ case 1290848    %kth: Kerr effect, transport, hall
         end
 
         sls = .25;  % second lockin sensitivity
-        h0 = 2.5112;
+        h0 = 2.493;
         h_sens = 1e-3*3.125;   %V/G
-        curr = 10*1e-9;    % Amps
+        curr = 100*1e-6;    % Amps
 
         t = logdata.timer.time/60;      % Time, min
         TA = logdata.tempcont.A;         % Temp, K
@@ -322,8 +322,6 @@ case 1290848    %kth: Kerr effect, transport, hall
         V1Y = 1e6*logdata.lockin.Y;     % 1st harm Voltage Y, uV
         V2X = sls*1e3*logdata.lockin.AUX1;  % 2nd harm Voltage X, mV
         V2Y = sls*1e3*logdata.lockin.AUX2;  % 2nd harm Voltage Y, mV
-        h = (logdata.voltmeter.v2-h0)/h_sens;   % Mag field, Oe
-        h = logdata.voltmeter.v2;   % Mag field, Oe
         r = logdata.lockinA.X/curr;         % Resistnace, Ohms
 
         V2 = sqrt(V2X.^2+V2Y.^2);
@@ -334,6 +332,7 @@ case 1290848    %kth: Kerr effect, transport, hall
         plot(axisA, t, kerr, 'Color', 'r');
         yyaxis(axisA, 'right');
         plot(axisA, t, dc, 'Color', 'b');
+        yyaxis(axisA, 'left');
 
         yyaxis(axisB, 'left');
         plot(axisB, t, V1X, 'Color', 'r');
@@ -390,10 +389,13 @@ case 1290848    %kth: Kerr effect, transport, hall
         yyaxis(axisPb, 'right');
 
         % Hall sesnor
-        plot(axisHall, TA, h, 'Color', 'r');
+        if isfield(logdata.voltmeter, 'v2')
+            h = (logdata.voltmeter.v2-h0)/h_sens;   % Mag field, Oe
+            plot(axisHall, t, h, 'Color', 'r');
+        end
         
         % Transport
-        plot(axisTr, TA, r, 'Color', 'r');
+        plot(axisTr, TB, r, 'Color', 'r');
 
         
     %% Modulation sweeps

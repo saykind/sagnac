@@ -323,8 +323,8 @@ case 1290848    %kth: Kerr, transport, hall
         tabTempA = uitab(tabgroup, 'Title', 'Kerr vs Temp A');
         tabTempB = uitab(tabgroup, 'Title', 'Kerr vs Temp B');
         tabPower = uitab(tabgroup, 'Title', 'Kerr vs Power');
-        tabHall = uitab(tabgroup, 'Title', 'Hall vs Temp A');
-        tabTrans = uitab(tabgroup, 'Title', 'Transport vs Temp A');
+        tabHall = uitab(tabgroup, 'Title', 'Hall vs Time');
+        tabTrans = uitab(tabgroup, 'Title', 'Transport vs Temp B');
 
         axisTimeA = axes(tabTime);
         hold(axisTimeA, 'on');
@@ -497,12 +497,13 @@ case 1290848    %kth: Kerr, transport, hall
         yyaxis(axisHall, 'left');
         set(axisHall, 'YColor', 'r');
         ylabel(axisHall, "Mag field H, Oe");
-        xlabel(axisHall, "Temp, K");
+        %ylabel(axisHall, "Voltage, V");
+        xlabel(axisHall, "Time, min");
         
         axisTr = axes(tabTrans);
         hold(axisTr, 'on');
         grid(axisTr, 'on');
-        title(axisTr, 'Hall sesnor');
+        title(axisTr, 'Transport');
         set(axisTr, 'Units', 'centimeters');
         set(axisTr, 'Position', axesPosition0);
         set(axisTr, 'FontSize', 12, 'FontName', 'Arial');

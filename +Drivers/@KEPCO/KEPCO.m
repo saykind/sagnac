@@ -79,7 +79,7 @@ classdef (Sealed = true) KEPCO < Drivers.Device
             obj.ramper.StartDelay = period;
             %obj.ramper.StartFcn = @(~, event)obj.rampStart(event);
             obj.ramper.TimerFcn = @(~, event)obj.rampStep(event);
-            %obj.ramper.StopFcn = @(~, event)obj.rampStop(event);
+            obj.ramper.StopFcn = @(~, event)obj.rampStop(event);
             %obj.ramper.ErrorFcn = @(~, event)obj.rampStop(event);
             
             obj.ramper.start();
@@ -89,6 +89,16 @@ classdef (Sealed = true) KEPCO < Drivers.Device
             try
                 i = obj.ramper.TasksExecuted;
                 obj.output(obj.rampInfo.I_array(i));
+            catch ME
+                disp(ME)
+            end
+        end
+        
+        function rampStop(obj, event)
+            try
+                if obj.rampInfo.I_array(end) == 0
+                    obj.output();
+                end
             catch ME
                 disp(ME)
             end
