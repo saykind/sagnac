@@ -29,6 +29,11 @@ classdef SR830 < Drivers.Device
         Q;                          %   Signal Phase
         AUX1;
         AUX2;
+        AUXV1;
+        AUXV2;
+        % Ramp timer
+        ramper;
+        rampInfo;
     end
     
     methods
@@ -47,6 +52,50 @@ classdef SR830 < Drivers.Device
             obj.units = struct(tempUnits{:});
             
             obj.update();
+        end
+        
+        function ramp(obj, V1, rate, period)
+        %Ramp AUXV1 voltage to specified value
+        %at specified rate (V/s).
+        %Default rate is 0.01 V/s
+            if nargin < 2, return; end
+            if nargin < 3, rate = 0.01; end
+            if nargin < 4, period = .5; end
+            
+            obj.rampInfo = {};
+            V0 = obj.get('AUXV1');
+            obj.rampInfo.V_initial = V0;
+            obj.rampInfo.V_final = V1;
+            obj.rampInfo.rate = rate;
+            num = fix(abs(V1-V0)/rate)/period;
+            if num < 1, num=1; end
+            obj.rampInfo.V_num = num;
+            obj.rampInfo.V_array = linspace(V0, V1, num);
+            
+            
+            util.clearTimers(0, 'SR830');
+            obj.ramper = timer('Tag', 'SR830');
+            obj.rampInfo.name = obj.ramper.Name;
+            obj.ramper.Period = period;
+            obj.ramper.TasksToExecute = num;
+            obj.ramper.ExecutionMode = 'fixedRate';
+            obj.ramper.StartDelay = period;
+            obj.ramper.TimerFcn = @(~, event)obj.rampStep(event);
+            obj.ramper.StopFcn = @(~, event)obj.rampStop(event);
+            
+            obj.ramper.start();
+        end
+        
+        function rampStep(obj, event)
+            try
+                i = obj.ramper.TasksExecuted;
+                obj.set('AUXV1', obj.rampInfo.V_array(i));
+            catch ME
+                disp(ME)
+            end
+        end
+        
+        function rampStop(obj, event)
         end
     end
 end

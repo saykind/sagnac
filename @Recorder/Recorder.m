@@ -73,7 +73,8 @@ classdef (Sealed = true) Recorder < handle
         end
         function start(obj), obj.logInit(); obj.logger.start(); end
         function stop(obj), obj.logger.stop(); obj.logClear(); end
-        function plot(obj) 
+        function e(obj), obj.logError(); end
+        function plot(obj)
             if isempty(obj.graphics) || ~isgraphics(obj.graphics.figure)
                 obj.g();
             end
@@ -84,6 +85,7 @@ classdef (Sealed = true) Recorder < handle
         logStart(obj, event);
         logStep(obj, event);
         logStop(obj, event);
+        logError(obj, event);
         save(obj, event);
         record(obj);
     end

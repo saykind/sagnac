@@ -223,7 +223,7 @@ switch key
         cla(axisPa); yyaxis(axisPa, 'left'); cla(axisPa);
         cla(axisPb); yyaxis(axisPb, 'left'); cla(axisPb);
 
-        sls = .1;  % second lockin sensitivity
+        sls = .25;  % second lockin sensitivity
 
         t = logdata.timer.time/60;      % Time, min
         TA = logdata.tempcont.A;         % Temp, K
@@ -236,6 +236,7 @@ switch key
 
         V2 = sqrt(V2X.^2+V2Y.^2);
         kerr = util.kerr(V1X*1e-3, V2);
+        
 
         % Kerr vs Time
         yyaxis(axisA, 'left');
@@ -293,13 +294,13 @@ switch key
         yyaxis(axisPb, 'right');
         
         
-case 1290848    %kth: Kerr effect, transport, hall
+    case 1290848    %kth: Kerr effect, transport, hall
         [axisA, axisB, axisC, ...
             axisTtA, axisTtB, ...
             axisTA, axisTB, axisTC, ...
             axisTBA, ...
             axisPa, axisPb, ...
-            axisHall, ...
+            axisTrt, ...
             axisTr ...
             ] = util.unpack(graphics.axes);
         for ax = graphics.axes
@@ -308,21 +309,119 @@ case 1290848    %kth: Kerr effect, transport, hall
         end
 
         sls = .25;  % second lockin sensitivity
-        h0 = 2.493;
-        h_sens = 1e-3*3.125;   %V/G
-        curr = 100*1e-6;    % Amps
+        curr = 1e-3;    % Amps
+        gain = 1;
 
         t = logdata.timer.time/60;      % Time, min
         TA = logdata.tempcont.A;         % Temp, K
         TB = logdata.tempcont.B;         % Temp, K
-        T2A = logdata.temp.A;           % Temp, K
-        T2B = logdata.temp.B;           % Temp, K
         dc = 1e3*logdata.voltmeter.v1;  % DC voltage, mV
         V1X = 1e6*logdata.lockin.X;     % 1st harm Voltage X, uV
         V1Y = 1e6*logdata.lockin.Y;     % 1st harm Voltage Y, uV
         V2X = sls*1e3*logdata.lockin.AUX1;  % 2nd harm Voltage X, mV
         V2Y = sls*1e3*logdata.lockin.AUX2;  % 2nd harm Voltage Y, mV
+        vX = 1e6*logdata.lockinA.X;             % Transport, uV
+        r = logdata.lockinA.X/curr/gain*1e3;         % Resistnace, mOhms
+
+        V2 = sqrt(V2X.^2+V2Y.^2);
+        kerr = util.kerr(V1X*1e-3, V2);
+        %[TA_, kerr_, dc_, V2_, kerr_err] = Utilities.coarse_grain(.5, TA, kerr, dc, V2);
+
+        % Kerr vs Time
+        yyaxis(axisA, 'left');
+        plot(axisA, t, kerr, 'Color', 'r');
+        yyaxis(axisA, 'right');
+        plot(axisA, t, dc, 'Color', 'b');
+        yyaxis(axisA, 'left');
+
+        yyaxis(axisB, 'left');
+        plot(axisB, t, V1X, 'Color', 'r');
+        yyaxis(axisB, 'right');
+        plot(axisB, t, V1Y, 'Color', 'b');
+
+        yyaxis(axisC, 'left');
+        plot(axisC, t, V2X, 'Color', 'r');
+        plot(axisC, t, V2, 'k-');
+        yyaxis(axisC, 'right');
+        plot(axisC, t, V2Y, 'Color', 'b');
+
+        % Temp vs Time
+        yyaxis(axisTtA, 'left');
+        plot(axisTtA, t, TA, 'Color', 'r');
+        yyaxis(axisTtA, 'right');
+        plot(axisTtA, t, TB, 'Color', 'b');
+
+        % Kerr vs Temp A
+        yyaxis(axisTA, 'left');
+        plot(axisTA, TA, kerr, 'Color', 'r');
+        yyaxis(axisTA, 'right');
+        plot(axisTA, TA, dc, 'Color', 'b');
+
+        yyaxis(axisTB, 'left');
+        plot(axisTB, TA, V1X, 'Color', 'r');
+        yyaxis(axisTB, 'right');
+        plot(axisTB, TA, V1Y, 'Color', 'b');
+
+        yyaxis(axisTC, 'left');
+        plot(axisTC, TA, V2, 'r-');
+        yyaxis(axisTC, 'right');
+        plot(axisTC, TA, dc, 'Color', 'b');
+        
+
+        % Kerr vs Temp B
+        yyaxis(axisTBA, 'left');
+        plot(axisTBA, TB, kerr, 'Color', 'r');
+        yyaxis(axisTBA, 'right');
+        plot(axisTBA, TB, dc, 'Color', 'b');
+
+        % Kerr vs Power
+        yyaxis(axisPa, 'left');
+        plot(axisPa, dc, kerr, 'r.');
+        yyaxis(axisPa, 'right');
+
+        yyaxis(axisPb, 'left');
+        plot(axisPb, V2, kerr, 'r.');
+        yyaxis(axisPb, 'right');
+
+        % Transport vs time
+        plot(axisTrt, t, vX, 'Color', 'r');
+        
+        % Transport
+        plot(axisTr, TA, r, 'Color', 'r');
+        
+    case 1228788    %ktc: kerr, transport, capacitance
+        [axisA, axisB, axisC, ...
+            axisTtA, axisTtB, ...
+            axisTA, axisTB, axisTC, ...
+            axisTBA, ...
+            axisPa, axisPb, ...
+            axisCapacitance, axisStrainCell, ...
+            axisTrA, axisTrB ...
+            ] = util.unpack(graphics.axes);
+        for ax = graphics.axes
+            yyaxis(ax, 'right'); cla(ax); 
+            yyaxis(ax, 'left'); cla(ax);
+        end
+
+        sls = .25;  % second lockin sensitivity
+        curr = .1;    % Amps
+        L_gap = 50;                                     % um
+        L_smp = 1500;                                   % um
+        
+        t = logdata.timer.time/60;          % Time, min
+        TA = logdata.tempcont.A;            % Temp, K
+        TB = logdata.tempcont.B;            % Temp, K
+        dc = 1e3*logdata.voltmeter.v1;      % DC voltage, mV
+        V1X = 1e6*logdata.lockin.X;         % 1st harm Voltage X, uV
+        V1Y = 1e6*logdata.lockin.Y;         % 1st harm Voltage Y, uV
+        V2X = sls*1e3*logdata.lockin.AUX1;  % 2nd harm Voltage X, mV
+        V2Y = sls*1e3*logdata.lockin.AUX2;  % 2nd harm Voltage Y, mV
         r = logdata.lockinA.X/curr;         % Resistnace, Ohms
+        rY = logdata.lockinA.Y/curr;        % Resistnace Y, Ohms
+        C = logdata.bridge.C;               % Capacitance, pF
+        C0 = mean(C);
+        e  = -100*(L_gap/L_smp)*(C-C0)/C0;  % strain, %
+        v = 1e3*logdata.lockinA.AUXV1;      % Output voltage, mV
 
         V2 = sqrt(V2X.^2+V2Y.^2);
         kerr = util.kerr(V1X*1e-3, V2);
@@ -350,17 +449,13 @@ case 1290848    %kth: Kerr effect, transport, hall
         plot(axisTtA, t, TA, 'Color', 'r');
         yyaxis(axisTtA, 'right');
         plot(axisTtA, t, TB, 'Color', 'b');
-        
-        yyaxis(axisTtB, 'left');
-        plot(axisTtB, t, T2A, 'Color', 'r');
-        yyaxis(axisTtB, 'right');
-        plot(axisTtB, t, T2B, 'Color', 'b');
 
         % Kerr vs Temp A
         yyaxis(axisTA, 'left');
         plot(axisTA, TA, kerr, 'Color', 'r');
         yyaxis(axisTA, 'right');
         plot(axisTA, TA, dc, 'Color', 'b');
+        %xlim(axisTA, [50, inf]);
 
         yyaxis(axisTB, 'left');
         plot(axisTB, TA, V1X, 'Color', 'r');
@@ -368,10 +463,9 @@ case 1290848    %kth: Kerr effect, transport, hall
         plot(axisTB, TA, V1Y, 'Color', 'b');
 
         yyaxis(axisTC, 'left');
-        plot(axisTC, TA, V2X, 'Color', 'r');
-        plot(axisTC, TA, V2, 'k-');
+        plot(axisTC, TA, V2, 'r-');
         yyaxis(axisTC, 'right');
-        plot(axisTC, TA, V2Y, 'Color', 'b');
+        plot(axisTC, TA, dc, 'Color', 'b');
 
         % Kerr vs Temp B
         yyaxis(axisTBA, 'left');
@@ -388,14 +482,157 @@ case 1290848    %kth: Kerr effect, transport, hall
         plot(axisPb, V2, kerr, 'r.');
         yyaxis(axisPb, 'right');
 
-        % Hall sesnor
-        if isfield(logdata.voltmeter, 'v2')
-            h = (logdata.voltmeter.v2-h0)/h_sens;   % Mag field, Oe
-            plot(axisHall, t, h, 'Color', 'r');
-        end
+        % Strain cell
+        yyaxis(axisCapacitance, 'left');
+        plot(axisCapacitance, t, C, 'Color', 'r');
+        yyaxis(axisCapacitance, 'right');
+        plot(axisCapacitance, t, e, 'Color', 'b');
+        plot(axisStrainCell, t, v, 'Color', 'r')
         
         % Transport
-        plot(axisTr, TB, r, 'Color', 'r');
+        %[r, rY] = util.adjustPhase(r, rY, -.4+.008);
+        yyaxis(axisTrA, 'left');
+        plot(axisTrA, TA, r, 'Color', 'r');
+        yyaxis(axisTrA, 'right');
+        plot(axisTrA, TA, rY, 'Color', 'b');
+        plot(axisTrB, v, r, 'Color', 'r');
+        
+        
+
+    case 1278436    %ktg: Kerr effect, transport, gate
+        [axisA, axisB, axisC, ...
+            axisTtA, axisTtB, ...
+            axisGA, axisGB, axisGC, ...
+            axisT, ...
+            axisPa, axisPb, ...
+            axisTrA, ...
+            axisTrB ...
+            ] = util.unpack(graphics.axes);
+        for ax = graphics.axes
+            yyaxis(ax, 'right'); cla(ax); 
+            yyaxis(ax, 'left'); cla(ax);
+        end
+
+        sls = .25;                          % 2nd harm lockin sensitivity
+        curr = 1e-3;                        % Transport current, Amps
+
+        t = logdata.timer.time/60;          % Time, min
+        v = logdata.source.V;               % Gate voltage, V
+        i = 1e9*logdata.source.I;           % Gate leakadge current, nA
+        tA = logdata.tempcont.A;            % Temp A, K
+        tB = logdata.tempcont.B;            % Temp B, K
+        dc = 1e3*logdata.voltmeter.v1;      % DC voltage, mV
+        v1x = 1e6*logdata.lockin.X;         % 1st harm Voltage X, uV
+        v1y = 1e6*logdata.lockin.Y;         % 1st harm Voltage Y, uV
+        v2x = sls*1e3*logdata.lockin.AUX1;  % 2nd harm Voltage X, mV
+        v2y = sls*1e3*logdata.lockin.AUX2;  % 2nd harm Voltage Y, mV
+        vAx = 1e9*logdata.lockinA.X;        % Lockin A V_X, nA
+        vBx = 1e6*logdata.lockinB.X;        % Lockin A V_X, mV
+
+        v2 = sqrt(v2x.^2 + v2y.^2);
+        kerr = util.kerr(v1x*1e-3, v2);
+        
+        % Average datapoints
+        n = numel(kerr);
+        k = logdata.sweep.rate-logdata.sweep.pause;
+        k = k(1);   %FIXME
+        m = fix(n/k);
+        fprintf("kerr_mean = %.3f\n", mean(kerr));
+        if m*k ~= n
+            disp("m*k != n");
+            fprintf("%d*%d != %d", m ,k ,n);
+            V = v;
+            K = kerr;
+            K_std = zeros(size(kerr));
+            DC = dc;
+            V1x = v1x;
+            V1y = v1y;
+            V2x = v2x;
+            V2y = v2y;
+            V2 = v2;
+            VAx = vAx;
+            VBx = vBx;
+            I = i;
+        else
+            V = mean(reshape(v, [k, m]), 1);
+            K = mean(reshape(kerr, [k, m]), 1);
+            K_std = std(reshape(kerr, [k, m]), 0, 1);
+            DC = mean(reshape(dc, [k, m]), 1);
+            V1x = mean(reshape(v1x, [k, m]), 1);
+            V1y = mean(reshape(v1y, [k, m]), 1);
+            V2x = mean(reshape(v2x, [k, m]), 1);
+            V2y = mean(reshape(v2y, [k, m]), 1);
+            V2 = mean(reshape(v2, [k, m]), 1);
+            VAx = mean(reshape(vAx, [k, m]), 1);
+            VBx = mean(reshape(vBx, [k, m]), 1);
+            I = mean(reshape(i, [k, m]), 1);
+        end
+
+        % Kerr vs Time
+        yyaxis(axisA, 'left');
+        plot(axisA, t, kerr, 'Color', 'r');
+        yyaxis(axisA, 'right');
+        plot(axisA, t, dc, 'Color', 'b');
+        yyaxis(axisA, 'left');
+
+        yyaxis(axisB, 'left');
+        plot(axisB, t, v1x, 'Color', 'r');
+        yyaxis(axisB, 'right');
+        plot(axisB, t, v1y, 'Color', 'b');
+
+        yyaxis(axisC, 'left');
+        plot(axisC, t, v2x, 'Color', 'r');
+        plot(axisC, t, v2, 'k-');
+        yyaxis(axisC, 'right');
+        plot(axisC, t, v2y, 'Color', 'b');
+
+        % Temp vs Time
+        yyaxis(axisTtA, 'left');
+        plot(axisTtA, t, tA, 'Color', 'r');
+        yyaxis(axisTtA, 'right');
+        plot(axisTtA, t, tB, 'Color', 'b');
+
+        % Kerr vs Gate A
+        yyaxis(axisGA, 'left');
+        errorbar(axisGA, V, K, K_std, 'Color', 'r');
+        yyaxis(axisGA, 'right');
+        plot(axisGA, V, DC, 'Color', 'b');
+
+        yyaxis(axisGB, 'left');
+        plot(axisGB, V, V1x, 'Color', 'r');
+        yyaxis(axisGB, 'right');
+        plot(axisGB, V, V1y, 'Color', 'b');
+
+        yyaxis(axisGC, 'left');
+        plot(axisGC, V, V2, 'r-');
+        yyaxis(axisGC, 'right');
+        plot(axisGC, V, DC, 'Color', 'b');
+        
+        % Kerr vs Temp B
+        yyaxis(axisT, 'left');
+        plot(axisT, tA, kerr, 'Color', 'r');
+        yyaxis(axisT, 'right');
+        plot(axisT, tA, dc, 'Color', 'b');
+
+        % Kerr vs Power
+        yyaxis(axisPa, 'left');
+        plot(axisPa, dc, kerr, 'r.');
+        yyaxis(axisPa, 'right');
+
+        yyaxis(axisPb, 'left');
+        plot(axisPb, v2, kerr, 'r.');
+        yyaxis(axisPb, 'right');
+        
+        % Transport
+        yyaxis(axisTrA, 'left');
+        plot(axisTrA, V, VAx, 'Color', 'r');
+        yyaxis(axisTrA, 'right');
+        plot(axisTrA, V, I, 'Color', 'b');
+        plot(axisTrA, v, i, 'b.');
+        
+        plot(axisTrB, v, vBx./vAx, 'Color', 'r');
+        
+
 
         
     %% Modulation sweeps
@@ -407,14 +644,15 @@ case 1290848    %kth: Kerr effect, transport, hall
             yyaxis(ax, 'left'); cla(ax);
         end
 
-        %sls = .25;  % second lockin sensitivity
+        sls = .25;                                      % second lockin sensitivity
+        splitter = .673;
 
         f   = logdata.waveform.freq*1e-6;               % Freq, MHz
         P0  = 1e3*abs(logdata.voltmeter.v1)/resp_dc;    % DC Power, uW
-        PX = 1e3*logdata.lockin.X/resp_ac;             % 2nd harm Power X, uW
-        PY = 1e3*logdata.lockin.Y/resp_ac;             % 2nd harm Power Y, uW
-        PR  = 1e3*logdata.lockin.R/resp_ac;             % 2nd harm Power R, uW
-        PQ = logdata.lockin.Q;                         % 2nd harm Power Q, deg
+        PX = 1e3*logdata.lockin.X/splitter/resp_ac;     % AC Power X, uW
+        PY = 1e3*logdata.lockin.Y/splitter/resp_ac;     % AC Power Y, uW
+        PR  = 1e3*logdata.lockin.R/splitter/resp_ac;    % AC Power R, uW
+        PQ = logdata.lockin.Q;                          % AC Power Q, deg
 
         yyaxis(axisA, 'left');
         plot(axisA, f, PR./P0, 'r.-');
@@ -424,15 +662,15 @@ case 1290848    %kth: Kerr effect, transport, hall
         yyaxis(axisB, 'left');
         plot(axisB, f, PR, 'r');
         yyaxis(axisB, 'right');
-        plot(axisB, f, PQ,'b');
+        plot(axisB, f, PQ, 'b');
         
         % Theoretical values
         a  = a0;
         phi = 2*0.92*a/a0*sin(pi/2*f/f0);
-        theta = 1e-3;
+        theta = 1e-5;
         p0 = 1+besselj(0,phi);
-        %p = 2*besselj(1,phi)*theta;
-        p = 2*besselj(2,phi);
+        p = 2*besselj(1,phi)*theta;
+        %p = 2*besselj(2,phi);
         ph = PQ(1) - 180*(f-f(1))/f0;
         A = P0(1)/p0(1);
         
@@ -455,9 +693,9 @@ case 1290848    %kth: Kerr effect, transport, hall
             yyaxis(ax, 'left'); cla(ax);
         end
 
-        %sls = .26;  % second lockin sensitivity
-        %splitter = .673;
-        splitter = 1;
+        sls = .25;  % second lockin sensitivity
+        splitter = .673;
+        %splitter = 1;
 
         a  = logdata.waveform.ampl;                    % Amplitude Vpp, V
         P0 = 1e3*logdata.voltmeter.v1/resp_dc;         % DC Power, uW
@@ -480,10 +718,10 @@ case 1290848    %kth: Kerr effect, transport, hall
         % Theoretical values
         f = f0;
         phi = 2*0.92*a/a0*sin(pi/2*f/f0);
-        theta = 1.085;
+        theta = 6e-5;
         p0 = 1+cos(2*theta)*besselj(0,phi);
-        %p = 2*besselj(1,phi)*sin(theta);
-        p = 2*besselj(2,phi)*cos(theta);
+        p = 2*besselj(1,phi)*sin(theta);
+        %p = 2*besselj(2,phi)*cos(theta);
         A  = P0(1)/p0(1);
         
         yyaxis(axisA, 'left');
@@ -535,7 +773,9 @@ case 1290848    %kth: Kerr effect, transport, hall
         PR = util.mesh.combine(pR, shape);
         
         surf(axisA, F, A, P0, 'EdgeAlpha', .1);
-        surf(axisB, F, A, PR, 'EdgeAlpha', .1);  
+        surf(axisB, F, A, PR, 'EdgeAlpha', .1); 
+        %xlim(axisA, [4.4, 5.2]);
+        %xlim(axisB, [4.4, 5.2]);
         %try contourf instead of surf?
         
     
@@ -573,6 +813,8 @@ case 1290848    %kth: Kerr effect, transport, hall
         KERRstd = std(reshape(kerr, [k, m]),0,1);
         V0 = mean(reshape(v0, [k, m]),1);
         Y = mean(reshape(y, [k, m]),1);
+        Y = Y - logdata.sweep.origin;
+        Y = Y*1e3;  % convert mm to um
         
         %Knife edge
 %         if numel(Y) > fix(numel(logdata.sweep.range)*0.95)
@@ -581,10 +823,10 @@ case 1290848    %kth: Kerr effect, transport, hall
 %             xlabel(ax, 'Position, \mum');
 %             eqn = 'a*erf(sqrt(2)*(x-b)/c)';
 %             [f, ~] = fit(Y.', V0.', eqn, 'Start', [30, 0, 5]);
-%         
+%
 %             Yf = linspace(min(Y), max(Y), 1e3);
 %             Zf = f.a*erf(sqrt(2)*(Yf-f.b)/f.c); 
-% 
+%
 %             cf = confint(f);
 %             disp(f.a);
 %             disp(f.b);
@@ -593,9 +835,8 @@ case 1290848    %kth: Kerr effect, transport, hall
 %             plot(ax, Yf, Zf, 'k--');
 %         end
         
-        Y = Y - 13;
         yyaxis(ax, 'left');
-        %plot(ax, Y, KERR, 'r.-');
+        plot(ax, Y, KERR, 'r.-');
         yyaxis(ax, 'right');
         plot(ax, Y, V0, 'b.-');
         yyaxis(ax, 'left');
@@ -634,6 +875,9 @@ case 1290848    %kth: Kerr effect, transport, hall
             x = x - 1e3*logdata.sweep.origin(1);
             y = y - 1e3*logdata.sweep.origin(2);
         end
+        %x = x - 140;
+        %y = y + 874;
+        
         X = util.mesh.combine(x, shape);
         Y = util.mesh.combine(y, shape);
         n0 = length(logdata.sweep.range);
@@ -648,6 +892,8 @@ case 1290848    %kth: Kerr effect, transport, hall
         kerr(1:n_curr) = KERR;
         if n_curr ~= n0, kerr(n_curr:end) = kerr(1); end
         KERR = util.mesh.combine(kerr, shape);
+        
+        P0 = log(P0);
         
         axis(axisA, 'tight');
         axis(axisB, 'tight');
@@ -665,6 +911,11 @@ case 1290848    %kth: Kerr effect, transport, hall
             axis equal;
             axis off;
             colormap(summer);
+            
+            figure('Units', 'centimeters', 'Position',  [0, 0, 16, 16]);
+            xlabel('Log P0');
+            ylabel('\theta, \murad');
+            plot(reshape(P0,1,[]), reshape(KERR,1,[]), '.');
         end
         
     case 105    %i: Laser intensity sweep
@@ -860,20 +1111,23 @@ case 1290848    %kth: Kerr effect, transport, hall
         
         
     case 11948    %tg: Two transport lockins & gate voltage controller
-        ax = graphics.axes(1);
-        cla(ax); yyaxis(ax, 'left'); cla(ax);
+        axA = graphics.axes(1);
+        axB = graphics.axes(2);
+        cla(axA); yyaxis(axA, 'left'); cla(axA);
 
         v = logdata.source.V;
-        vx = logdata.lockinB.X;
-        vy = logdata.lockinB.Y;
-        r = logdata.lockinB.X./logdata.lockinA.amplitude*10.08*1e6;
-        r = logdata.lockinB.X./logdata.lockinA.R;
-        curr = logdata.source.I;
+        vAx = 1e9*logdata.lockinA.X;    % Ixx, nA
+        vBx = 1e6*logdata.lockinB.X;    % Vxx, uV
+        curr = 1e9*logdata.source.I;    % leakadge current, nA
         
-        yyaxis(ax, 'left');
-        plot(ax, v, 1e-3*abs(r), '.-r');
-        yyaxis(ax, 'right');
-        plot(ax, v, 1e9*curr, '.-b');
+        yyaxis(axA, 'left');
+        plot(axA, v, vAx, '.-r');
+        yyaxis(axA, 'right');
+        plot(axA, v, curr, '.-b');
+        
+        yyaxis(axB, 'left');
+        plot(axB, v, vBx./vAx, '.-r');
+        yyaxis(axB, 'right');
         
         
 
@@ -934,11 +1188,22 @@ case 1290848    %kth: Kerr effect, transport, hall
 
         curr = 1e3*logdata.magnet.I;
 
-        volt = logdata.voltmeter.v2;
-        sensitivity = 1e-3*3.125;   %V/G
+        volt = logdata.voltmeter.v1;
+        %sensitivity = 1e-3*3.125;   %V/G
+        sensitivity = 1e-9*550;   %V/G
         field = (volt-volt(1))/sensitivity;
+        %field = volt/sensitivity;
 
         plot(ax, curr, field, '.-r');
+        
+    case 11682  %cv: Capacitance vs voltage
+        ax = graphics.axes;
+        cla(ax);
+
+        volt = 1e3*logdata.lockin.AUXV1;
+        cap = logdata.bridge.C;
+
+        plot(ax, volt, cap, '.-r');
         
     case 11832  %tf: Transport freq sweep
         axisA = graphics.axes(1);
@@ -967,6 +1232,58 @@ case 1290848    %kth: Kerr effect, transport, hall
         plot(axisB, f, R, 'r.-');
         yyaxis(axisB, 'right');
         plot(axisB, f, Q, 'b.-');
+        
+        
+    case 10593  %kc: kerr vs strain (capacitance)
+        axisA = graphics.axes(1);
+        axisB = graphics.axes(2);
+        for ax = graphics.axes
+            yyaxis(ax, 'right'); cla(ax); 
+            yyaxis(ax, 'left'); cla(ax);
+        end
+
+        sls = .25;                                      % second lockin sensitivity
+        L_gap = 40;                                     % um
+        L_smp = 1600;                                   % um
+        curr = .1;                                      % 1 mA x 100 gain
+        
+        v  = 1e3*logdata.lockinA.AUXV1;                  % Strain voltage, mV
+        C  = logdata.bridge.C;                          % Capacitance, pF
+        C0 = mean(C);
+        e  = -100*(L_gap/L_smp)*(C-C0)/C0;              % strain, %
+        
+        v0  = 1e3*logdata.voltmeter.v1;                 % DC Volt, mV
+        v1X = 1e6*logdata.lockin.X;                     % 1st harm Volt X, uV
+        v1Y = 1e6*logdata.lockin.Y;                     % 1st harm Volt Y, uV
+        v2X = sls*1e3*logdata.lockin.AUX1;              % 2nd harm Volt X, mV
+        v2Y = sls*1e3*logdata.lockin.AUX2;              % 2nd harm Volt Y, mV
+        r = logdata.lockinA.X/curr;                     % Resistnace, Ohms
+
+        c = besselj(2,1.841)/besselj(1,1.841);
+        v2 = sqrt(v2X.^2+v2Y.^2);
+        kerr = .5*atan(c*(v1X*1e-3)./v2)*1e6;
+        
+        
+        n = numel(kerr);
+        k = logdata.sweep.rate-logdata.sweep.pause;
+        k = k(1);
+        m = fix(n/k);
+        KERR = mean(reshape(kerr, [k, m]),1);
+        KERRstd = std(reshape(kerr, [k, m]),0,1);
+        E = mean(reshape(e, [k, m]),1);
+        R = mean(reshape(r, [k, m]),1);
+        V = mean(reshape(v, [k, m]),1);
+        
+        
+        yyaxis(axisA, 'right');
+        plot(axisA, V, R, 'b--');
+        yyaxis(axisA, 'left');
+        plot(axisA, V, KERR, 'r.-');
+        
+        yyaxis(axisB, 'left');
+        plot(axisB, v, C, 'r');
+        yyaxis(axisB, 'right');
+        plot(axisB, v, e, 'b');
 
 
     otherwise

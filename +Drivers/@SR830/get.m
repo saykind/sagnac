@@ -54,6 +54,7 @@ function varargout = get(obj, varargin)
             %   - Q = V_phase
             %   - AUX1 voltage
             %   - AUX2 voltage
+            %   - AUXV1 voltage
             case {'x', 'X', 're', 'real'}
                 x = str2double(obj.query("outp?1"));
                 obj.X = x;
@@ -77,6 +78,14 @@ function varargout = get(obj, varargin)
             case {'aux2', 'AUX2'}
                 a = str2double(obj.query("oaux?2"));
                 obj.AUX2 = a;
+                varargout{i} = a;
+            case {'AUXV1'}
+                a = str2double(obj.query("auxv?1"));
+                obj.AUXV1 = a;
+                varargout{i} = a;
+            case {'AUXV2'}
+                a = str2double(obj.query("auxv?2"));
+                obj.AUXV2 = a;
                 varargout{i} = a;
         end
     end

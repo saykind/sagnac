@@ -21,8 +21,9 @@ function [data, g] = data(filename)
             %    t = title(g.axes(1), info); 
             %    set(t, 'Interpreter', 'none')
             %end
-        catch
+        catch ME
             fprintf("[plot.data] failed to use make.graphics()");
+            disp(ME);
         end
     end
 end

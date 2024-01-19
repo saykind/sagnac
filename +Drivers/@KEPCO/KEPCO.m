@@ -58,7 +58,7 @@ classdef (Sealed = true) KEPCO < Drivers.Device
         %Default rate is 0.010 A/s (2.5 G/s)
             if nargin < 2, return; end
             if nargin < 3, rate = 0.01; end
-            if nargin < 4, period = .5; end
+            if nargin < 4, period = 1; end
             
             obj.rampInfo = {};
             I0 = obj.get('I');
@@ -69,6 +69,7 @@ classdef (Sealed = true) KEPCO < Drivers.Device
             if num < 1, num=1; end
             obj.rampInfo.I_num = num;
             obj.rampInfo.I_array = linspace(I0, I1, num);
+            
             
             util.clearTimers(0, 'KEPCO');
             obj.ramper = timer('Tag', 'KEPCO');
@@ -82,12 +83,17 @@ classdef (Sealed = true) KEPCO < Drivers.Device
             obj.ramper.StopFcn = @(~, event)obj.rampStop(event);
             %obj.ramper.ErrorFcn = @(~, event)obj.rampStop(event);
             
+            % Turn off magnet is last current is zero
+            if obj.rampInfo.I_final == 0
+                obj.ramper.UserData = 1;
+            end
+            
             obj.ramper.start();
         end
         
         function rampStep(obj, event)
             try
-                i = obj.ramper.TasksExecuted;
+                i = obj.ramper.TasksExecuted;          
                 obj.output(obj.rampInfo.I_array(i));
             catch ME
                 disp(ME)
@@ -96,8 +102,10 @@ classdef (Sealed = true) KEPCO < Drivers.Device
         
         function rampStop(obj, event)
             try
-                if obj.rampInfo.I_array(end) == 0
-                    obj.output();
+                if obj.ramper.UserData == 1
+                    if obj.I == 0
+                        obj.output();
+                    end
                 end
             catch ME
                 disp(ME)

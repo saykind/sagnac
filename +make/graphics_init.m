@@ -11,7 +11,7 @@ if nargin < 1, error("[make.graphics_init] Please provide seed/key."); end
 
 f = figure('Units', 'centimeters');
 
-switch key
+switch make.key(key)
     case 12412 %tk: time vs Kerr
         set(f,  'Position',  [0, 0, 24, 15]);
         tl = tiledlayout(f,3,1);
@@ -79,7 +79,7 @@ switch key
 
 
     case 84     %T: Temperature
-        set(f,  'Position',  [0, 0, 25, 8]);
+        set(f,  'Position',  [0, 0, 25, 10]);
         t = tiledlayout(f,1,1);
         axisA = axes(t, ...
             'FontSize', 12, ...
@@ -323,8 +323,8 @@ case 1290848    %kth: Kerr, transport, hall
         tabTempA = uitab(tabgroup, 'Title', 'Kerr vs Temp A');
         tabTempB = uitab(tabgroup, 'Title', 'Kerr vs Temp B');
         tabPower = uitab(tabgroup, 'Title', 'Kerr vs Power');
-        tabHall = uitab(tabgroup, 'Title', 'Hall vs Time');
-        tabTrans = uitab(tabgroup, 'Title', 'Transport vs Temp B');
+        tabTrt = uitab(tabgroup, 'Title', 'Transport vs Time');
+        tabTrans = uitab(tabgroup, 'Title', 'Transport vs Temp A');
 
         axisTimeA = axes(tabTime);
         hold(axisTimeA, 'on');
@@ -485,7 +485,7 @@ case 1290848    %kth: Kerr, transport, hall
         ylabel(axisPowerb, "Kerr signal, \murad");
         xlabel(axisPowerb, "2\omega Magnitude, mV");
         
-        axisHall = axes(tabHall);
+        axisHall = axes(tabTrt);
         hold(axisHall, 'on');
         grid(axisHall, 'on');
         title(axisHall, 'Hall sesnor');
@@ -496,8 +496,7 @@ case 1290848    %kth: Kerr, transport, hall
         set(axisHall, 'YColor', 'b');
         yyaxis(axisHall, 'left');
         set(axisHall, 'YColor', 'r');
-        ylabel(axisHall, "Mag field H, Oe");
-        %ylabel(axisHall, "Voltage, V");
+        ylabel(axisHall, "Voltage, \muV");
         xlabel(axisHall, "Time, min");
         
         axisTr = axes(tabTrans);
@@ -511,7 +510,7 @@ case 1290848    %kth: Kerr, transport, hall
         set(axisTr, 'YColor', 'b');
         yyaxis(axisTr, 'left');
         set(axisTr, 'YColor', 'r');
-        ylabel(axisTr, "Resistance, Ohm");
+        ylabel(axisTr, "Resistance, mOhm");
         xlabel(axisTr, "Temp, K");
 
         a = [axisTimeA, axisTimeB, axisTimeC, ...
@@ -522,6 +521,487 @@ case 1290848    %kth: Kerr, transport, hall
              axisHall, ...
              axisTr];
 
+
+case 1228788    %ktc: kerr, transport, capacitance
+        set(f,  'Position',  [0, 0, 36, 21]);
+        sizeLeft = 2.5;
+        sizeBottomA = 14;
+        sizeBottomB = 8;
+        sizeBottomC = 2;
+        sizeWidth = 31;
+        sizeHeight = 5;
+        axesPositionA = [sizeLeft, sizeBottomA, sizeWidth, sizeHeight];
+        axesPositionB = [sizeLeft, sizeBottomB, sizeWidth, sizeHeight];
+        axesPositionC = [sizeLeft, sizeBottomC, sizeWidth, sizeHeight];
+        sizeBottoma = 11;
+        sizeBottomb = 2;
+        sizeHeight2 = 7;
+        axesPositiona = [sizeLeft, sizeBottoma, sizeWidth, sizeHeight2];
+        axesPositionb = [sizeLeft, sizeBottomb, sizeWidth, sizeHeight2];
+        sizeBottom = 2;
+        sizeHeight2 = 17;
+        axesPosition0 = [sizeLeft, sizeBottom, sizeWidth, sizeHeight2];
+
+        tabgroup = uitabgroup(f);
+        tabTime = uitab(tabgroup, 'Title', 'Kerr vs Time');
+        tabTemp = uitab(tabgroup, 'Title', 'Temp vs Time');
+        tabTempA = uitab(tabgroup, 'Title', 'Kerr vs Temp A');
+        tabTempB = uitab(tabgroup, 'Title', 'Kerr vs Temp B');
+        tabPower = uitab(tabgroup, 'Title', 'Kerr vs Power');
+        tabStrain = uitab(tabgroup, 'Title', 'Strain vs Time');
+        tabTrans = uitab(tabgroup, 'Title', 'Transport vs Temp A');
+
+        axisTimeA = axes(tabTime);
+        hold(axisTimeA, 'on');
+        grid(axisTimeA, 'on');
+        title(axisTimeA, 'Time domain');
+        set(axisTimeA, 'Units', 'centimeters');
+        set(axisTimeA, 'Position', axesPositionA);
+        set(axisTimeA, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTimeA, 'right');
+        set(axisTimeA, 'YColor', 'b');
+        ylabel(axisTimeA, "DC Voltage, mV");
+        yyaxis(axisTimeA, 'left');
+        set(axisTimeA, 'YColor', 'r');
+        ylabel(axisTimeA, "Kerr Signal, \murad");
+
+        axisTimeB = axes(tabTime);
+        hold(axisTimeB, 'on');
+        grid(axisTimeB, 'on');
+        set(axisTimeB, 'Units', 'centimeters');
+        set(axisTimeB, 'Position', axesPositionB);
+        set(axisTimeB, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisTimeB, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTimeB, 'right');
+        set(axisTimeB, 'YColor', 'b');
+        ylabel(axisTimeB, "1\omega Voltage Y, \muV");
+        yyaxis(axisTimeB, 'left');
+        set(axisTimeB, 'YColor', 'r');
+        ylabel(axisTimeB, "1\omega Voltage X, \muV");
+
+        axisTimeC = axes(tabTime);
+        hold(axisTimeC, 'on');
+        grid(axisTimeC, 'on');
+        set(axisTimeC, 'Units', 'centimeters');
+        set(axisTimeC, 'Position', axesPositionC);
+        set(axisTimeC, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisTimeC, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTimeC, 'right');
+        set(axisTimeC, 'YColor', 'b');
+        ylabel(axisTimeC, "2\omega Voltage Y, mV");
+        yyaxis(axisTimeC, 'left');
+        set(axisTimeC, 'YColor', 'r');
+        ylabel(axisTimeC, "2\omega Voltage X, mV");
+        xlabel(axisTimeC, "Time, min");
+
+        axisTempa = axes(tabTemp);
+        hold(axisTempa, 'on');
+        grid(axisTempa, 'on');
+        title(axisTempa, 'Sample Temperature');
+        set(axisTempa, 'Units', 'centimeters');
+        set(axisTempa, 'Position', axesPositiona);
+        set(axisTempa, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTempa, 'right');
+        set(axisTempa, 'YColor', 'b');
+        ylabel(axisTempa, "Temp B, K");
+        yyaxis(axisTempa, 'left');
+        set(axisTempa, 'YColor', 'r');
+        ylabel(axisTempa, "Temp A, K");
+
+        axisTempb = axes(tabTemp);
+        hold(axisTempb, 'on');
+        grid(axisTempb, 'on');
+        title(axisTempb, 'Cryostat Temperature');
+        set(axisTempb, 'Units', 'centimeters');
+        set(axisTempb, 'Position', axesPositionb);
+        set(axisTempb, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisTempb, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTempb, 'right');
+        set(axisTempb, 'YColor', 'b');
+        ylabel(axisTempb, "Temp B, K");
+        yyaxis(axisTempb, 'left');
+        set(axisTempb, 'YColor', 'r');
+        ylabel(axisTempb, "Temp A, K");
+        xlabel(axisTempb, "Time, min");
+
+        axisTempA = axes(tabTempA);
+        hold(axisTempA, 'on');
+        grid(axisTempA, 'on');
+        title(axisTempA, 'Temperature domain');
+        set(axisTempA, 'Units', 'centimeters');
+        set(axisTempA, 'Position', axesPositionA);
+        set(axisTempA, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTempA, 'right');
+        set(axisTempA, 'YColor', 'b');
+        ylabel(axisTempA, "DC Voltage, mV");
+        yyaxis(axisTempA, 'left');
+        set(axisTempA, 'YColor', 'r');
+        ylabel(axisTempA, "Kerr Signal, \murad");
+
+        axisTempB = axes(tabTempA);
+        hold(axisTempB, 'on');
+        grid(axisTempB, 'on');
+        set(axisTempB, 'Units', 'centimeters');
+        set(axisTempB, 'Position', axesPositionB);
+        set(axisTempB, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisTempB, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTempB, 'right');
+        set(axisTempB, 'YColor', 'b');
+        ylabel(axisTempB, "1\omega Voltage Y, \muV");
+        yyaxis(axisTempB, 'left');
+        set(axisTempB, 'YColor', 'r');
+        ylabel(axisTempB, "1\omega Voltage X, \muV");
+
+        axisTempC = axes(tabTempA);
+        hold(axisTempC, 'on');
+        grid(axisTempC, 'on');
+        set(axisTempC, 'Units', 'centimeters');
+        set(axisTempC, 'Position', axesPositionC);
+        set(axisTempC, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisTempC, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTempC, 'right');
+        set(axisTempC, 'YColor', 'b');
+        ylabel(axisTempC, "2\omega Voltage Y, mV");
+        yyaxis(axisTempC, 'left');
+        set(axisTempC, 'YColor', 'r');
+        ylabel(axisTempC, "2\omega Voltage X, mV");
+        xlabel(axisTempC, "Temp, K");
+
+        axisTempBa = axes(tabTempB);
+        hold(axisTempBa, 'on');
+        grid(axisTempBa, 'on');
+        title(axisTempBa, 'Temperature domain');
+        set(axisTempBa, 'Units', 'centimeters');
+        set(axisTempBa, 'Position', axesPosition0);
+        set(axisTempBa, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTempBa, 'right');
+        set(axisTempBa, 'YColor', 'b');
+        ylabel(axisTempBa, "DC Voltage, mV");
+        yyaxis(axisTempBa, 'left');
+        set(axisTempBa, 'YColor', 'r');
+        ylabel(axisTempBa, "Kerr Signal, \murad");
+        xlabel(axisTempBa, "Temp B, K");
+
+        axisPowera = axes(tabPower);
+        hold(axisPowera, 'on');
+        grid(axisPowera, 'on');
+        title(axisPowera, 'Kerr vs laser diode Power');
+        set(axisPowera, 'Units', 'centimeters');
+        set(axisPowera, 'Position', axesPositiona);
+        set(axisPowera, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisPowera, 'right');
+        set(axisPowera, 'YColor', 'b');
+        yyaxis(axisPowera, 'left');
+        set(axisPowera, 'YColor', 'r');
+        ylabel(axisPowera, "Kerr signal, \murad");
+        xlabel(axisPowera, "DC Voltage, mV");
+
+        axisPowerb = axes(tabPower);
+        hold(axisPowerb, 'on');
+        grid(axisPowerb, 'on');
+        set(axisPowerb, 'Units', 'centimeters');
+        set(axisPowerb, 'Position', axesPositionb);
+        set(axisPowerb, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisPowerb, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisPowerb, 'right');
+        set(axisPowerb, 'YColor', 'b');
+        yyaxis(axisPowerb, 'left');
+        set(axisPowerb, 'YColor', 'r');
+        ylabel(axisPowerb, "Kerr signal, \murad");
+        xlabel(axisPowerb, "2\omega Magnitude, mV");
+        
+        axisCapacitance = axes(tabStrain);
+        hold(axisCapacitance, 'on');
+        grid(axisCapacitance, 'on');
+        title(axisCapacitance, 'Capacitance bridge');
+        set(axisCapacitance, 'Units', 'centimeters');
+        set(axisCapacitance, 'Position', axesPositiona);
+        set(axisCapacitance, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisCapacitance, 'right');
+        set(axisCapacitance, 'YColor', 'b');
+        ylabel(axisCapacitance, "Strain, %");
+        yyaxis(axisCapacitance, 'left');
+        set(axisCapacitance, 'YColor', 'r');
+        ylabel(axisCapacitance, "Capacitance, pF");
+        
+        axisStrainCell = axes(tabStrain);
+        hold(axisStrainCell, 'on');
+        grid(axisStrainCell, 'on');
+        title(axisStrainCell, 'Strain cell voltage');
+        set(axisStrainCell, 'Units', 'centimeters');
+        set(axisStrainCell, 'Position', axesPositionb);
+        set(axisStrainCell, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisStrainCell, 'right');
+        set(axisStrainCell, 'YColor', 'b');
+        yyaxis(axisStrainCell, 'left');
+        set(axisStrainCell, 'YColor', 'r');
+        ylabel(axisStrainCell, "Voltage, mV");
+        xlabel(axisStrainCell, "Time, min");
+        
+        axisTrA = axes(tabTrans);
+        hold(axisTrA, 'on');
+        grid(axisTrA, 'on');
+        title(axisTrA, 'Transport');
+        set(axisTrA, 'Units', 'centimeters');
+        set(axisTrA, 'Position', axesPositiona);
+        set(axisTrA, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTrA, 'right');
+        set(axisTrA, 'YColor', 'b');
+        yyaxis(axisTrA, 'left');
+        set(axisTrA, 'YColor', 'r');
+        ylabel(axisTrA, "Resistance, Ohm");
+        xlabel(axisTrA, "Temp, K");
+        
+        axisTrB = axes(tabTrans);
+        hold(axisTrB, 'on');
+        grid(axisTrB, 'on');
+        set(axisTrB, 'Units', 'centimeters');
+        set(axisTrB, 'Position', axesPositionb);
+        set(axisTrB, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTrB, 'right');
+        set(axisTrB, 'YColor', 'b');
+        yyaxis(axisTrB, 'left');
+        set(axisTrB, 'YColor', 'r');
+        ylabel(axisTrB, "Resistance, Ohm");
+        yyaxis(axisTrB, 'right');
+        set(axisTrB, 'YColor', 'b');
+        ylabel(axisTrB, "Resistance Y, Ohm");
+        xlabel(axisTrB, "Voltage, mV");
+
+        a = [axisTimeA, axisTimeB, axisTimeC, ...
+             axisTempa, axisTempb, ...
+             axisTempA, axisTempB, axisTempC, ...
+             axisTempBa, ...
+             axisPowera, axisPowerb, ...
+             axisCapacitance, axisStrainCell, ...
+             axisTrA, axisTrB];
+         
+         
+case 1278436    %ktg: Kerr, transport, gate
+        set(f,  'Position',  [0, 0, 36, 21]);
+        sizeLeft = 2.5;
+        sizeBottomA = 14;
+        sizeBottomB = 8;
+        sizeBottomC = 2;
+        sizeWidth = 31;
+        sizeHeight = 5;
+        axesPositionA = [sizeLeft, sizeBottomA, sizeWidth, sizeHeight];
+        axesPositionB = [sizeLeft, sizeBottomB, sizeWidth, sizeHeight];
+        axesPositionC = [sizeLeft, sizeBottomC, sizeWidth, sizeHeight];
+        sizeBottoma = 11;
+        sizeBottomb = 2;
+        sizeHeight2 = 7;
+        axesPositiona = [sizeLeft, sizeBottoma, sizeWidth, sizeHeight2];
+        axesPositionb = [sizeLeft, sizeBottomb, sizeWidth, sizeHeight2];
+        sizeBottom = 2;
+        sizeHeight2 = 17;
+        axesPosition0 = [sizeLeft, sizeBottom, sizeWidth, sizeHeight2];
+
+        tabgroup = uitabgroup(f);
+        tabTime = uitab(tabgroup, 'Title', 'Kerr vs Time');
+        tabTemp = uitab(tabgroup, 'Title', 'Temp vs Time');
+        tabKerrSource = uitab(tabgroup, 'Title', 'Kerr vs Gate');
+        tabKerrTemp = uitab(tabgroup, 'Title', 'Kerr vs Temp');
+        tabPower = uitab(tabgroup, 'Title', 'Kerr vs Power');
+        tabTransA = uitab(tabgroup, 'Title', 'Transport A');
+        tabTransB = uitab(tabgroup, 'Title', 'Transport B');
+
+        axisTimeA = axes(tabTime);
+        hold(axisTimeA, 'on');
+        grid(axisTimeA, 'on');
+        title(axisTimeA, 'Time domain');
+        set(axisTimeA, 'Units', 'centimeters');
+        set(axisTimeA, 'Position', axesPositionA);
+        set(axisTimeA, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTimeA, 'right');
+        set(axisTimeA, 'YColor', 'b');
+        ylabel(axisTimeA, "DC Voltage, mV");
+        yyaxis(axisTimeA, 'left');
+        set(axisTimeA, 'YColor', 'r');
+        ylabel(axisTimeA, "Kerr Signal, \murad");
+
+        axisTimeB = axes(tabTime);
+        hold(axisTimeB, 'on');
+        grid(axisTimeB, 'on');
+        set(axisTimeB, 'Units', 'centimeters');
+        set(axisTimeB, 'Position', axesPositionB);
+        set(axisTimeB, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisTimeB, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTimeB, 'right');
+        set(axisTimeB, 'YColor', 'b');
+        ylabel(axisTimeB, "1\omega Voltage Y, \muV");
+        yyaxis(axisTimeB, 'left');
+        set(axisTimeB, 'YColor', 'r');
+        ylabel(axisTimeB, "1\omega Voltage X, \muV");
+
+        axisTimeC = axes(tabTime);
+        hold(axisTimeC, 'on');
+        grid(axisTimeC, 'on');
+        set(axisTimeC, 'Units', 'centimeters');
+        set(axisTimeC, 'Position', axesPositionC);
+        set(axisTimeC, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisTimeC, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTimeC, 'right');
+        set(axisTimeC, 'YColor', 'b');
+        ylabel(axisTimeC, "2\omega Voltage Y, mV");
+        yyaxis(axisTimeC, 'left');
+        set(axisTimeC, 'YColor', 'r');
+        ylabel(axisTimeC, "2\omega Voltage X, mV");
+        xlabel(axisTimeC, "Time, min");
+
+        axisTempa = axes(tabTemp);
+        hold(axisTempa, 'on');
+        grid(axisTempa, 'on');
+        title(axisTempa, 'Sample Temperature');
+        set(axisTempa, 'Units', 'centimeters');
+        set(axisTempa, 'Position', axesPositiona);
+        set(axisTempa, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTempa, 'right');
+        set(axisTempa, 'YColor', 'b');
+        ylabel(axisTempa, "Temp B, K");
+        yyaxis(axisTempa, 'left');
+        set(axisTempa, 'YColor', 'r');
+        ylabel(axisTempa, "Temp A, K");
+
+        axisTempb = axes(tabTemp);
+        hold(axisTempb, 'on');
+        grid(axisTempb, 'on');
+        title(axisTempb, 'Cryostat Temperature');
+        set(axisTempb, 'Units', 'centimeters');
+        set(axisTempb, 'Position', axesPositionb);
+        set(axisTempb, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisTempb, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTempb, 'right');
+        set(axisTempb, 'YColor', 'b');
+        ylabel(axisTempb, "Temp B, K");
+        yyaxis(axisTempb, 'left');
+        set(axisTempb, 'YColor', 'r');
+        ylabel(axisTempb, "Temp A, K");
+        xlabel(axisTempb, "Time, min");
+
+        axisKerrGateA = axes(tabKerrSource);
+        hold(axisKerrGateA, 'on');
+        grid(axisKerrGateA, 'on');
+        title(axisKerrGateA, 'Gate voltage sweep');
+        set(axisKerrGateA, 'Units', 'centimeters');
+        set(axisKerrGateA, 'Position', axesPositionA);
+        set(axisKerrGateA, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisKerrGateA, 'right');
+        set(axisKerrGateA, 'YColor', 'b');
+        ylabel(axisKerrGateA, "DC Voltage, mV");
+        yyaxis(axisKerrGateA, 'left');
+        set(axisKerrGateA, 'YColor', 'r');
+        ylabel(axisKerrGateA, "Kerr Signal, \murad");
+
+        axisKerrGateB = axes(tabKerrSource);
+        hold(axisKerrGateB, 'on');
+        grid(axisKerrGateB, 'on');
+        set(axisKerrGateB, 'Units', 'centimeters');
+        set(axisKerrGateB, 'Position', axesPositionB);
+        set(axisKerrGateB, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisKerrGateB, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisKerrGateB, 'right');
+        set(axisKerrGateB, 'YColor', 'b');
+        ylabel(axisKerrGateB, "1\omega Voltage Y, \muV");
+        yyaxis(axisKerrGateB, 'left');
+        set(axisKerrGateB, 'YColor', 'r');
+        ylabel(axisKerrGateB, "1\omega Voltage X, \muV");
+
+        axisKerrGateC = axes(tabKerrSource);
+        hold(axisKerrGateC, 'on');
+        grid(axisKerrGateC, 'on');
+        set(axisKerrGateC, 'Units', 'centimeters');
+        set(axisKerrGateC, 'Position', axesPositionC);
+        set(axisKerrGateC, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisKerrGateC, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisKerrGateC, 'right');
+        set(axisKerrGateC, 'YColor', 'b');
+        ylabel(axisKerrGateC, "2\omega Voltage Y, mV");
+        yyaxis(axisKerrGateC, 'left');
+        set(axisKerrGateC, 'YColor', 'r');
+        ylabel(axisKerrGateC, "2\omega Voltage X, mV");
+        xlabel(axisKerrGateC, "Gate Voltage, V");
+
+        axisTempBa = axes(tabKerrTemp);
+        hold(axisTempBa, 'on');
+        grid(axisTempBa, 'on');
+        title(axisTempBa, 'Temperature domain');
+        set(axisTempBa, 'Units', 'centimeters');
+        set(axisTempBa, 'Position', axesPosition0);
+        set(axisTempBa, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTempBa, 'right');
+        set(axisTempBa, 'YColor', 'b');
+        ylabel(axisTempBa, "DC Voltage, mV");
+        yyaxis(axisTempBa, 'left');
+        set(axisTempBa, 'YColor', 'r');
+        ylabel(axisTempBa, "Kerr Signal, \murad");
+        xlabel(axisTempBa, "Temp A, K");
+
+        axisPowera = axes(tabPower);
+        hold(axisPowera, 'on');
+        grid(axisPowera, 'on');
+        title(axisPowera, 'Kerr vs laser diode Power');
+        set(axisPowera, 'Units', 'centimeters');
+        set(axisPowera, 'Position', axesPositiona);
+        set(axisPowera, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisPowera, 'right');
+        set(axisPowera, 'YColor', 'b');
+        yyaxis(axisPowera, 'left');
+        set(axisPowera, 'YColor', 'r');
+        ylabel(axisPowera, "Kerr signal, \murad");
+        xlabel(axisPowera, "DC Voltage, mV");
+
+        axisPowerb = axes(tabPower);
+        hold(axisPowerb, 'on');
+        grid(axisPowerb, 'on');
+        set(axisPowerb, 'Units', 'centimeters');
+        set(axisPowerb, 'Position', axesPositionb);
+        set(axisPowerb, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisPowerb, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisPowerb, 'right');
+        set(axisPowerb, 'YColor', 'b');
+        yyaxis(axisPowerb, 'left');
+        set(axisPowerb, 'YColor', 'r');
+        ylabel(axisPowerb, "Kerr signal, \murad");
+        xlabel(axisPowerb, "2\omega Magnitude, mV");
+        
+        axisTrA = axes(tabTransA);
+        hold(axisTrA, 'on');
+        grid(axisTrA, 'on');
+        title(axisTrA, 'Transport A');
+        set(axisTrA, 'Units', 'centimeters');
+        set(axisTrA, 'Position', axesPosition0);
+        set(axisTrA, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTrA, 'right');
+        set(axisTrA, 'YColor', 'b');
+        yyaxis(axisTrA, 'left');
+        set(axisTrA, 'YColor', 'r');
+        ylabel(axisTrA, "Lockin_A, nA");
+        xlabel(axisTrA, "Gate voltage, V");
+        
+        axisTrB = axes(tabTransB);
+        hold(axisTrB, 'on');
+        grid(axisTrB, 'on');
+        title(axisTrB, 'Transport B');
+        set(axisTrB, 'Units', 'centimeters');
+        set(axisTrB, 'Position', axesPosition0);
+        set(axisTrB, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisTrB, 'right');
+        set(axisTrB, 'YColor', 'b');
+        yyaxis(axisTrB, 'left');
+        set(axisTrB, 'YColor', 'r');
+        ylabel(axisTrB, "Lockin_B X, \muV");
+        xlabel(axisTrB, "Gate voltage, V");
+
+        a = [axisTimeA, axisTimeB, axisTimeC, ...
+             axisTempa, axisTempb, ...
+             axisKerrGateA, axisKerrGateB, axisKerrGateC, ...
+             axisTempBa, ...
+             axisPowera, axisPowerb, ...
+             axisTrA, ...
+             axisTrB];
+
+         
 
     case 102 %f: Mod freq sweep
         set(f,  'Position',  [0, 0, 24, 24]);
@@ -623,7 +1103,7 @@ case 1290848    %kth: Kerr, transport, hall
         set(axis, 'FontSize', 12, 'FontName', 'Arial');
         yyaxis(axis, 'right'); set(axis, 'YColor', 'b');
         yyaxis(axis, 'left'); set(axis, 'YColor', 'r');
-        xlabel(axis, "Position, mm");
+        xlabel(axis, "Position, \mum");
         ylabel(axis, "Kerr \theta, \murad");
         yyaxis(axis, 'right');
         ylabel(axis, "DC power, \muW");
@@ -638,7 +1118,7 @@ case 1290848    %kth: Kerr, transport, hall
 
         a = [axisA, axisB];
         axesTitles = ["DC power P_0, \muW", "Kerr signal \theta, \murad"];
-        quantities = ["P_0, \muW", "\theta, \murad"];
+        quantities = ["log P_0", "\theta, \murad"];
         xylabels = ["X, \mum",      "Y, \mum";];
 
         for i = 1:length(a)
@@ -873,25 +1353,41 @@ case 1290848    %kth: Kerr, transport, hall
         
         
     case 11948    %tg: Two transport lockins & gate voltage controller
-        set(f,  'Position',  [0, 0, 25, 8]);
-        t = tiledlayout(f,1,1);
-        
-        axis = axes(t, ...
-            'FontSize', 12, ...
-            'FontName', 'Arial', ...
-            'XGrid', 'on', ...
-            'YGrid', 'on', ...
-            'Box', 'off');
-        yyaxis(axis, 'right');
-        set(axis, 'YColor', 'b');
-        ylabel(axis, "Gate current, nA");
-        yyaxis(axis, 'left');
-        set(axis, 'YColor', 'r');
-        ylabel(axis, "Resistance, kOhm");
-        xlabel(axis, "Voltage, V");
-        hold(axis, 'on');
+        set(f,  'Position',  [0, 0, 25, 18]);
+        tl = tiledlayout(f, 2, 1);
 
-        a = axis;
+        axisA = nexttile(tl);
+        axisB = nexttile(tl);
+        
+        hold(axisA, 'on');
+        grid(axisA, 'on');
+        title(axisA, 'Gate sweep');
+        set(axisA, 'Units', 'centimeters');
+        set(axisA, 'FontSize', 12, 'FontName', 'Arial');
+        
+        hold(axisB, 'on');
+        grid(axisB, 'on');
+        set(axisB, 'Units', 'centimeters');
+        set(axisB, 'FontSize', 12, 'FontName', 'Arial');
+
+        yyaxis(axisA, 'right');
+        set(axisA, 'YColor', 'b');
+        ylabel(axisA, "Gate current, nA");
+        yyaxis(axisA, 'left');
+        set(axisA, 'YColor', 'r');
+        ylabel(axisA, "Current A, nA");
+        hold(axisA, 'on');
+        
+        yyaxis(axisB, 'right');
+        set(axisB, 'YColor', 'b');
+        ylabel(axisB, "Gate current, nA");
+        yyaxis(axisB, 'left');
+        set(axisB, 'YColor', 'r');
+        ylabel(axisB, "Resistance R_{xx}, kOhms");
+        hold(axisB, 'on');
+        xlabel(axisB, "Voltage, V");
+
+        a = [axisA, axisB];
         
 
     case {104, 'h'} % Hall effect
@@ -1000,7 +1496,7 @@ case 1290848    %kth: Kerr, transport, hall
             axisTempA, axisTempB, ...
             axisMiscA, axisMiscB];
 
-    case {11960, make.key('hs:')} % Hall sensor
+    case 11960 %hs: Hall sensor
         set(f,  'Position',  [0, 0, 25, 8]);
         t = tiledlayout(f,1,1);
         ax = axes(t, ...
@@ -1012,6 +1508,22 @@ case 1290848    %kth: Kerr, transport, hall
             'YColor', 'r');
         xlabel(ax, "Magnet Current, mA");
         ylabel(ax, "Magnetic field, G");
+        hold(ax, 'on');
+        grid(ax, 'on');
+        a = ax;
+        
+    case 11682  %cv: Capacitance vs voltage
+        set(f,  'Position',  [0, 0, 25, 8]);
+        t = tiledlayout(f,1,1);
+        ax = axes(t, ...
+            'FontSize', 12, ...
+            'FontName', 'Arial', ...
+            'XGrid', 'on', ...
+            'YGrid', 'on', ...
+            'Box', 'off', ...
+            'YColor', 'r');
+        xlabel(ax, "Voltage, mV");
+        ylabel(ax, "Capacitance, pF");
         hold(ax, 'on');
         grid(ax, 'on');
         a = ax;
@@ -1036,6 +1548,39 @@ case 1290848    %kth: Kerr, transport, hall
             ylabel(axis, ylabels(i,2));
             yyaxis(axis, 'left'); set(axis, 'YColor', 'r');
             ylabel(axis, ylabels(i,1));
+        end
+        
+    case 10593  %kc: kerr vs strain (capacitance)
+        set(f,  'Position',  [0, 0, 24, 24]);
+        tl = tiledlayout(f, 2, 1);
+
+        axisA = nexttile(tl);
+        axisB = nexttile(tl);
+
+        a = [axisA, axisB];
+        ylabels = [...
+            "Kerr \theta_K, \murad",     "Resistance, Ohm"; ...
+            "Capacitance, pF",    "Strain, %"; ...
+            ];
+        xlabels = [...
+            %"Strain \epsilon, %", ...
+            "AUXV1 voltage, mV", ...
+            "AUXV1 voltage, mV" ...
+            ];
+
+        title(axisA, 'Strain cell voltage sweep');
+
+        for i = 1:length(a)
+            axis = a(i);
+            hold(axis, 'on');
+            grid(axis, 'on');
+            set(axis, 'Units', 'centimeters');
+            set(axis, 'FontSize', 12, 'FontName', 'Arial');
+            yyaxis(axis, 'right'); set(axis, 'YColor', 'b');
+            ylabel(axis, ylabels(i,2));
+            yyaxis(axis, 'left'); set(axis, 'YColor', 'r');
+            ylabel(axis, ylabels(i,1));
+            xlabel(axis, xlabels(i));
         end
         
     otherwise

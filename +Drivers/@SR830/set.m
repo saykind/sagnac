@@ -18,6 +18,7 @@ function set(obj, varargin)
     addParameter(p, 'amplitude', NaN, @isnumeric);
     addParameter(p, 'tc', NaN, @isnumeric);
     addParameter(p, 'timeConstant', NaN, @isnumeric);
+    addParameter(p, 'AUXV1', NaN, @isnumeric);
     
     parse(p, varargin{:});
     parameters = p.Results;
@@ -56,5 +57,8 @@ function set(obj, varargin)
         end
         obj.timeConstant = tc;
         obj.write(sprintf("oflt %f", tc));
+    end
+    if ~isnan(parameters.AUXV1)
+        obj.write(sprintf("AUXV 1, %f", parameters.AUXV1));
     end
 end

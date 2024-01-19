@@ -10,8 +10,6 @@ function logStart(obj, event)
     end
 
     % Make data filename
-    %letters = ['a':'z' 'A':'Z'];
-    %letter = letters(randi(numel(letters)));
     obj.filename = make.filename(obj.foldername);
     
     % Print start message
@@ -77,4 +75,17 @@ function logStart(obj, event)
     
     % Reset counter
     obj.cnt = 0;
+    
+    % Preset instruments
+    if ~isempty(obj.sweep)
+        try
+            make.sweep(obj.key, obj.instruments, obj.sweep);
+            obj.rec = 0;
+            if obj.verbose > 99, fprintf("[%i] rec=%d\n", obj.key, obj.rec); end
+        catch ME
+            fprintf("[Recorder.start] Failed to preset instruments.\n");
+            disp(ME);
+            obj.stop();
+        end
+    end
 end

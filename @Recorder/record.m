@@ -21,9 +21,8 @@ for i = 1:numel(names)
         try
             dat = instrument.get(field);
         catch
-            fprintf("Failed to get instrument data.\n");
-            fprintf(field);
-            fprintf("\n");
+            fprintf("[Recorder.record] Failed to get instrument data.\n");
+            fprintf("[Recorder.record] problematic field = %s\n", field);
         end
         %fprintf("%s : %f\n", field, dat);
         obj.logdata.(name).(field) = [obj.logdata.(name).(field); dat];

@@ -47,7 +47,7 @@ function fig = kerr(varargin)
         temp = logdata.tempcont.A;
         
         V1X = logdata.lockin.X;
-        sls = .1; %second harm lockin sensitivity
+        sls = .25; %second harm lockin sensitivity
         V2 = sls*sqrt(logdata.lockin.AUX1.^2+logdata.lockin.AUX2.^2);
         c = besselj(2,1.841)/besselj(1,1.841);
         kerr = .5*atan(c*(V1X)./V2)*1e6; % Kerr signal, urad
@@ -62,8 +62,8 @@ function fig = kerr(varargin)
             fprintf("%s: offset %.2d\n", legends(i), kerr_offset);
         end
         kerr = kerr - kerr_offset;
-        [T, K] = util.coarse_grain(dT, temp, kerr);
-        plot(ax, T, K, '.-', 'LineWidth', 1, 'DisplayName', name);
+        [T, K, K2] = util.coarse_grain(dT, temp, kerr);
+        errorbar(ax, T, K, K2, '.-', 'LineWidth', 1, 'DisplayName', name);
     end
     
     ylabel(ax, '\DeltaKerr (\murad)');
