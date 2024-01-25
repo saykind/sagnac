@@ -5,9 +5,18 @@ Matlab programs for Sagnac experiment.
 * Matlab 2018b or later
 * [Instrument Control toolbox](https://www.mathworks.com/products/instrument.html)
 
-## List of applications:
+## Implemented packages and classes:
+* **Drivers**: GPIB/visa and Serial interfaces for laboratory instruments such 
+    * Agilent 33220A
+    * Keithley 2XXX
+    * LakeShore 3XX
+    * Stanford Research 8XX
+    * Agilis piezo stage
+    * and others...
+* **Recorder**: Universal data acquisition class.
+* **make**: helper functions for Recorder class.
+* **plot**: Data plotting functions.
+* **util**: data analysis/modification helper functions.
 
-* **Kerr angle analyser**:
-Simple GUI to plot Kerr angle vs temperature.
-* **Data recorder**: GUI to display and record data
-* **Terminal**: Create and execute scripts
+## Applications:
+* **slicer**: GUI to browse 2D data such as frequency-amplitude modulation scans and plot 1D slices.

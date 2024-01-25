@@ -1,6 +1,51 @@
 function fig = kerr(varargin)
-    %Kerr data plot method
-    %   Plots kerr data from several files.
+%Plots kerr data from several files.
+%   plot.kerr(Name, Value) specifies additional 
+%   options with one or more Name, Value pair arguments. 
+% 
+%
+%   Name-Value Pair Arguments:
+%   - 'filenames'   : default []
+%                   : filename to load.
+%                     When filenames is empty, file browser open,
+%                     It continues to reopen after file is selected,
+%                     to allow multiple file selction.
+%                     FIXME: Use uigetfile(..., 'MultiSelect', 'on');
+%   - 'range'       : default [-inf,inf] 
+%                   : Temperature range to plot (uses logdata.tempcont.A).
+%   - 'offset'      : default [-inf,inf] 
+%                   : Temperature range to calculte kerr offset.
+%                     kerr := kerr - mean(kerr(T in offset)).
+%   - 'dT'          : default 0.4
+%                   : Scalar specifying the temperature interval for 
+%                     coarse-graining the data.
+%   - 'legend'      : default []
+%                   : String array of legends for each dataset. 
+%                     If empty or not provided, the file names 
+%                     will be used as legends.
+%
+%   Output Arguments:
+%   - fig           : Graphics handle.
+%
+%   Example:
+%   plot.kerr();
+%   plot.kerr('range', [10, 30], 'dT', 0.4, 'offset', [25, 30]);
+%
+%   Notes:
+%   - The function requires that the .mat files contain a 'logdata' 
+%     structure with fields
+%       'tempcont.A',
+%       'lockin.X',
+%       'lockin.AUX1',
+%       'lockin.AUX2'.
+%   - The Kerr signal is calculated using the formula:
+%     Kerr = 0.5 * atan(c * (V1X) ./ V2) * 1e6 (in microradians),
+%     where c is a constant calculated using Bessel functions.
+%   - The function uses the 'util.coarse_grain' function for coarse-graining.
+%   - The figure is saved in the 'output' directory with the name format:
+%     <first_filename>_k.png.
+%
+%   See also plot.data();
     
     % Acquire parameters
     p = inputParser;
@@ -17,17 +62,21 @@ function fig = kerr(varargin)
     range = parameters.range;
     offset = parameters.offset;
     legends = parameters.legends;
-    
     % If no filename is given, open file browser
     if isempty(filenames)
         filenames = [];
-        folder = 1;
-        while folder ~= 0 
-            [basefilename, folder] = uigetfile('*.mat', 'Select data file');
-            filename = fullfile(folder, basefilename);
+        [files, folder] = uigetfile('*.mat', 'Select data files', 'MultiSelect', 'on');
+        if folder == 0  % User clicked "Cancel"
+            return;
+        end
+        if ischar(files)  % Single file selected
+            files = {files};
+        end
+        % Now files is always a cell array, process each file
+        for i = 1:length(files)
+            filename = fullfile(folder, files{i});
             filenames = [filenames, string(filename)];
         end
-        filenames(end) = [];
     end
     
     % Create figure

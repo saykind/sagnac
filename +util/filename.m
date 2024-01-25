@@ -1,5 +1,5 @@
 function filename = filename(foldername)
-%Creates filename string based on current datae and time
+%Creates filename string based on current date and time
 
     if nargin < 1
         foldername = 'data\';

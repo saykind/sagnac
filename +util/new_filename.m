@@ -1,5 +1,6 @@
 function new_filename = new_filename(filename, new_name, varargin)
 %Creates filename using folder and extension from another filename.
+%
 %   Examples:
 %       'data\2.mat' = new_filename('data\1.mat', '2')
 %       'data\1a.mat' = new_filename('data\1.mat', '')

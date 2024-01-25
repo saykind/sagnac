@@ -1,5 +1,20 @@
 function [data, g] = data(filename)
-%Load a file and plot the data
+%Load a file and plot the data.
+% 
+%  Input Arguments:
+%  - <empty> :  When no arguments given, file browser open,
+%               It continues to reopen after file is selected,
+%               to allow multiple file selction.
+%  - filename : filename to load.
+%
+%  Output Arguments:
+%  - data :     Output of load(filename).
+%  - g :        Graphics handle.
+%
+%  Example:
+%  plot.data();
+%
+%  See also plot.kerr();
 
     % If no argument is given, open file browser
     if nargin < 1 
