@@ -32,7 +32,7 @@ function crop(varargin)
         end
     end
     
-    new_filename = util.new_filename(filename, saveas, 'postfix', '-croped');
+    new_filename = util.filename.change(filename, saveas, 'postfix', '-croped');
 
     data = load(filename);
     logdata = data.logdata;

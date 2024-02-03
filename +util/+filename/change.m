@@ -1,4 +1,4 @@
-function new_filename = new_filename(filename, new_name, varargin)
+function new_filename = change(filename, new_name, varargin)
 %Creates filename using folder and extension from another filename.
 %
 %   Examples:

@@ -1,14 +1,23 @@
-function [X, varargout] = coarse_grain(x0, x, varargin)
-    %Average data in bins of the given size.
-    %   Example:
-    %   [X, Y, Z, Y2] = coarse_grain(x0, x, y, z)
-    %       x0  -- averaging grid or scalar step size
-    %       X   -- array of averaged x values over window dx.
-    %       Y,Z -- averaged y and z arrays.
-    %       Y2  -- array of standard errors of averaged values.
-    
+function [X, varargout] = grain(x0, x, varargin)
+%Average data in bins of the given size.
+%   Inputs:
+%       x0 - Averaging grid or scalar step size. If x0 is a scalar, it is used as the step size to create a regular grid.
+%       x - Array of values that the data should be averaged over.
+%       varargin - Additional arrays of data that should be averaged. The number of these arrays should match the number of output arrays.
+%
+%   Outputs:
+%    X - Array of averaged x values over window dx.
+%    varargout - Averaged arrays of the additional input data. If more output arrays than input arrays are specified, the additional output arrays will contain the standard errors of the averaged values.
+%
+%   Example:
+%   [X, Y, Z, Y2] = util.coarse.grain(x0, x, y, z)
+%       x0  -- averaging grid or scalar step size
+%       X   -- array of averaged x values over window dx.
+%       Y,Z -- averaged y and z arrays.
+%       Y2  -- array of standard errors of averaged values.
+
     if isscalar(x0)
-        x0 = util.coarse_grid(x0, x);
+        x0 = util.coarse.grid(x0, x);
     end
     
     num_in = nargin-2;

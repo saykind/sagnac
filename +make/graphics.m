@@ -1027,30 +1027,49 @@ switch key
         yyaxis(ax, 'right');
         cla(ax);
 
-        i = logdata.diode.current;
+        curr = logdata.diode.current;
         dc = abs(logdata.voltmeter.v1);
+        
+        if isfield(logdata, 'sweep') && false
+            n = numel(curr);
+            k = logdata.sweep.rate-logdata.sweep.pause;
+            m = fix(n/k);
+            CURR = mean(reshape(curr, [k, m]),1);
+            DC = mean(reshape(dc, [k, m]),1);
+        else
+            CURR = curr;
+            DC = dc;
+        end
+        
+        %DC = DC - DC(1);
 
         % New Focus 1601, 830 nm
-        %sensitivity = 4.7;   % V/mW
+        %sensitivity = -4.7;   % V/mW
         % New Focus 1801, 830 nm
-        %sensitivity = .47;   % V/mW
+        sensitivity = 4.7;   % V/mW
 
         % Thorlabs PDA100A2, 50 dB gain, Hi-Z, 830 nm
         %sensitivity = 1e-3*4.75*1e5*0.63;   % V/mW
 
         % Thorlabs PDA100A2, 30 dB gain, Hi-Z, 830 nm
         %sensitivity = 1e-3*4.75*1e4*0.63;   % V/mW
+        
+        % Thorlabs PDA100A2, 20 dB gain, Hi-Z, 830 nm
+        %sensitivity = 1e-3*1.51*1e4*0.63;   % V/mW
 
         % Thorlabs PDA100A2, 10 dB gain, Hi-Z, 830 nm
         %sensitivity = 1e-3*4.75*1e3*0.63;   % V/mW
 
         % Thorlabs PDA100A2, 0 dB gain, Hi-Z, 830 nm
-        sensitivity = 1e-3*1.51*1e3*0.63;   % V/mW
+        %sensitivity = 1e-3*1.51*1e3*0.63;   % V/mW
 
         yyaxis(ax, 'left');
-        plot(ax, i, 1e3*dc, 'k.-');
+        plot(ax, CURR, 1e3*DC, 'k.-');
+        ylim_left = ylim(ax);
+        ylim_right = ylim_left/sensitivity;
         yyaxis(ax, 'right');
-        plot(ax, i, 1e3*dc/sensitivity, 'k', 'LineStyle','none');
+        plot(ax, CURR, 1e3*DC/sensitivity, 'k', 'LineStyle','none');
+        ax.YAxis(2).Limits = ylim_right;
         
         
     case 477128 %LIV:  Laser IV characteristic
@@ -1080,19 +1099,22 @@ switch key
         % New Focus 1601, 830 nm
         %sensitivity = 4.7;   % V/mW
         % New Focus 1801, 830 nm
-        %sensitivity = .47;   % V/mW
+        %sensitivity = 4.7;   % V/mW
 
         % Thorlabs PDA100A2, 50 dB gain, Hi-Z, 830 nm
         %sensitivity = 1e-3*4.75*1e5*0.63;   % V/mW
 
         % Thorlabs PDA100A2, 30 dB gain, Hi-Z, 830 nm
         %sensitivity = 1e-3*4.75*1e4*0.63;   % V/mW
+        
+        % Thorlabs PDA100A2, 20 dB gain, Hi-Z, 830 nm
+        sensitivity = 1e-3*1.51*1e4*0.63;   % V/mW
 
         % Thorlabs PDA100A2, 10 dB gain, Hi-Z, 830 nm
         %sensitivity = 1e-3*4.75*1e3*0.63;   % V/mW
 
         % Thorlabs PDA100A2, 0 dB gain, Hi-Z, 830 nm
-        sensitivity = 1e-3*1.51*1e3*0.63;   % V/mW
+        %sensitivity = 1e-3*1.51*1e3*0.63;   % V/mW
 
         yyaxis(ax, 'left');
         plot(ax, CURR, DC/sensitivity, 'r.-');

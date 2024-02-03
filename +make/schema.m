@@ -186,10 +186,10 @@ switch key
                      {'X', 'Y', 'R', 'Q', 'AUX1', 'AUX2'}};
                  
     case 14520      %xy: Kerr XY scan
-        name =      ["voltmeter";        "lockin";   "X";    "Y"];
-        driver =    ["Keithley2182A";    "SR844";    "Agilis";   "Agilis"];
-        interface = ["gpib";             "gpib";     "serial";   "serial"];    % FIXME
-        address =   [17;                 9;          5;          6];
+        name =      ["voltmeter";        "lockin";   "X";       "Y"];
+        driver =    ["Keithley2182A";    "SR844";    "Agilis";  "Agilis"];
+        interface = ["gpib";             "gpib";     "serial";  "serial"];
+        address =   [17;                 9;          5;         6];
         parameters = ...
                     {{nan}; ...
                      {}; ...

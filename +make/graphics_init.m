@@ -1297,11 +1297,13 @@ case 1278436    %ktg: Kerr, transport, gate
         set(axis, 'YColor', 'k');
         ylabel(axis, "DC Power, \muW");
         ylim(axis, [0,inf]);
+        hold(axis, 'on'); 
+        
         yyaxis(axis, 'left');
         set(axis, 'YColor', 'k');
         ylabel(axis, "DC Voltage, mV");
-
         hold(axis, 'on'); 
+        
         xtickformat(axis, '%.1f');
 
         a = axis;

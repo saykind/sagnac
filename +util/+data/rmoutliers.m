@@ -30,7 +30,7 @@ function rmoutliers(varargin)
         end
     end
     
-    new_filename = util.new_filename(filename, saveas, 'postfix', '-rmo');
+    new_filename = util.filename.change(filename, saveas, 'postfix', '-rmo');
 
     data = load(filename);
     logdata = data.logdata;

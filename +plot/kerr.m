@@ -3,14 +3,12 @@ function fig = kerr(varargin)
 %   plot.kerr(Name, Value) specifies additional 
 %   options with one or more Name, Value pair arguments. 
 % 
-%
 %   Name-Value Pair Arguments:
 %   - 'filenames'   : default []
 %                   : filename to load.
 %                     When filenames is empty, file browser open,
 %                     It continues to reopen after file is selected,
 %                     to allow multiple file selction.
-%                     FIXME: Use uigetfile(..., 'MultiSelect', 'on');
 %   - 'range'       : default [-inf,inf] 
 %                   : Temperature range to plot (uses logdata.tempcont.A).
 %   - 'offset'      : default [-inf,inf] 
@@ -19,6 +17,9 @@ function fig = kerr(varargin)
 %   - 'dT'          : default 0.4
 %                   : Scalar specifying the temperature interval for 
 %                     coarse-graining the data.
+%   - 'sls'         : default 0.25
+%                   : Scalar specifying the second harmonic lockin
+%                     sensitivity in Volts.
 %   - 'legend'      : default []
 %                   : String array of legends for each dataset. 
 %                     If empty or not provided, the file names 
@@ -33,7 +34,7 @@ function fig = kerr(varargin)
 %
 %   Notes:
 %   - The function requires that the .mat files contain a 'logdata' 
-%     structure with fields
+%     structure with fields:
 %       'tempcont.A',
 %       'lockin.X',
 %       'lockin.AUX1',
@@ -53,30 +54,21 @@ function fig = kerr(varargin)
     addParameter(p, 'range', [-inf, inf], @isnumeric);
     addParameter(p, 'offset', [-inf, inf], @isnumeric);
     addParameter(p, 'dT', .4, @isnumeric);
+    addParameter(p, 'sls', .25, @isnumeric);
     addParameter(p, 'legends', [], @isstring);
     parse(p, varargin{:});
     parameters = p.Results;
     
     filenames = parameters.filenames;
-    dT = parameters.dT;
     range = parameters.range;
     offset = parameters.offset;
+    dT = parameters.dT;
+    sls = parameters.sls;
     legends = parameters.legends;
+
     % If no filename is given, open file browser
     if isempty(filenames)
-        filenames = [];
-        [files, folder] = uigetfile('*.mat', 'Select data files', 'MultiSelect', 'on');
-        if folder == 0  % User clicked "Cancel"
-            return;
-        end
-        if ischar(files)  % Single file selected
-            files = {files};
-        end
-        % Now files is always a cell array, process each file
-        for i = 1:length(files)
-            filename = fullfile(folder, files{i});
-            filenames = [filenames, string(filename)];
-        end
+        filenames = convertCharsToStrings(util.filename.select());
     end
     
     % Create figure
@@ -96,11 +88,9 @@ function fig = kerr(varargin)
         temp = logdata.tempcont.A;
         
         V1X = logdata.lockin.X;
-        sls = .25; %second harm lockin sensitivity
         V2 = sls*sqrt(logdata.lockin.AUX1.^2+logdata.lockin.AUX2.^2);
-        c = besselj(2,1.841)/besselj(1,1.841);
-        kerr = .5*atan(c*(V1X)./V2)*1e6; % Kerr signal, urad
-        
+        kerr = util.math.kerr(V1X, V2);
+
         if offset(1) >= offset(2)
             kerr_offset = 0;
         else
@@ -111,7 +101,7 @@ function fig = kerr(varargin)
             fprintf("%s: offset %.2d\n", legends(i), kerr_offset);
         end
         kerr = kerr - kerr_offset;
-        [T, K, K2] = util.coarse_grain(dT, temp, kerr);
+        [T, K, K2] = util.coarse.grain(dT, temp, kerr);
         errorbar(ax, T, K, K2, '.-', 'LineWidth', 1, 'DisplayName', name);
     end
     
@@ -122,7 +112,7 @@ function fig = kerr(varargin)
     else
         l = legend(ax, legends);
     end
-    set(l, 'Interpreter', 'none')
+    set(l, 'Interpreter', 'none');
     
     [~, name, ~] = fileparts(filenames(1));
     saveas(fig, sprintf('output/%s_k.png', name), 'png');

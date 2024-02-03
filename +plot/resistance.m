@@ -14,9 +14,16 @@ function resistance(varargin)
 %                   Default is .1 A.
 %
 %   Example:
-%       plot.resistance('filenames', ["2019-08-07_1.mat", ...
-%           "2019-08-07_2.mat"], 'foldername', "data");
+%       filenames = ["2019-08-07_1.mat", "2019-08-07_2.mat"];
+%       plot.resistance('filenames', filenames, 'foldername', "data");
 %
+%   Notes:
+%   - The function requires that the .mat files contain a 'logdata' 
+%     structure with fields:
+%       - tempcont.A - Temperature data.
+%       - lockinA.X - Resistance data.
+%
+
 
     %%% Parse input
     p = inputParser;

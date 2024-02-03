@@ -42,7 +42,7 @@ function cat(varargin)
     end
     filenames(end) = [];
     
-    new_filename = util.new_filename(filename, saveas, 'postfix', '-cat');
+    new_filename = util.filename.change(filename, saveas, 'postfix', '-cat');
     
     % Concatinate data
     new_data = load(filenames(1));

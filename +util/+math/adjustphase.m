@@ -1,7 +1,7 @@
-function [X, Y] = adjustPhase(x, y, angle)
+function [X, Y] = adjustphase(x, y, angle)
     % Rotates data in the complex plane by a given angle.
     %
-    % Syntax: [X_new, Y_new] = rotateInComplexPlane(X, Y, angle)
+    % Syntax: [X_new, Y_new] = adjustphase(X, Y, angle)
     %
     % Inputs:
     %   x     - Array of X coordinates.

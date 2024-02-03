@@ -1,4 +1,4 @@
-function sim_sweep(s)
+function sweepsim(s)
     %Simulates actions of sweep function and makes a plot.
     %Input s is a sweep structure with fields 'rate', 'pause', 'range'.
     

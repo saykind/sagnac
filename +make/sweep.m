@@ -13,7 +13,7 @@ function s = sweep(key, instruments, s, cnt)
                 %p: Optical power measurement, Newport 1830-C
                 %LIV:  Laser IV characteristic
                 s = struct('rate', 3, 'pause', 2, ...
-                    'range', 0:2:150);
+                    'range', 0:1:10);
             case {102, 'f'}
                 s = struct('rate', 10, 'pause', 8, ...
                     'range', 1e6*[4.81:.002:4.87]);
