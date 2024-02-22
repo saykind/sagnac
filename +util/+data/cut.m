@@ -1,7 +1,12 @@
 function cut(varargin)
-    %Data cropping/saving method
-    %   Provide new range as an argument
-    %   Written on 2022/11/02 by saykind@stanford.edu
+%Data cropping/saving method
+%   Provide new range as an argument
+%
+%   Assumes that the datafile is a .mat file with a logdata structure
+%   containing the data field named <field>: 
+%   logdata.<field> is an array of values used to crop the data.
+%
+%   Written on 2022/11/02 by saykind@stanford.edu
     
     % Acquire parameters
     p = inputParser;

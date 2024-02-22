@@ -33,6 +33,6 @@ c = clock();
 obj.logdata.timer.datetime = [obj.logdata.timer.datetime; c];
 
 d0 = obj.logdata.timer.datetime(1,:); 
-t = util.datetimeToSeconds(c-d0);
+t = util.datetimetoseconds(c-d0);
 obj.logdata.timer.time = [obj.logdata.timer.time; t];
 

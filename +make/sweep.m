@@ -12,17 +12,17 @@ function s = sweep(key, instruments, s, cnt)
                 %d: DC voltage, Keithley 2182A
                 %p: Optical power measurement, Newport 1830-C
                 %LIV:  Laser IV characteristic
-                s = struct('rate', 3, 'pause', 2, ...
-                    'range', 0:1:10);
+                s = struct('rate', 10, 'pause', 2, ...
+                    'range', 0:1:80);
             case {102, 'f'}
-                s = struct('rate', 10, 'pause', 8, ...
-                    'range', 1e6*[4.81:.002:4.87]);
+                s = struct('rate', 6, 'pause', 4, ...
+                    'range', 1e6*[4.8:.002:4.91]);
             case {97, 'a'}
-                s = struct('rate', 10, 'pause', 8, ...
-                    'range', [.01, .04:.04:1.5]);
+                s = struct('rate', 6, 'pause', 4, ...
+                    'range', [.1:.1:5]);
             case 9894   %fa: Modulation 2D sweep
-                f = 1e6*(4.7:.01:5);
-                a = [.01, .02:.04:.8];
+                f = 1e6*(4.4:.01:5.2);
+                a = [.02:.02:.8];
                 [F,A] = meshgrid(f,a);
                 [n,m] = size(F);
                 F_flat = flatten_mesh(F);
@@ -31,10 +31,10 @@ function s = sweep(key, instruments, s, cnt)
                     'range', [F_flat; A_flat], 'shape', [n,m]);
                 
             case 14520 %xy: Kerr 2D scan
-                x0 = 25;
-                y0 = 12;
-                x = x0 + (-.15:.01:.9);
-                y = y0 + (-1:.01:.8);
+                x0 = 13.;
+                y0 = 13.;
+                x = x0 + (-1.:.05:1.);
+                y = y0 + (-1.:.05:1.);
                 [X,Y] = meshgrid(x,y);
                 [n,m] = size(X);
                 X_flat = flatten_mesh(X);
@@ -211,7 +211,6 @@ function s = sweep(key, instruments, s, cnt)
                 instruments.lockinA.ramp(val);
         end
     end
-
 end
 
 function p = sweep_datapoints(s)

@@ -30,7 +30,7 @@ Matlab programs for Sagnac experiment.
 ## Code style convention
 I'm planning to clean all code here to satisfy following styling style guide
 ### Variables
-All lowercase, underscore is used to separate words for better readibility if desired.
+All lowercase, underscore is used to separate words for better readibility if desired.\
 Short and non-descriptive names are preferred over extremely long names.
 CamelCase is avoided.
 
@@ -44,15 +44,19 @@ Bad examples:
 * letter_index_in_target_words
 
 ### Functions
-All lowercase, neither underscore, nor CamelCase are used.
-Namespaces (packages) are encouraged, see [this](https://www.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html).
+Function have the same naming convetion as variables.\
+All lowercase, CamelCase is not used, underscores are allowed to separate words, but not required.\
+Namespaces (packages) are encouraged, see [this](https://www.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html).\
+Here is a [list](https://www.mathworks.com/help/matlab/referencelist.html?type=function&category=index&s_tid=CRUX_lftnav_function_index) of MATLAB built-in functions.
 
 Good examples:
 * combine
 * beamspotsize
+* beam_spot_size (less preferred)
+* calc.spotsize (namespace '+calc' is used)
+* seed2key
 
 Bad examples:
-* beam_spot_size
 * beamSpotSize
 * Beamspotsize
 

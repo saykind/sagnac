@@ -5,6 +5,7 @@ function graphics = graphics_init(key)
 %   See also:
 %       make.graphics();
 
+%FIXME rename function to CANVAS or smth like it.
 
 %% Header
 if nargin < 1, error("[make.graphics_init] Please provide seed/key."); end
@@ -1012,8 +1013,8 @@ case 1278436    %ktg: Kerr, transport, gate
 
         a = [axisA, axisB];
         ylabels = [...
-            "Ratio P_{AC}/P_0",     "DC Power, \muW"; ...
-            "Mag P_{AC}, \muW",    "Ph \theta_{AC}, deg"
+            "Ratio P_{AC}/P_0",      "DC Power, \muW"; ...
+            "P_{AC}^X, \muW",    "P_{AC}^Y, \muW"
             ];
 
         title(axisA, 'Modulation frequency sweep');
@@ -1117,8 +1118,8 @@ case 1278436    %ktg: Kerr, transport, gate
         axisB = nexttile(tl);
 
         a = [axisA, axisB];
-        axesTitles = ["DC power P_0, \muW", "Kerr signal \theta, \murad"];
-        quantities = ["log P_0", "\theta, \murad"];
+        axesTitles = ["DC power P_0, mV", "Kerr signal \theta, \murad"];
+        quantities = ["P_0, mV", "\theta, \murad"];
         xylabels = ["X, \mum",      "Y, \mum";];
 
         for i = 1:length(a)
@@ -1138,7 +1139,7 @@ case 1278436    %ktg: Kerr, transport, gate
             cb.Label.VerticalAlignment = "bottom";
         end
         colormap(axisA, parula);
-        colormap(axisB, summer);
+        colormap(axisB, cool);
         
 
 

@@ -49,20 +49,20 @@ if nargin == 1
     return
 end
 
-%% Detector responsitivity
+%% Parameters. Detector responsitivity
+sls = .1; % second harm lockin sensitivity
 %Proper modulation parameters
-f0 = 4.84;  % MHz
-a0 = 0.54;  % Vpp
-detector = '1811';
+f0 = 4.8425;  % MHz
+a0 = 0.55;  % Vpp
+detector = '1801';
 switch detector
     case '1811' % 1550 nm
         resp_dc = 10*1.04;      %   V/mW, should be 10.4 V/mW
         resp_ac = 40*1.04;      %   V/mW, should be 40.16 V/mW
-        resp_ac = 100;
         a0 = 1.1;              %   Vpp
     case '1801' % 830 nm
-        resp_dc = 1.65*1.04;    %   V/mW, should be 4.7 V/mW
-        resp_ac = 20.5*1.04;    %   V/mW, should be 18.8 V/mW
+        resp_dc = 4.7;          %   V/mW, should be 4.7 V/mW
+        resp_ac = 5.15;         %   V/mW, should be 18.8 V/mW
     case '1601' % 830 nm
         resp_dc = 10*1.04;      %   V/mW, should be 4.7 V/mW
         resp_ac = .5*1.04;      %   V/mW
@@ -223,8 +223,6 @@ switch key
         cla(axisPa); yyaxis(axisPa, 'left'); cla(axisPa);
         cla(axisPb); yyaxis(axisPb, 'left'); cla(axisPb);
 
-        sls = .25;  % second lockin sensitivity
-
         t = logdata.timer.time/60;      % Time, min
         TA = logdata.tempcont.A;         % Temp, K
         TB = logdata.tempcont.B;         % Temp, K
@@ -235,7 +233,7 @@ switch key
         V2Y = sls*1e3*logdata.lockin.AUX2;  % 2nd harm Voltage Y, mV
 
         V2 = sqrt(V2X.^2+V2Y.^2);
-        kerr = util.kerr(V1X*1e-3, V2);
+        kerr = util.math.kerr(V1X*1e-3, V2);
         
 
         % Kerr vs Time
@@ -274,9 +272,13 @@ switch key
 
         yyaxis(axisTC, 'left');
         plot(axisTC, TA, V2X, 'Color', 'r');
-        plot(axisTC, TA, V2, 'k-');
+        %plot(axisTC, TA, V2, 'k-');
         yyaxis(axisTC, 'right');
         plot(axisTC, TA, V2Y, 'Color', 'b');
+        
+        %xlim(axisTA, [-inf, 120]);
+        %xlim(axisTB, [-inf, 120]);
+        %xlim(axisTC, [-inf, 120]);
 
         % Kerr vs Temp B
         yyaxis(axisTBA, 'left');
@@ -308,7 +310,7 @@ switch key
             yyaxis(ax, 'left'); cla(ax);
         end
 
-        sls = .25;  % second lockin sensitivity
+        sls = .25;      % second lockin sensitivity
         curr = 1e-3;    % Amps
         gain = 1;
 
@@ -324,8 +326,7 @@ switch key
         r = logdata.lockinA.X/curr/gain*1e3;         % Resistnace, mOhms
 
         V2 = sqrt(V2X.^2+V2Y.^2);
-        kerr = util.kerr(V1X*1e-3, V2);
-        %[TA_, kerr_, dc_, V2_, kerr_err] = Utilities.coarse_grain(.5, TA, kerr, dc, V2);
+        kerr = util.math.kerr(V1X*1e-3, V2);
 
         % Kerr vs Time
         yyaxis(axisA, 'left');
@@ -424,7 +425,7 @@ switch key
         v = 1e3*logdata.lockinA.AUXV1;      % Output voltage, mV
 
         V2 = sqrt(V2X.^2+V2Y.^2);
-        kerr = util.kerr(V1X*1e-3, V2);
+        kerr = util.math.kerr(V1X*1e-3, V2);
 
         % Kerr vs Time
         yyaxis(axisA, 'left');
@@ -530,7 +531,7 @@ switch key
         vBx = 1e6*logdata.lockinB.X;        % Lockin A V_X, mV
 
         v2 = sqrt(v2x.^2 + v2y.^2);
-        kerr = util.kerr(v1x*1e-3, v2);
+        kerr = util.math.kerr(v1x*1e-3, v2);
         
         % Average datapoints
         n = numel(kerr);
@@ -644,8 +645,12 @@ switch key
             yyaxis(ax, 'left'); cla(ax);
         end
 
-        sls = .25;                                      % second lockin sensitivity
+        sls = .25;  % second lockin sensitivity
+        sls = 1;
         splitter = .673;
+        %splitter = 1;
+        resp_dc = 4.7;
+        resp_ac = 5;
 
         f   = logdata.waveform.freq*1e-6;               % Freq, MHz
         P0  = 1e3*abs(logdata.voltmeter.v1)/resp_dc;    % DC Power, uW
@@ -653,21 +658,29 @@ switch key
         PY = 1e3*logdata.lockin.Y/splitter/resp_ac;     % AC Power Y, uW
         PR  = 1e3*logdata.lockin.R/splitter/resp_ac;    % AC Power R, uW
         PQ = logdata.lockin.Q;                          % AC Power Q, deg
+        % Calculate kerr
+        P2X = sls*logdata.lockin.AUX1/resp_ac;      % AC Power X, uW
+        P2Y = sls*logdata.lockin.AUX2/resp_ac;      % AC Power X, uW
+        P2 = sqrt(P2X.^2+P2Y.^2);
+        K  = util.math.kerr(PX, P2);
 
         yyaxis(axisA, 'left');
         plot(axisA, f, PR./P0, 'r.-');
+        %plot(axisA, f, P2./P0, 'bx-');
         yyaxis(axisA, 'right');
         plot(axisA, f, P0, 'b.-');
         
+        %legend(axisA, ["1\omega mag", "2\omega mag"]);
+        
         yyaxis(axisB, 'left');
-        plot(axisB, f, PR, 'r');
+        plot(axisB, f, PX, 'r.-');
         yyaxis(axisB, 'right');
-        plot(axisB, f, PQ, 'b');
+        plot(axisB, f, PY, 'b.-');
         
         % Theoretical values
         a  = a0;
         phi = 2*0.92*a/a0*sin(pi/2*f/f0);
-        theta = 1e-5;
+        theta = 0;
         p0 = 1+besselj(0,phi);
         p = 2*besselj(1,phi)*theta;
         %p = 2*besselj(2,phi);
@@ -675,14 +688,14 @@ switch key
         A = P0(1)/p0(1);
         
         yyaxis(axisA, 'left');
-        plot(axisA, f, abs(p)./p0, 'r--');
+        %plot(axisA, f, abs(p), 'r--');
         yyaxis(axisA, 'right');
-        plot(axisA, f, A*p0, 'b--');
+        %plot(axisA, f, A*p0, 'b--');
 
         yyaxis(axisB, 'left');
-        plot(axisB, f, A*abs(p), 'r--');
+        plot(axisB, f, A*p, 'r--');
         yyaxis(axisB, 'right');
-        plot(axisB, f, ph,'b--');
+        %plot(axisB, f, ph,'b--');
 
 
     case 97     %a: Modulation amplitude sweep
@@ -695,7 +708,10 @@ switch key
 
         sls = .25;  % second lockin sensitivity
         splitter = .673;
-        %splitter = 1;
+        splitter = 1;
+        resp_dc = 4.7;
+        resp_ac = 5;
+
 
         a  = logdata.waveform.ampl;                    % Amplitude Vpp, V
         P0 = 1e3*logdata.voltmeter.v1/resp_dc;         % DC Power, uW
@@ -704,11 +720,18 @@ switch key
         PY = 1e3*logdata.lockin.Y/splitter/resp_ac;    % AC Power Y, uW
         PR = 1e3*logdata.lockin.R/splitter/resp_ac;    % AC Power R, uW
         PQ = logdata.lockin.Q;                         % Ac Power Q, deg
+        
+        P2X = sls*logdata.lockin.AUX1/splitter/resp_ac;      % AC Power X, uW
+        P2Y = sls*logdata.lockin.AUX2/splitter/resp_ac;      % AC Power X, uW
+        P2 = sqrt(P2X.^2+P2Y.^2);
 
         yyaxis(axisA, 'left');
         plot(axisA, a, PR./P0, 'r.-');
+        plot(axisA, a, P2./P0, 'rx-');
         yyaxis(axisA, 'right');
         plot(axisA, a, P0, 'b.-');
+        
+        legend(axisA, ["1\omega mag", "2\omega mag"]);
         
         yyaxis(axisB, 'left');
         plot(axisB, a, PR, 'r.-');
@@ -718,19 +741,19 @@ switch key
         % Theoretical values
         f = f0;
         phi = 2*0.92*a/a0*sin(pi/2*f/f0);
-        theta = 6e-5;
+        theta =0;
         p0 = 1+cos(2*theta)*besselj(0,phi);
-        p = 2*besselj(1,phi)*sin(theta);
-        %p = 2*besselj(2,phi)*cos(theta);
+        %p = 2*besselj(1,phi)*sin(theta);
+        p = 2*besselj(2,phi)*cos(theta);
         A  = P0(1)/p0(1);
         
         yyaxis(axisA, 'left');
-        plot(axisA, a, abs(p)./p0, 'r--');
+        %plot(axisA, a, abs(p)./p0, 'r--');
         yyaxis(axisA, 'right');
-        plot(axisA, a, A*p0, 'b--');
+        %plot(axisA, a, A*p0, 'b--');
         
         yyaxis(axisB, 'left');
-        plot(axisB, a, A*abs(p), 'r--');
+        %plot(axisB, a, A*abs(p), 'r--');
 
         
         
@@ -797,7 +820,7 @@ switch key
         V2X  = 1e3*logdata.lockin.AUX1*sls;                 % 2nd harm Power R, uW
         V2Y  = 1e3*logdata.lockin.AUX2*sls;                 % 2nd harm Power R, uW
         V2   = sqrt(V2X.^2+V2Y.^2);
-        kerr = util.kerr(V1X, V2);
+        kerr = util.math.kerr(V1X, V2);
         
         n = numel(kerr);
         k = logdata.sweep.rate-logdata.sweep.pause;
@@ -848,18 +871,17 @@ switch key
         cla(axisA);
         cla(axisB);
 
-        resp_dc = 10*1.04;   %   V/mW
-        resp_ac = 40*1.04;   %   V/mW
-        sls = .26;  % second lockin sensitivity
+        resp_dc = 4.7;   %   V/mW
+        resp_ac = 5.15;   %   V/mW
         splitter = .673;
 
-        p0  = 1e3*logdata.voltmeter.v1/resp_dc; % DC Power, uW
+        p0  = 1e3*logdata.voltmeter.v1;                 % DC Power, uW
         V1X = 1e3*logdata.lockin.X;                     % 1st harm Power X, uW
         V1Y = 1e3*logdata.lockin.Y;                     % 1st harm Power Y, uW
         V2X  = 1e3*logdata.lockin.AUX1*sls;             % 2nd harm Power R, uW
         V2Y  = 1e3*logdata.lockin.AUX2*sls;             % 2nd harm Power R, uW
         V2   = sqrt(V2X.^2+V2Y.^2);
-        kerr = util.kerr(V1X, V2);
+        kerr = util.math.kerr(V1X, V2);
         
         n = numel(kerr);
         k = logdata.sweep.rate-logdata.sweep.pause;
@@ -875,8 +897,6 @@ switch key
             x = x - 1e3*logdata.sweep.origin(1);
             y = y - 1e3*logdata.sweep.origin(2);
         end
-        %x = x - 140;
-        %y = y + 874;
         
         X = util.mesh.combine(x, shape);
         Y = util.mesh.combine(y, shape);
@@ -893,29 +913,65 @@ switch key
         if n_curr ~= n0, kerr(n_curr:end) = kerr(1); end
         KERR = util.mesh.combine(kerr, shape);
         
-        P0 = log(P0);
+        %P0 = log(P0);
+        % Mask low power points
+        P0_cutoff = 150;
+        P0_maxlim = inf;
+        n_cutoff = fix(n0/4);
+        if n_curr > n_cutoff
+            low_power_idx = P0 < P0_cutoff;
+            if any(low_power_idx, 'all')
+                kerr_max = max(KERR(~low_power_idx));
+                kerr_min = min(KERR(~low_power_idx));
+                kerr_bad = mean([kerr_max kerr_min]) + kerr_max-kerr_min;
+                KERR(low_power_idx) = kerr_bad;
+            end
+        end
         
         axis(axisA, 'tight');
         axis(axisB, 'tight');
         surf(axisA, X, Y, P0, 'EdgeAlpha', .2);
         surf(axisB, X, Y, KERR, 'EdgeAlpha', .2);
         
+        if n_curr > n_cutoff
+            low_power_idx = P0 < P0_cutoff;
+            if any(low_power_idx, 'all')
+                caxis(axisA, [P0_cutoff P0_maxlim]); %Renamed to caxis in R2022a
+                zlim(axisA, [P0_cutoff inf]);
+                caxis(axisB, [kerr_min kerr_max]); %Renamed to caxis in R2022a
+                zlim(axisB, [kerr_min kerr_max]);
+            end
+            if n_curr == n0
+                fprintf("kerr_avg = %.1f urad.\n", mean(KERR(~low_power_idx)));
+                fprintf("kerr_std = %.1f urad.\n", std(KERR(~low_power_idx)));
+            end
+        else
+            caxis(axisA, [-inf inf]);  %Renamed to caxis in R2022a
+            caxis(axisB, [-inf inf]); %Renamed to caxis in R2022a
+        end
+                
+        
+        %caxis(axisB, [-1 7]);
+        %zlim(axisB, [-1 7]);
+        
+        
         if n_curr == n0
-            figure('Units', 'centimeters', 'Position',  [0, 0, 16, 16]);
-            imagesc([min(X) max(X)], [min(Y) max(Y)], flip(P0,1));
-            axis equal;
-            axis off;
+            %figure('Units', 'centimeters', 'Position',  [0, 0, 16, 16]);
+            %imagesc([min(X) max(X)], [min(Y) max(Y)], flip(P0,1));
+            %caxis([P0_cutoff inf]);
+            %axis equal;
+            %axis off;
+            
+            %figure('Units', 'centimeters', 'Position',  [0, 0, 16, 16]);
+            %imagesc([min(X) max(X)], [min(Y) max(Y)], flip(KERR,1));
+            %axis equal;
+            %axis off;
+            %colormap(summer);
             
             figure('Units', 'centimeters', 'Position',  [0, 0, 16, 16]);
-            imagesc([min(X) max(X)], [min(Y) max(Y)], flip(KERR,1));
-            axis equal;
-            axis off;
-            colormap(summer);
-            
-            figure('Units', 'centimeters', 'Position',  [0, 0, 16, 16]);
-            xlabel('Log P0');
-            ylabel('\theta, \murad');
             plot(reshape(P0,1,[]), reshape(KERR,1,[]), '.');
+            xlabel('P0, mV');
+            ylabel('\theta, \murad');
         end
         
     case 105    %i: Laser intensity sweep
@@ -1046,7 +1102,7 @@ switch key
         % New Focus 1601, 830 nm
         %sensitivity = -4.7;   % V/mW
         % New Focus 1801, 830 nm
-        sensitivity = 4.7;   % V/mW
+        %sensitivity = 4.7;   % V/mW
 
         % Thorlabs PDA100A2, 50 dB gain, Hi-Z, 830 nm
         %sensitivity = 1e-3*4.75*1e5*0.63;   % V/mW
@@ -1055,7 +1111,7 @@ switch key
         %sensitivity = 1e-3*4.75*1e4*0.63;   % V/mW
         
         % Thorlabs PDA100A2, 20 dB gain, Hi-Z, 830 nm
-        %sensitivity = 1e-3*1.51*1e4*0.63;   % V/mW
+        sensitivity = 1e-3*1.51*1e4*0.63;   % V/mW
 
         % Thorlabs PDA100A2, 10 dB gain, Hi-Z, 830 nm
         %sensitivity = 1e-3*4.75*1e3*0.63;   % V/mW

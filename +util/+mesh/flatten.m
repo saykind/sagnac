@@ -1,4 +1,4 @@
-function z = flatten_mesh(Z)
+function z = flatten(Z)
     [n, m] = size(Z);
     n0 = n*m;
     z = zeros(1,n0);
