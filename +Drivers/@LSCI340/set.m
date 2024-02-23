@@ -2,8 +2,8 @@ function obj = set(obj, varargin)
     %Parameter set method
     %
     %   Usage example:
-    %   obj.set('fequency', 5e6);
-    %   obj.set('amplitude', 1);
+    %   tempcont.set('fequency', 5e6);
+    %   tempcont.set('amplitude', 1);
 
     % Acquire parameters
     p = inputParser;
@@ -63,7 +63,7 @@ function obj = set(obj, varargin)
     end
     
     if ~isempty(parameters.S)
-        obj.write(sprintf("setp 1, %d", parameters.S));
+        obj.write(sprintf("SETP 1, %d", parameters.S));
     end
     
 end

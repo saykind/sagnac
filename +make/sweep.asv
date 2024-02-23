@@ -33,15 +33,15 @@ function s = sweep(key, instruments, s, cnt)
             case 14520 %xy: Kerr 2D scan
                 x0 = 13.;
                 y0 = 13.;
-                x = x0 + (0:.004:.04);
-                y = y0 + (-.02:.004:.02);
+                x = x0 + (-.:.05:.8);
+                y = y0 + (-.7:.05:.8);
                 [X,Y] = meshgrid(x,y);
                 [n,m] = size(X);
                 X_flat = flatten_mesh(X);
                 Y_flat = flatten_mesh(Y);
                 %DC measurement min rate is 3s, pause 2s
                 %Kerr measurement min rate is 9s, pause 8s
-                s = struct('rate', 20, 'pause', 6, ...
+                s = struct('rate', 2, 'pause', 2, ...
                     'range', [X_flat; Y_flat], 'shape', [n,m], ...
                     'origin', [x0, y0]);
 

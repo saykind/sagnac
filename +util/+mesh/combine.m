@@ -3,7 +3,7 @@ function Z = combine(z, shape)
     m = shape(2);
     n0 = n*m;
     if numel(z) ~= n0
-        error("[mesh.combine] Incorrect shape.");
+        error("[mesh.combine] The number of elements in array must be equal to the number of elements in the shape.");
     end
     Z = zeros(n,m);
     for i0 = 0:n0-1

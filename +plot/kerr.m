@@ -6,9 +6,7 @@ function fig = kerr(varargin)
 %   Name-Value Pair Arguments:
 %   - 'filenames'   : default []
 %                   : filename to load.
-%                     When filenames is empty, file browser open,
-%                     It continues to reopen after file is selected,
-%                     to allow multiple file selction.
+%                     When filenames is empty, file browser open.
 %   - 'range'       : default [-inf,inf] 
 %                   : Temperature range to plot (uses logdata.tempcont.A).
 %   - 'offset'      : default [-inf,inf] 
@@ -20,6 +18,8 @@ function fig = kerr(varargin)
 %   - 'sls'         : default 0.25
 %                   : Scalar specifying the second harmonic lockin
 %                     sensitivity in Volts.
+%   - 'errorbar'    : default true
+%                     Logical specifying whether to plot with error bars.
 %   - 'legend'      : default []
 %                   : String array of legends for each dataset. 
 %                     If empty or not provided, the file names 
@@ -42,7 +42,7 @@ function fig = kerr(varargin)
 %   - The Kerr signal is calculated using the formula:
 %     Kerr = 0.5 * atan(c * (V1X) ./ V2) * 1e6 (in microradians),
 %     where c is a constant calculated using Bessel functions.
-%   - The function uses the 'util.coarse_grain' function for coarse-graining.
+%   - The function uses the 'util.coarse.grain' function for coarse-graining.
 %   - The figure is saved in the 'output' directory with the name format:
 %     <first_filename>_k.png.
 %
@@ -55,6 +55,7 @@ function fig = kerr(varargin)
     addParameter(p, 'offset', [-inf, inf], @isnumeric);
     addParameter(p, 'dT', .4, @isnumeric);
     addParameter(p, 'sls', .25, @isnumeric);
+    addParameter(p, 'errorbar', true, @islogical);
     addParameter(p, 'legends', [], @isstring);
     parse(p, varargin{:});
     parameters = p.Results;
@@ -64,6 +65,7 @@ function fig = kerr(varargin)
     offset = parameters.offset;
     dT = parameters.dT;
     sls = parameters.sls;
+    plot_errorbar = parameters.errorbar;
     legends = parameters.legends;
 
     % If no filename is given, open file browser
@@ -102,7 +104,11 @@ function fig = kerr(varargin)
         end
         kerr = kerr - kerr_offset;
         [T, K, K2] = util.coarse.grain(dT, temp, kerr);
-        errorbar(ax, T, K, K2, '.-', 'LineWidth', 1, 'DisplayName', name);
+        if plot_errorbar
+            errorbar(ax, T, K, K2, '.-', 'LineWidth', 1, 'DisplayName', name);
+        else
+            plot(ax, T, K, '.-', 'LineWidth', 1, 'DisplayName', name);
+        end
     end
     
     ylabel(ax, '\DeltaKerr (\murad)');

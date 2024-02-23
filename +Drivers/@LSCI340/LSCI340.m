@@ -26,6 +26,8 @@ classdef (Sealed = true) LSCI340 < Drivers.Device% FIXME
         rampRate;                   %   Ramping rate [Internal]
         A;                          %   Temperature A (K)
         B;                          %   Temperature B (K)
+        S;                          %   Setpoint temperature (K)
+        heater;                     %   Heater power (%)
     end
     
     methods
@@ -45,27 +47,16 @@ classdef (Sealed = true) LSCI340 < Drivers.Device% FIXME
             
             obj.update();
         end
+
+        ramp(obj, setp, rate)               %   Ramp temperature to setpoint 
+        room(obj)                           %   Warmup to room temperature
         
-        function ramp(obj, setp, rate)
-            if nargin < 2
-                rate = obj.get('rampRate');
-                isRampOn = obj.get('rampOn');
-                obj.write(sprintf("RAMP %d, %d, %.2f", ...
-                    obj.loop, ~isRampOn, rate));
-                return;
-            end
-            if nargin < 3, rate = obj.rampRate; end
-            if rate < 0.1, rate = 0.1; end
-            if rate > 100, rate = 100; end
-            obj.rampRate = rate;
-            
-            if obj.get('heaterRange') == 0
-                obj.set('heaterRange', 4);
-            end
-            
-            obj.write(sprintf("RAMP %d, 1, %f", obj.loop, rate));
-            obj.set('S', setp);
-        end
+
+        % Getters
+        function ta = get.A(obj), ta = obj.get('A'); end
+        function tb = get.B(obj), tb = obj.get('B'); end
+        function s = get.S(obj), s = obj.get('S'); end
+        function h = get.heater(obj), h = obj.get('heater'); end
     end
 end
 

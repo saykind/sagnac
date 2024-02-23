@@ -76,6 +76,7 @@ classdef (Sealed = true) LSCI331 < Drivers.Device
             
             obj.update();
         end
+        
         function ramp(obj, setp, rate)
             if nargin < 2
                 rate = obj.get('rampRate');

@@ -50,7 +50,7 @@ if nargin == 1
 end
 
 %% Parameters. Detector responsitivity
-sls = .025; % second harm lockin sensitivity
+sls = .1; % second harm lockin sensitivity
 %Proper modulation parameters
 f0 = 4.8425;  % MHz
 a0 = 0.55;  % Vpp
@@ -917,7 +917,7 @@ switch key
         % Mask low power points
         P0_cutoff = 150;
         P0_maxlim = inf;
-        n_cutoff = 5*fix(n0/4);
+        n_cutoff = fix(n0/4);
         if n_curr > n_cutoff
             low_power_idx = P0 < P0_cutoff;
             KERR_good = KERR(~low_power_idx);
@@ -938,9 +938,9 @@ switch key
             low_power_idx = P0 < P0_cutoff;
             if any(low_power_idx, 'all')
                 zlim(axisA, [P0_cutoff inf]);
-                caxis(axisA, [P0_cutoff P0_maxlim]); %Renamed to clim in R2022a
+                caxis(axisA, [P0_cutoff P0_maxlim]); %Renamed to caxis in R2022a
                 zlim(axisB, [kerr_min kerr_max]);
-                caxis(axisB, [kerr_min kerr_max]); %Renamed to clim in R2022a
+                caxis(axisB, [kerr_min kerr_max]); %Renamed to caxis in R2022a
             end
             if n_curr == n0
                 kerr_std = std(KERR(~low_power_idx));
@@ -949,18 +949,21 @@ switch key
                 fprintf("kerr_std = %.1f urad.\n", kerr_std);
             end
         else
-            caxis(axisA, [-inf inf]);  %Renamed to clim in R2022a
-            caxis(axisB, [-inf inf]); %Renamed to clim in R2022a
+            caxis(axisA, [-inf inf]);  %Renamed to caxis in R2022a
+            caxis(axisB, [-inf inf]); %Renamed to caxis in R2022a
         end
                 
         
+        %caxis(axisB, [-1 7]);
+        %zlim(axisB, [-1 7]);
         
-        if n_curr > n0
-            figure('Units', 'centimeters', 'Position',  [0, 0, 16, 16]);
-            imagesc([min(X) max(X)], [min(Y) max(Y)], flip(P0,1));
-            caxis([P0_cutoff inf]);
-            axis equal;
-            axis off;
+        
+        if n_curr == n0
+            %figure('Units', 'centimeters', 'Position',  [0, 0, 16, 16]);
+            %imagesc([min(X) max(X)], [min(Y) max(Y)], flip(P0,1));
+            %caxis([P0_cutoff inf]);
+            %axis equal;
+            %axis off;
             
             %figure('Units', 'centimeters', 'Position',  [0, 0, 16, 16]);
             %imagesc([min(X) max(X)], [min(Y) max(Y)], flip(KERR,1));
@@ -974,7 +977,7 @@ switch key
             plot(P0, KERR, '.');
             xlabel('P0, mV');
             ylabel('\theta, \murad');
-            xlim([max([P0_cutoff, min(P0)]), inf]);
+            xlim([max(P0_cutoff, min(p)) inf]);
             
             if n_curr > n_cutoff
                 figure('Units', 'centimeters', 'Position',  [0, 0, 26, 16]);

@@ -1,4 +1,4 @@
-function filename = filename(foldername)
+function filename = new(foldername)
 %Creates filename string based on current date and time
 
     if nargin < 1

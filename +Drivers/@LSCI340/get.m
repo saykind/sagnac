@@ -1,9 +1,9 @@
 function varargout = get(obj, varargin)
-    %Parameter set method
+    %Parameter/field get method
     %
     %   Usage example:
-    %   mag = obj.read('R');
-    %   [X, Y] = lockin.read('X', 'Y');
+    %   mag = obj.get('R');
+    %   [X, Y] = tempcont.get('X', 'Y');
 
     for i = 1:(nargin-1)
         switch varargin{i}
@@ -27,10 +27,15 @@ function varargout = get(obj, varargin)
                 %obj.rampRate = rr(2);
                 varargout{i} = rr(2);
             case {'rampOn', 'ramp'}
-                rr = str2num(obj.query("RAMP?")); %#ok<ST2NM>
+                rr = str2num(obj.query("RAMP? 1")); %#ok<ST2NM>
                 %obj.rampOn = rr(1);
                 %obj.rampRate = rr(2);
                 varargout{i} = rr(1);
+            case {'S', 'setpoint'}
+                s = str2double(obj.query("SETP? 1"));
+                %obj.S = s;
+                varargout{i} = s;
+
         end
     end
 
