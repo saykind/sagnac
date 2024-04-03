@@ -59,7 +59,7 @@ classdef SR830 < Drivers.Device
         %at specified rate (V/s).
         %Default rate is 0.01 V/s
             if nargin < 2, return; end
-            if nargin < 3, rate = 0.01; end
+            if nargin < 3, rate = 0.02; end
             if nargin < 4, period = .5; end
             
             obj.rampInfo = {};

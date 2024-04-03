@@ -1189,6 +1189,55 @@ case 1278436    %ktg: Kerr, transport, gate
 
         a = [axisA, axisB, axisC];
 
+        
+    case 11128    %hk: magnetic vs kerr
+        set(f,  'Position',  [0, 0, 24, 25]);
+        tl = tiledlayout(f,3,1);
+
+        axisA = nexttile(tl);
+        hold(axisA, 'on');
+        grid(axisA, 'on');
+        title(axisA, 'Magnetic field sweep');
+        set(axisA, 'Units', 'centimeters');
+        set(axisA, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisA, 'right');
+        set(axisA, 'YColor', 'b');
+        ylabel(axisA, "DC Voltage, mV");
+        yyaxis(axisA, 'left');
+        set(axisA, 'YColor', 'r');
+        ylabel(axisA, "Kerr, \murad");
+        xlabel(axisA, 'Magnetic Field, mT');
+
+        axisB = nexttile(tl);
+        hold(axisB, 'on');
+        grid(axisB, 'on');
+        set(axisB, 'Units', 'centimeters');
+        set(axisB, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisB, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisB, 'right');
+        set(axisB, 'YColor', 'b');
+        ylabel(axisB, "1\omega Voltage Y, \muV");
+        yyaxis(axisB, 'left');
+        set(axisB, 'YColor', 'r');
+        ylabel(axisB, "1\omega Voltage X, \muV");
+        xlabel(axisB, 'Magnet Current, mA')
+
+        axisC = nexttile(tl);
+        hold(axisC, 'on');
+        grid(axisC, 'on');
+        set(axisC, 'Units', 'centimeters');
+        set(axisC, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisC, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisC, 'right');
+        set(axisC, 'YColor', 'b');
+        ylabel(axisC, "Temperature A, K");
+        yyaxis(axisC, 'left');
+        set(axisC, 'YColor', 'r');
+        ylabel(axisC, "Temperature B, K");
+        xlabel(axisC, "Time, min");
+
+        a = [axisA, axisB, axisC];
+        
 
     case 121    %y: magnetic field sweep
         set(f,  'Position',  [0, 0, 24, 15]);
@@ -1530,6 +1579,34 @@ case 1278436    %ktg: Kerr, transport, gate
         hold(ax, 'on');
         grid(ax, 'on');
         a = ax;
+        
+    case 11286  %cr: Capacitance, resistance vs voltage
+        set(f,  'Position',  [0, 0, 25, 15]);
+        tl = tiledlayout(f,2,1);
+        axisA = nexttile(tl);
+        axisB = nexttile(tl);
+        a = [axisA, axisB];
+        ylabels = [...
+            "Capacitance, pF",      "Strain, %"; ...
+            "Resistance, mOhm",     "Voltage, mV"; ...
+            ];
+        xlabel(axisB, "Voltage, mV");
+        for i = 1:length(a)
+            ax = a(i);
+            set(ax, ...
+                'FontSize', 12, ...
+                'FontName', 'Arial', ...
+                'XGrid', 'on', ...
+                'YGrid', 'on', ...
+                'Box', 'off', ...
+                'YColor', 'r');
+            yyaxis(ax, 'left'); set(ax, 'YColor', 'r');
+            ylabel(ax, ylabels(i,1));
+            yyaxis(ax, 'right'); set(ax, 'YColor', 'b');
+            ylabel(ax, ylabels(i,2));
+            hold(ax, 'on');
+            grid(ax, 'on');
+        end
         
     case 11832  %tf: Transport freq sweep
         set(f,  'Position',  [0, 0, 24, 15]);

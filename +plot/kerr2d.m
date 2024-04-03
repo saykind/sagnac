@@ -12,9 +12,11 @@ function fig = kerr2d(varargin)
 %                     sensitivity in Volts.
 %   - 'offset'      : default 0 (urad)
 %                   : Scalar specifying the offset in the Kerr signal.
-%   - 'cutoff'      : default 0.01 (V)
+%   - 'cutoff'      : default 0 (Volts)
 %                   : Scalar specifying the dc voltage V0 cutoff in Volts.
 %                     Data points with V0 < cutoff are ignored.
+%   - 'clim'        : default []
+%                   : 2-element vector specifying the color limits.
 %   - 'surf'        : default false
 %                   : Logical specifying whether to make a surface plot or image.
 %   - 'axis'        : default true
@@ -60,7 +62,8 @@ function fig = kerr2d(varargin)
     addParameter(p, 'filenames', [], @isstring);
     addParameter(p, 'sls', .25, @isnumeric);
     addParameter(p, 'offset', 0, @isnumeric);
-    addParameter(p, 'cutoff', .01, @isnumeric);
+    addParameter(p, 'cutoff', 0, @isnumeric);
+    addParameter(p, 'clim', [], @isnumeric);
     addParameter(p, 'surf', false, @islogical);
     addParameter(p, 'axis', true, @islogical);
     addParameter(p, 'interpolate', 2, @isnumeric);
@@ -73,6 +76,7 @@ function fig = kerr2d(varargin)
     sls = parameters.sls;
     offset = parameters.offset;
     v0_cutoff = parameters.cutoff; %FIXME implement cutoff
+    climit = parameters.clim;
     plot_surf = parameters.surf;
     show_axis = parameters.axis;
     interp_factor = parameters.interpolate;
@@ -127,16 +131,14 @@ function fig = kerr2d(varargin)
     kerr = mean(reshape(kerr, shape_avg), 1);
     v0 = mean(reshape(v0, shape_avg), 1);
 
+    % Substract kerr offset
+    if offset ~= 0
+        kerr = kerr - offset;
+    end
+
     V0 = util.mesh.combine(v0, shape_xy);
     KERR = util.mesh.combine(kerr, shape_xy);
 
-    % Substract kerr offset
-    if offset ~= 0
-        KERR = kerr - offset;
-        if ~isempty(legends)
-            fprintf("%s: offset %.2d\n", legends, offset);
-        end
-    end
 
     %% Plot histogram and dc data
     if plot_histogram
@@ -158,6 +160,12 @@ function fig = kerr2d(varargin)
         Y = Yq;
     end
 
+    %% Ignore data points with V0 < cutoff
+    if v0_cutoff > 0
+        mask = V0 < v0_cutoff;
+        KERR(mask) = NaN;
+    end
+
     %% Plot kerr data
     if plot_surf
         [fig, ax] = plot_kerr_surf(X, Y, KERR);
@@ -166,6 +174,15 @@ function fig = kerr2d(varargin)
     end
     if ~show_axis
         axis(ax, 'off');
+    end
+
+    if ~isempty(climit)
+        % check matlab version
+        if verLessThan('matlab', '9.12')
+            caxis(ax, climit);
+        else
+            clim(ax, climit);
+        end
     end
     
     %% Save plot
@@ -186,7 +203,7 @@ function [fig, ax] = plot_kerr_surf(X, Y, KERR)
     hold(ax, 'on'); 
     grid(ax, 'on');
     set(ax, 'FontSize', 12, 'FontName', 'Arial');
-    set(ax, 'DataAspectRatio', [1 1 1]);
+    %set(ax, 'DataAspectRatio', [1 1 1]);
     xlabel(ax, "X, \mum");
     ylabel(ax, "Y, \mum");
     title(ax, "Kerr Signal \theta, \murad");

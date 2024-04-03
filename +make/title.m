@@ -22,6 +22,8 @@ switch key
         title = "Transport";
     case 11682  %cv: Capacitance vs voltage
         title = "Strain cell capacitance";
+    case 11286  %cr: Capacitance, resistance vs voltage
+        title = "Strain cell capacitance";
 
     case 112    %p: optical power using Newport 1830-C
         title = "Optical power measurement";
@@ -42,6 +44,8 @@ switch key
         title = "Kerr and Transport";
     case 1278436%ktg: Kerr, transport, gate
         title = "Kerr vs Gate";
+    case 11128  %hk: Kerr vs field, hysteresis test
+        title = "Kerr vs Field";
     case 121    %y: Kerr vs field, hysteresis test
         title = "Hysteresis Kerr";
     case 1228788    %ktc: kerr, transport, capacitance

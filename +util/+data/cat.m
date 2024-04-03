@@ -32,16 +32,10 @@ function cat(varargin)
     
     % If no filename is given, open file browser
     if isempty(filenames)
-        filenames = [];
-        folder = 1;
-        while folder ~= 0 
-            [basefilename, folder] = uigetfile('*.mat', 'Select data file');
-            filename = fullfile(folder, basefilename);
-            filenames = [filenames, string(filename)];
-        end
+        filenames = convertCharsToStrings(util.filename.select());
     end
-    filenames(end) = [];
     
+    filename = filenames(1);
     new_filename = util.filename.change(filename, saveas, 'postfix', '-cat');
     
     % Concatinate data

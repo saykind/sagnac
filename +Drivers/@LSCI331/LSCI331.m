@@ -97,6 +97,12 @@ classdef (Sealed = true) LSCI331 < Drivers.Device
             obj.write(sprintf("RAMP %d, 1, %f", obj.loop, rate));
             obj.set('S', setp);
         end
+
+        % Getters
+        function ta = get.A(obj), ta = obj.get('A'); end
+        function tb = get.B(obj), tb = obj.get('B'); end
+        function s = get.S(obj), s = obj.get('S'); end
+        function h = get.heater(obj), h = obj.get('heater'); end
     end
 end
 

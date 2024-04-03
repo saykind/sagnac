@@ -1,4 +1,4 @@
-function cut(varargin)
+function crop1(varargin)
 %Data cropping/saving method
 %   Provide new range as an argument
 %

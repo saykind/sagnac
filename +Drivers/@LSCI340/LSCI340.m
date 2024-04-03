@@ -57,6 +57,9 @@ classdef (Sealed = true) LSCI340 < Drivers.Device% FIXME
         function tb = get.B(obj), tb = obj.get('B'); end
         function s = get.S(obj), s = obj.get('S'); end
         function h = get.heater(obj), h = obj.get('heater'); end
+
+        % Setters
+        %TODO: write sset for A --> ramp to A
     end
 end
 

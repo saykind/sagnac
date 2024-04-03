@@ -50,11 +50,11 @@ if nargin == 1
 end
 
 %% Parameters. Detector responsitivity
-sls = .025; % second harm lockin sensitivity
+sls = .1; % second harm lockin sensitivity
 %Proper modulation parameters
 f0 = 4.8425;  % MHz
 a0 = 0.55;  % Vpp
-detector = '1801';
+detector = 'APD430C-4';
 switch detector
     case '1811' % 1550 nm
         resp_dc = 10*1.04;      %   V/mW, should be 10.4 V/mW
@@ -68,7 +68,13 @@ switch detector
         resp_ac = .5*1.04;      %   V/mW
     case 'PDA'  % 830 nm
         resp_dc = 1e-3*1.51*1e3*0.63;  %V/mW
+    case 'APD430C-4'
+        resp_dc = 36;           %   V/mW
+    case 'APD430C-20'
+        resp_dc = 180;          %   V/mW
 end
+
+coil_const = 23.5;   %mT/A
 
 
 %% Given graphics, draw a plot    
@@ -105,7 +111,6 @@ switch key
             yyaxis(ax, 'left'); cla(ax);
         end
 
-        sls = .25;  % second lockin sensitivity
 
         t = logdata.timer.time/60;          % Time, min
         dc = 1e3*logdata.voltmeter.v1;      % DC voltage, mV
@@ -146,7 +151,6 @@ switch key
             yyaxis(ax, 'left'); cla(ax);
         end
 
-        sls = .26;                      % Second lockin sens, V
         t = logdata.timer.time/60;      % Time, min
         dc = 1e3*logdata.voltmeter.v1;  % DC voltage, mV
         V2X = 1e3*logdata.lockin.X;     % 2nd harm Voltage X, uV
@@ -227,14 +231,24 @@ switch key
         TA = logdata.tempcont.A;         % Temp, K
         TB = logdata.tempcont.B;         % Temp, K
         dc = 1e3*logdata.voltmeter.v1;  % DC voltage, mV
-        V1X = 1e6*logdata.lockin.X;     % 1st harm Voltage X, uV
-        V1Y = 1e6*logdata.lockin.Y;     % 1st harm Voltage Y, uV
-        V2X = sls*1e3*logdata.lockin.AUX1;  % 2nd harm Voltage X, mV
-        V2Y = sls*1e3*logdata.lockin.AUX2;  % 2nd harm Voltage Y, mV
-
+        V1X = 1e3*logdata.lockin.X;     % 1st harm Voltage X, uV
+        V1Y = 1e3*logdata.lockin.Y;     % 1st harm Voltage Y, uV
+        V2X = 1e3*logdata.lockin.AUX1;  % 2nd harm Voltage X, mV
+        V2Y = 1e3*logdata.lockin.AUX2;  % 2nd harm Voltage Y, mV
         V2 = sqrt(V2X.^2+V2Y.^2);
-        kerr = util.math.kerr(V1X*1e-3, V2);
+        try
+            sls = util.data.sls(dc, V2);
+            %disp(sls);
+        catch
+            disp("Wasn't able to find correct lockin sensitivity;")
+        end
+        V2X = sls*V2X;
+        V2Y = sls*V2Y;
+        V2 = sls*V2;
         
+        kerr = util.math.kerr(V1X, V2);
+        V1X = 1e3*V1X;
+        V1Y = 1e3*V1Y;
 
         % Kerr vs Time
         yyaxis(axisA, 'left');
@@ -310,8 +324,7 @@ switch key
             yyaxis(ax, 'left'); cla(ax);
         end
 
-        sls = .25;      % second lockin sensitivity
-        curr = 1e-3;    % Amps
+        curr = .2e-3;    % Amps
         gain = 1;
 
         t = logdata.timer.time/60;      % Time, min
@@ -404,8 +417,7 @@ switch key
             yyaxis(ax, 'left'); cla(ax);
         end
 
-        sls = .25;  % second lockin sensitivity
-        curr = .1;    % Amps
+        curr = .2e-3;    % Amps
         L_gap = 50;                                     % um
         L_smp = 1500;                                   % um
         
@@ -514,8 +526,7 @@ switch key
             yyaxis(ax, 'left'); cla(ax);
         end
 
-        sls = .25;                          % 2nd harm lockin sensitivity
-        curr = 1e-3;                        % Transport current, Amps
+        curr = .2e-3;                       % Transport current, Amps
 
         t = logdata.timer.time/60;          % Time, min
         v = logdata.source.V;               % Gate voltage, V
@@ -645,8 +656,6 @@ switch key
             yyaxis(ax, 'left'); cla(ax);
         end
 
-        sls = .25;  % second lockin sensitivity
-        sls = 1;
         splitter = .673;
         %splitter = 1;
         resp_dc = 4.7;
@@ -706,7 +715,6 @@ switch key
             yyaxis(ax, 'left'); cla(ax);
         end
 
-        sls = .25;  % second lockin sensitivity
         splitter = .673;
         splitter = 1;
         resp_dc = 4.7;
@@ -772,7 +780,6 @@ switch key
         PR  = 1e3*logdata.lockin.R/resp_ac;     % AC Power R, uW
         PQ = logdata.lockin.Q;                  % Ac Power Q, deg
         
-        sls = 1e3*.25;  % second lockin sensitivity
         P2X = sls*logdata.lockin.AUX1/resp_ac;      % AC Power X, uW
         P2Y = sls*logdata.lockin.AUX2/resp_ac;      % AC Power X, uW
         P2 = sqrt(P2X.^2+P2Y.^2);
@@ -813,7 +820,7 @@ switch key
         resp_dc = 10*1.04;   %   V/mW
         
         %x = logdata.X.position;                         % 
-        y = logdata.X.position;                         % 
+        y = logdata.Y.position;                         % 
         v0  = 1e3*logdata.voltmeter.v1/resp_dc; % DC Voltage, mV
         V1X = 1e3*logdata.lockin.X;                     % 1st harm Power X, uW
         V1Y = 1e3*logdata.lockin.Y;                     % 1st harm Power Y, uW
@@ -876,11 +883,19 @@ switch key
         splitter = .673;
 
         p0  = 1e3*logdata.voltmeter.v1;                 % DC Power, uW
-        V1X = 1e3*logdata.lockin.X;                     % 1st harm Power X, uW
-        V1Y = 1e3*logdata.lockin.Y;                     % 1st harm Power Y, uW
-        V2X  = 1e3*logdata.lockin.AUX1*sls;             % 2nd harm Power R, uW
-        V2Y  = 1e3*logdata.lockin.AUX2*sls;             % 2nd harm Power R, uW
+        V1X = 1e3*logdata.lockin.X;                     % 1st harm Power X, mV
+        V1Y = 1e3*logdata.lockin.Y;                     % 1st harm Power Y, mV
+        V2X  = 1e3*logdata.lockin.AUX1;                 % 2nd harm Power R, mV
+        V2Y  = 1e3*logdata.lockin.AUX2;                 % 2nd harm Power R, mV
         V2   = sqrt(V2X.^2+V2Y.^2);
+        try
+            sls = util.data.sls(p0, V2);
+            %disp(sls);
+        catch
+            disp("Wasn't able to find correct lockin sensitivity;")
+        end
+        V2 = sls*V2;
+        
         kerr = util.math.kerr(V1X, V2);
         
         n = numel(kerr);
@@ -915,7 +930,7 @@ switch key
         
         %P0 = log(P0);
         % Mask low power points
-        P0_cutoff = 150;
+        P0_cutoff = 200;
         P0_maxlim = inf;
         n_cutoff = 5*fix(n0/4);
         if n_curr > n_cutoff
@@ -994,8 +1009,6 @@ switch key
         cla(axisB); yyaxis(axisB, 'left'); cla(axisB);
         cla(axisC); yyaxis(axisC, 'left'); cla(axisC);
 
-        sls = .1;  % second lockin sensitivity
-
         I   = logdata.diode.current;    % Laser curr, mA
         V0  = 1e3*logdata.voltmeter.v1;     % DC Volt, mV
         V1X = 1e6*logdata.lockin.X;         % 1st harm Volt X, uV
@@ -1022,6 +1035,72 @@ switch key
         yyaxis(axisC, 'right');
         plot(axisC, I, V2Y, 'b.-');
 
+        
+    case 11128    %hk: Hysteresis test (mag field sweep)
+        axisA = graphics.axes(1);
+        axisB = graphics.axes(2);
+        axisC = graphics.axes(3);
+        for ax = graphics.axes
+            cla(ax); yyaxis(ax, 'left'); cla(ax);
+        end
+
+        I   = 1e3*logdata.magnet.I;         % Magnet curr, mA
+        v0  = 1e3*logdata.voltmeter.v1;     % DC Volt, mV
+        V1X = 1e6*logdata.lockin.X;         % 1st harm Volt X, uV
+        V1Y = 1e6*logdata.lockin.Y;         % 1st harm Volt Y, uV
+        V2X = 1e3*logdata.lockin.AUX1;      % 2nd harm Volt X, mV
+        V2Y = 1e3*logdata.lockin.AUX2;      % 2nd harm Volt Y, mV
+        V2 = sqrt(V2X.^2+V2Y.^2);
+        t = logdata.timer.time/60;
+        TA = logdata.tempcont.A;
+        TB = logdata.tempcont.B;
+        try
+            sls = util.data.sls(v0, V2);
+        catch
+            disp("Wasn't able to find correct lockin sensitivity;")
+        end
+        V2 = sls*V2;
+            
+
+        %c = besselj(2,1.841)/besselj(1,1.841);
+        %kerr = .5*atan(c*(V1X*1e-3)./V2)*1e6;
+        kerr = util.math.kerr(V1X*1e-3, V2);
+        
+        AVG = true;
+        if AVG
+            n = numel(kerr);
+            k = logdata.sweep.rate-logdata.sweep.pause;
+            k = k(1);
+            m = fix(n/k);
+            KERR = mean(reshape(kerr, [k, m]),1);
+            KERRstd = std(reshape(kerr, [k, m]),0,1);
+            CURR = mean(reshape(I, [k, m]),1);
+            V0 = mean(reshape(v0, [k, m]),1);
+        else
+            KERR = kerr;
+            CURR = I;
+            V0 = v0;
+        end
+        
+        % 235 G/A
+        FIELD = 1e-3*CURR*coil_const;
+
+        yyaxis(axisA, 'left');
+        plot(axisA, FIELD, KERR, 'r.-');
+        %errorbar(axisA, FIELD, KERR, KERRstd, 'r.-', 'MarkerSize', 5);
+        yyaxis(axisA, 'right');
+        %plot(axisA, FIELD, V0, 'b.-');
+
+        yyaxis(axisB, 'left');
+        plot(axisB, I, V1X, 'r');
+        yyaxis(axisB, 'right');
+        plot(axisB, I, V1Y, 'b');
+
+        yyaxis(axisC, 'left');
+        plot(axisC, t, TA, 'r');
+        yyaxis(axisC, 'right');
+        plot(axisC, t, TB, 'b');
+        
 
     case 121    %y: Hysteresis test (mag field sweep)
         axisA = graphics.axes(1);
@@ -1030,8 +1109,6 @@ switch key
         for ax = graphics.axes
             cla(ax); yyaxis(ax, 'left'); cla(ax);
         end
-
-        sls = .26;      % second lockin sensitivity, V
 
         I   = 1e3*logdata.magnet.I;         % Magnet curr, mA
         v0  = 1e3*logdata.voltmeter.v1;     % DC Volt, mV
@@ -1123,7 +1200,7 @@ switch key
         %sensitivity = 1e-3*4.75*1e4*0.63;   % V/mW
         
         % Thorlabs PDA100A2, 20 dB gain, Hi-Z, 830 nm
-        sensitivity = 1e-3*1.51*1e4*0.63;   % V/mW
+        %sensitivity = 1e-3*1.51*1e4*0.63;   % V/mW
 
         % Thorlabs PDA100A2, 10 dB gain, Hi-Z, 830 nm
         %sensitivity = 1e-3*4.75*1e3*0.63;   % V/mW
@@ -1134,9 +1211,9 @@ switch key
         yyaxis(ax, 'left');
         plot(ax, CURR, 1e3*DC, 'k.-');
         ylim_left = ylim(ax);
-        ylim_right = ylim_left/sensitivity;
+        ylim_right = ylim_left/resp_dc;
         yyaxis(ax, 'right');
-        plot(ax, CURR, 1e3*DC/sensitivity, 'k', 'LineStyle','none');
+        plot(ax, CURR, 1e3*DC/resp_dc, 'k', 'LineStyle','none');
         ax.YAxis(2).Limits = ylim_right;
         
         
@@ -1295,6 +1372,32 @@ switch key
 
         plot(ax, volt, cap, '.-r');
         
+    case 11286  %cr: Capacitance vs voltage
+        axisA = graphics.axes(1);
+        axisB = graphics.axes(2);
+        cla(axisA); cla(axisB);
+        
+        L_gap = 40;                                     % um
+        L_smp = 550;                                   % um
+        curr = .2e-3;
+
+        volt = 1e3*logdata.lockin.AUXV1;
+        C  = logdata.bridge.C;                          % Capacitance, pF
+        C0 = mean(C);
+        e  = -100*(L_gap/L_smp)*(C-C0)/C0;              % strain, %
+        X = 1e3*logdata.lockin.X; % mV
+        R = X/curr;
+
+        yyaxis(axisA, 'left');
+        plot(axisA, volt, C, '.-r');
+        yyaxis(axisA, 'right');
+        plot(axisA, volt, e, '.-b');
+        
+        yyaxis(axisB, 'left');
+        plot(axisB, volt, R, '.-r');
+        %yyaxis(axisB, 'right');
+        %plot(axisB, volt, 1e3*X, '-b');
+        
     case 11832  %tf: Transport freq sweep
         axisA = graphics.axes(1);
         axisB = graphics.axes(2);
@@ -1331,8 +1434,7 @@ switch key
             yyaxis(ax, 'right'); cla(ax); 
             yyaxis(ax, 'left'); cla(ax);
         end
-
-        sls = .25;                                      % second lockin sensitivity
+        
         L_gap = 40;                                     % um
         L_smp = 1600;                                   % um
         curr = .1;                                      % 1 mA x 100 gain

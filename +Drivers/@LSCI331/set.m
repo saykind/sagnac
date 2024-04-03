@@ -51,6 +51,6 @@ function set(obj, varargin)
     end
     if ~isnan(parameters.S)
         obj.S = parameters.S;
-        obj.write(sprintf("SETP %d, %f", obj.loop, obj.S));
+        obj.write(sprintf("SETP %d, %f", obj.loop, parameters.S));
     end
 end
