@@ -12,18 +12,19 @@ function varargout = get(obj, varargin)
                 cm = str2double(obj.query(sprintf("cmode? %d", obj.loop)));
                 switch cm
                     case 1
-                        varargout{i} = 'manual';
+                        cm_str = 'manual';
                     case 2
-                        varargout{i} = 'zone';
+                        cm_str = 'zone';
                     case 3
-                        varargout{i} = 'open';
+                        cm_str = 'open';
                     case 4
-                        varargout{i} = 'autotunePID';
+                        cm_str = 'autotunePID';
                     case 5
-                        varargout{i} = 'autotunePI';
+                        cm_str = 'autotunePI';
                     case 6
-                        varargout{i} = 'autotuneP';
+                        cm_str = 'autotuneP';
                 end
+                varargout{i} = cm_str;
             case {'control_enable', 'enable'}
                 cset = sscanf(obj.query(sprintf("cset? %d", obj.loop)), '%c,%d,%d,%d,%d');
                 varargout{i} = cset(4);

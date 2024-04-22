@@ -24,7 +24,7 @@ classdef Device < handle
     properties
         name;                       %   Instrument specific name
         address;                    %   GPIB address
-        interface = "visa";         %   Drivers.(interface)(address)
+        interface;                  %   Drivers.(interface)(address)
                                     %   is used to find instrument handle
                                     %   Allowed options:
                                     %    - gpib
@@ -32,15 +32,20 @@ classdef Device < handle
                                     %    - visadev
         id;                         %   Unique name = "name_address"
         handle;                     %   visalib.GPIB or visa or gpib handle
-        remote = false;             %   If instrument in local/remote mode
         fields;                     %   Fields to read using get method
         parameters;                 %   Parameters to set using set method
-        units;                      %   Physical units.
+        units;                      %   Physical units of fields and parameters
+        verbose;                    %   Print debug information
     end
     
     methods
         function obj = Device(varargin)
             %Constructor. See Device.init() method for more information
+            obj.interface = 'visa';
+            obj.fields = {};
+            obj.parameters = {};
+            obj.units = {};
+            obj.verbose = false;
             
             %Child classes always call superclass constructor.
             %Hence it's required to control action of the superclass
@@ -49,22 +54,22 @@ classdef Device < handle
             
             obj = obj.init(varargin{:});
             obj.rename("dev");
-            obj.remote = true;
-            obj.fields = {};
-            obj.parameters = {};
         end
         obj = init(obj, address, handle, varargin)
         function out = idn(obj), out = strtrim(obj.query("*IDN?")); end
         % Following methods are instrument specific
         function set(obj, varargin), obj.parameters = {}; end
         function out = get(obj, varargin), obj.fields = {}; out = []; end
-        function local(obj), obj.remote; end
+        function local(obj), obj.id; end % placeholder for local mode function
+        function remote(obj), obj.id; end % placeholder for remote mode function
     end
     
     methods (Sealed)
         write(obj, msg);
+        writef(obj, msg, varargin);
         out = read(obj);
         out = query(obj, msg);
+        out = queryf(obj, msg, varargin);
         function rename(obj, new_name)
         %Change obj.name and obj.id
             obj.name = new_name;

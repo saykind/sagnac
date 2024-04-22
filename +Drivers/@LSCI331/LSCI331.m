@@ -1,22 +1,19 @@
 classdef (Sealed = true) LSCI331 < Drivers.Device
     %Driver for Lakeshore 331 temperature controller
-    %   Release date: February 2023
-    %   This class was created in Kapitulnik research group.
-    %   Written by David Saykin (saykind@itp.ac.ru)
-    %
-    %   Matlab 2018b or higher is required.
-    %   The following packages are used:
-    %   - Instrument Control Toolbox
-    %
+    %   This class defines the driver for the Lakeshore 331 temperature
+    %   controller. It allows to control the temperature of the device and
+    %   read the temperature values.
     %
     %   Usage example:
     %   temp = Drivers.LSCI331();
-    %   [tempA, tempB] = temp.get('tempA', 'tempB');
+    %   tempA = temp.A;
+    %   [tempA, tempB] = temp.get('tempA', 'B');
     
     properties (Access = public)
-        % Instrument Parameters 
-        % (can be set and read)
+        % Internal properties
         loop = 1;                   %   Either 1 or 2 [Internal]
+
+        % Instrument Parameters 
         mode;                       %   Loop mode:
                                     %       1 - Manual PID
                                     %       2 - Zone

@@ -1,5 +1,5 @@
 function out = query(obj, msg)
-    %GPIB message sending
+    %Write message to device and read response
     %
     %   Usage example:
     %   id = obj.query('*IDN?');

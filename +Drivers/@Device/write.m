@@ -1,5 +1,5 @@
 function write(obj, msg)
-    %GPIB message sending
+    %Write formated message to device
     %
     %   Usage example:
     %   obj.write("*IDN?");

@@ -34,7 +34,7 @@ classdef (Sealed = true) LSCI340 < Drivers.Device
                                     %         1 <= D <= 1000 s with 1 s resolution
         ramp_on;                    %   Ramping On/Off
         ramp_rate;                  %   Ramping rate (K/min)
-                                    %   0.1 K/min to 100 K/min
+                                    %   0.1 K/min to 100 K/min with 0.1 K/min resolution
         ramp_status;                %   Is ramping now?
         setpoint;                   %   Setpoint temperature (K)
 
@@ -49,7 +49,6 @@ classdef (Sealed = true) LSCI340 < Drivers.Device
         %LSCI340 construct class
             obj = obj.init(varargin{:});
             obj.rename("LSCI340");
-            obj.remote = true;
             
             obj.fields = {'A', 'B', 'heater'};
             fieldUnits = {'K', 'K', '%'};
@@ -59,8 +58,6 @@ classdef (Sealed = true) LSCI340 < Drivers.Device
                                 '',    '',        '',        'K/min', 'K'};
             units = [[obj.fields, obj.parameters]; [fieldUnits, parameterUnits]];
             obj.units = struct(units{:});
-            
-            obj.update();
         end
 
         ramp(obj, setp, rate)               %   Ramp temperature to setpoint 
@@ -92,7 +89,7 @@ classdef (Sealed = true) LSCI340 < Drivers.Device
         function set.pid(obj, pid), obj.set('PID', pid); end
         function set.ramp_on(obj, ramp_on), obj.set('ramp_on', ramp_on); end
         function set.ramp_rate(obj, rr), obj.set('ramp_rate', rr); end
-        function set.setpoint(obj, s), obj.set('S', s); end
+        function set.setpoint(obj, s), obj.set('setpoint', s); end
     end
 end
 

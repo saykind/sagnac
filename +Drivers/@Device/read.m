@@ -1,5 +1,5 @@
 function out = read(obj)
-    %GPIB message reading
+    %Read line from device
     %
     %   Usage example:
     %   msg = obj.read();

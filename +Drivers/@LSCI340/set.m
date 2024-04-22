@@ -18,7 +18,7 @@ function set(obj, options)
         options.ramp_rate (1, 1) double {mustBeNumeric} = NaN
         options.ramp_status (1, 1) double {mustBeNumeric} = NaN
         % Fields
-        options.S (1, 1) double {mustBeNumeric} = NaN
+        options.setpoint (1, 1) double {mustBeNumeric} = NaN
     end
     
     % Control mode
@@ -84,8 +84,8 @@ function set(obj, options)
     end
     
     % Setpoint
-    if ~isnan(options.S)
-        obj.write(sprintf("setp 1, %d", options.S));
+    if ~isnan(options.setpoint)
+        obj.write(sprintf("setp 1, %d", options.setpoint));
     end
     
 end
