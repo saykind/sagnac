@@ -1,4 +1,4 @@
-function selectedFiles = select(varargin)
+function selectedFiles = select(ext)
 %SELECT Selects files and returns their full paths
 %
 % Syntax: selectedFiles = select(varargin)
@@ -8,7 +8,7 @@ function selectedFiles = select(varargin)
 % returns their full paths. If a file does not exist, a warning is issued.
 %
 % Inputs:
-%    varargin - Optional. One or more strings representing file paths.
+%    ext - String representing the file extension to filter the files by.
 %
 % Outputs:
 %    selectedFiles - Cell array of strings representing the full paths of
@@ -16,30 +16,24 @@ function selectedFiles = select(varargin)
 %
 % Example:
 %    selectedFiles = select()
-%    selectedFiles = select('file1.mat', 'file2.mat')
 %
 % See also: UIGETFILE, FULLFILE, EXIST
-    if nargin == 0
-        % Prompt the user to select files
-        [fileNames, filePaths] = uigetfile('*.mat', 'Select files', 'MultiSelect', 'on');
-        if isequal(fileNames, 0)
-            selectedFiles = [];
-            return;
-        end
-        % If only one file is selected, fileNames is a char, not a cell
-        if ~iscell(fileNames)
-            fileNames = {fileNames};
-        end
-        % Prepend the path to the file names
-        selectedFiles = fullfile(filePaths, fileNames);
-    else
-        selectedFiles = {};
-        for i = 1:nargin
-            if exist(varargin{i}, 'file') == 2
-                selectedFiles{end+1} = varargin{i};
-            else
-                warning(['File does not exist: ' varargin{i}]);
-            end
-        end
+
+    arguments
+        ext (1,:) char = '*.mat'
     end
+
+    % Prompt the user to select files
+    [fileNames, filePaths] = uigetfile(ext, 'Select files', 'MultiSelect', 'on');
+    if isequal(fileNames, 0)
+        selectedFiles = [];
+        return;
+    end
+    % If only one file is selected, fileNames is a char, not a cell
+    if ~iscell(fileNames)
+        fileNames = {fileNames};
+    end
+    % Prepend the path to the file names
+    selectedFiles = fullfile(filePaths, fileNames);
+
 end

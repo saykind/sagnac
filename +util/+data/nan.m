@@ -44,7 +44,7 @@ function nan(varargin)
         fields = split(field,'.');
         temp = getfield(logdata, fields{:});
         idx = find(temp > range(1) & temp < range(2));
-        num_extra = length(temp) - length(idx);
+        num_extra = length(idx);
     end
     
     % Remove outliers

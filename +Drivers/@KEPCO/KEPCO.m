@@ -55,9 +55,9 @@ classdef (Sealed = true) KEPCO < Drivers.Device
         function ramp(obj, I1, rate, period)
         %Ramp current to specified value (Amps)
         %at specified rate (A/s).
-        %Default rate is 0.010 A/s (2.5 G/s)
+        %Default rate is 0.02 A/s (5 G/s)
             if nargin < 2, return; end
-            if nargin < 3, rate = 0.01; end
+            if nargin < 3, rate = 0.02; end
             if nargin < 4, period = 1; end
             
             obj.rampInfo = {};

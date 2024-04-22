@@ -21,7 +21,7 @@ function seed(new_seed, varargin)
         [basefilename, folder] = uigetfile('*.mat', 'Select data file');
         filename = fullfile(folder, basefilename);
         if basefilename == 0
-            disp('Please supply logdata structure or path to datafile.');
+            disp('Please supply path to datafile.');
             return;
         end
     end

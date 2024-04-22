@@ -51,15 +51,22 @@ end
 
 %% Parameters. Detector responsitivity
 sls = .1; % second harm lockin sensitivity
+%sls = sls*1.025; % 20 db filter
 %Proper modulation parameters
+%830 nm
 f0 = 4.8425;  % MHz
 a0 = 0.55;  % Vpp
-detector = 'APD430C-4';
+%1550 nm
+f0 = 4.86;  % MHz
+a0 = 1.1;  % Vpp
+
+detector = '1811';
+
 switch detector
     case '1811' % 1550 nm
         resp_dc = 10*1.04;      %   V/mW, should be 10.4 V/mW
         resp_ac = 40*1.04;      %   V/mW, should be 40.16 V/mW
-        a0 = 1.1;              %   Vpp
+        a0 = 1.1;               %   Vpp
     case '1801' % 830 nm
         resp_dc = 4.7;          %   V/mW, should be 4.7 V/mW
         resp_ac = 5.15;         %   V/mW, should be 18.8 V/mW
@@ -75,6 +82,7 @@ switch detector
 end
 
 coil_const = 23.5;   %mT/A
+curr = 0.1; %A
 
 
 %% Given graphics, draw a plot    
@@ -101,6 +109,25 @@ switch key
         set(axisB, 'XLim', [min(d), max(d)], ...
             'XTick', linspace(min(d), max(d), 7));
         %xtickformat(axisB, 'hh:mm:ss');
+        
+        
+    case 114     %r: time vs Resistance
+        axisA = graphics.axes(1);
+        axisB = graphics.axes(2);
+        cla(axisA); cla(axisB);
+
+        t = logdata.timer.time/60;
+        d = datetime(logdata.timer.datetime);
+        d = dateshift(d,'start','minute') + seconds(round(second(d),0));
+        r = logdata.lockin.X/curr*1e3;         % Resistnace, mOhms
+
+        plot(axisA, t, r, 'Color', 'r');
+        plot(axisB, d, r, 'Color', 'b');
+        
+        set(axisA, 'XLim', [min(t), max(t)], ...
+            'XTick', linspace(min(t), max(t), 7));
+        set(axisB, 'XLim', [min(d), max(d)], ...
+            'XTick', linspace(min(d), max(d), 7));
 
     case 12412  %tk: time vs Kerr
         axisA = graphics.axes(1);
@@ -237,7 +264,7 @@ switch key
         V2Y = 1e3*logdata.lockin.AUX2;  % 2nd harm Voltage Y, mV
         V2 = sqrt(V2X.^2+V2Y.^2);
         try
-            sls = util.data.sls(dc, V2);
+            %sls = util.data.sls(dc, V2);
             %disp(sls);
         catch
             disp("Wasn't able to find correct lockin sensitivity;")
@@ -324,10 +351,8 @@ switch key
             yyaxis(ax, 'left'); cla(ax);
         end
 
-        curr = .2e-3;    % Amps
-        gain = 1;
 
-        t = logdata.timer.time/60;      % Time, min
+        t = logdata.timer.time/60;       % Time, min
         TA = logdata.tempcont.A;         % Temp, K
         TB = logdata.tempcont.B;         % Temp, K
         dc = 1e3*logdata.voltmeter.v1;  % DC voltage, mV
@@ -336,7 +361,10 @@ switch key
         V2X = sls*1e3*logdata.lockin.AUX1;  % 2nd harm Voltage X, mV
         V2Y = sls*1e3*logdata.lockin.AUX2;  % 2nd harm Voltage Y, mV
         vX = 1e6*logdata.lockinA.X;             % Transport, uV
-        r = logdata.lockinA.X/curr/gain*1e3;         % Resistnace, mOhms
+        %r = logdata.lockinA.X/curr/1e3;         % Resistnace, mOhms
+        vX_offset = 35.78;
+        vX = vX - vX_offset;
+        r = vX/167*30;            % Field, mT
 
         V2 = sqrt(V2X.^2+V2Y.^2);
         kerr = util.math.kerr(V1X*1e-3, V2);
@@ -398,7 +426,7 @@ switch key
         yyaxis(axisPb, 'right');
 
         % Transport vs time
-        plot(axisTrt, t, vX, 'Color', 'r');
+        plot(axisTrt, t, r, 'Color', 'r');
         
         % Transport
         plot(axisTr, TA, r, 'Color', 'r');
@@ -808,6 +836,58 @@ switch key
         %xlim(axisB, [4.4, 5.2]);
         %try contourf instead of surf?
         
+   
+    case 9603   %ca: laser current and modulation amplitude sweep
+        axisA = graphics.axes(1);
+        axisB = graphics.axes(2);
+        cla(axisA);
+        cla(axisB);
+
+        %ampl = logdata.waveform.ampl;           % Amplitude Vpp, V
+        %curr = logdata.diode.curr;              % Laser current, mA
+        v0  = 1e3*logdata.voltmeter.v1;         % DC voltage, mV
+        vx = 1e6*logdata.lockin.X;              % AC voltage X, uV
+        vy = 1e6*logdata.lockin.Y;              % AC voltage Y, uV
+        vx = sqrt(vx.^2+vy.^2);
+        v0 = abs(v0);
+        
+        n = numel(v0);
+        k = logdata.sweep.rate-logdata.sweep.pause;
+        k = k(1);
+        m = fix(n/k);
+        V0 = mean(reshape(v0, [k, m]),1);
+        VX = mean(reshape(vx, [k, m]),1);
+        VX_std = std(reshape(vx, [k, m]),1);
+        
+        shape = logdata.sweep.shape;
+        c = logdata.sweep.range(1,:);
+        a = logdata.sweep.range(2,:);
+        C = util.mesh.combine(c, shape);
+        A = util.mesh.combine(a, shape);
+        n0 = length(logdata.sweep.range);
+        n_curr = length(V0);
+        
+        v0 = zeros(1, n0);
+        v0(1:n_curr) = V0;
+        if n_curr ~= n0, v0(n_curr:end) = v0(1); end
+        v0(n_curr:end) = v0(1);
+        V0 = util.mesh.combine(v0, shape);
+        
+        vx = zeros(1, n0);
+        vx(1:n_curr) = VX;
+        if n_curr ~= n0, vx(n_curr:end) = vx(1); end
+        vx(n_curr:end) = vx(1);
+        VX = util.mesh.combine(vx, shape);
+        
+        vx_std = zeros(1, n0);
+        vx_std(1:n_curr) = VX_std;
+        if n_curr ~= n0, vx_std(n_curr:end) = vx_std(1); end
+        vx_std(n_curr:end) = vx_std(1);
+        VX_std = util.mesh.combine(vx_std, shape);
+        
+        surf(axisA, C, A, VX_std, 'EdgeAlpha', .1);
+        surf(axisB, C, A, VX, 'EdgeAlpha', .1); 
+        
     
     %% Position sweep    
     case 120 %x: Kerr 1D scan
@@ -1132,14 +1212,14 @@ switch key
         
         % Sample at the top of the magnet
         % 250 G/A
-        CURR = CURR/4;
+        CURR = 1e-3*CURR*coil_const;
 
         yyaxis(axisA, 'left');
 %       plot(axisA, CURR, KERR, 'r.-');
         errorbar(axisA, CURR, KERR, KERRstd, 'r.-', 'MarkerSize', 5);
         yyaxis(axisA, 'right');
         %plot(axisA, CURR, V0, 'b.-');
-        xlabel(axisA, 'Magnetic Field, Oe');
+        xlabel(axisA, 'Magnetic Field, mT');
 
         yyaxis(axisB, 'left');
         plot(axisB, I, V1X, 'r');
@@ -1150,6 +1230,56 @@ switch key
         plot(axisC, I, V2X, 'r');
         yyaxis(axisC, 'right');
         plot(axisC, I, V2Y, 'b');
+        
+        
+    case 1346488    %khy: Kerr, hysteresis
+        axisA = graphics.axes(1);
+        axisB = graphics.axes(2);
+        axisC = graphics.axes(3);
+        for ax = graphics.axes
+            cla(ax); yyaxis(ax, 'left'); cla(ax);
+        end
+
+        I   = 1e3*logdata.magnet.I;         % Magnet curr, mA
+        v0  = 1e3*logdata.voltmeter.v1;     % DC Volt, mV
+        V1X = 1e6*logdata.lockin.X;         % 1st harm Volt X, uV
+        V1Y = 1e6*logdata.lockin.Y;         % 1st harm Volt Y, uV
+        V2X = sls*1e3*logdata.lockin.AUX1;  % 2nd harm Volt X, mV
+        V2Y = sls*1e3*logdata.lockin.AUX2;  % 2nd harm Volt Y, mV
+        vX  = 1e6*logdata.lockinA.X;        % Transport, uV
+        vX_offset = 35.78;
+        vX = vX - vX_offset;
+        r = vX/167*30;            % Field, mT
+
+        V2 = sqrt(V2X.^2+V2Y.^2);
+        kerr = util.math.kerr(V1X*1e-3, V2);
+        
+        n = numel(kerr);
+        k = logdata.sweep.rate-logdata.sweep.pause;
+        k = k(1);
+        m = fix(n/k);
+        KERR = mean(reshape(kerr, [k, m]),1);
+        KERRstd = std(reshape(kerr, [k, m]),0,1);
+        CURR = mean(reshape(I, [k, m]),1);
+        V0 = mean(reshape(v0, [k, m]),1);
+        VX = mean(reshape(vX, [k, m]),1);
+        
+        % 250 G/A
+        FIELD = 1e-3*CURR*25;   % mT
+
+        yyaxis(axisA, 'left');
+        %plot(axisA, CURR, KERR, 'r.-');
+        errorbar(axisA, FIELD, KERR, KERRstd, 'r.-', 'MarkerSize', 5);
+        yyaxis(axisA, 'right');
+        plot(axisA, FIELD, V0, 'b.-');
+
+        yyaxis(axisB, 'left');
+        plot(axisB, I, V1X, 'r');
+        yyaxis(axisB, 'right');
+        plot(axisB, I, V1Y, 'b');
+
+        yyaxis(axisC, 'left');
+        plot(axisC, I, r, 'r');
 
 
     case 112 %p: power optical
@@ -1378,8 +1508,7 @@ switch key
         cla(axisA); cla(axisB);
         
         L_gap = 40;                                     % um
-        L_smp = 550;                                   % um
-        curr = .2e-3;
+        L_smp = 550;                                    % um
 
         volt = 1e3*logdata.lockin.AUXV1;
         C  = logdata.bridge.C;                          % Capacitance, pF

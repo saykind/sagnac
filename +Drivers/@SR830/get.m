@@ -27,15 +27,12 @@ function varargout = get(obj, varargin)
             %   - time constant
             case {'f', 'freq', 'frequency'}
                 f = str2double(obj.query("freq?"));
-                obj.frequency = f;
                 varargout{i} = f;
             case {'ph', 'phase', 'Phase'}
                 phase = str2double(obj.query("phas?"));
-                obj.phase = phase;
                 varargout{i} = phase;
             case {'a', 'ampl', 'amplitude'}
                 a = str2double(obj.query("slvl?"));
-                obj.amplitude = a;
                 varargout{i} = a;
             case {'tc', 'timeConstant', 'time_constant'}
                 tc = str2double(obj.query("oflt?"))-10;

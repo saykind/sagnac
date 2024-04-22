@@ -30,9 +30,9 @@ Matlab programs for Sagnac experiment.
 ## Code style convention
 I'm planning to clean all code here to satisfy following styling style guide
 ### Variables
-All lowercase, underscore is used to separate words for better readibility if desired.\
+Snake case (lowercase with underscore) is preferred.\
 Short and non-descriptive names are preferred over extremely long names.
-CamelCase is avoided.
+CamelCase is discouraged.
 
 Good examples:
 * filename
@@ -45,7 +45,7 @@ Bad examples:
 
 ### Functions
 Function have the same naming convetion as variables.\
-All lowercase, CamelCase is not used, underscores are allowed to separate words, but not required.\
+CamelCase is not used, underscores are allowed to separate words, but not required.\
 Namespaces (packages) are encouraged, see [this](https://www.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html).\
 Here is a [list](https://www.mathworks.com/help/matlab/referencelist.html?type=function&category=index&s_tid=CRUX_lftnav_function_index) of MATLAB built-in functions.
 

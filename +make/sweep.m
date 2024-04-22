@@ -15,14 +15,14 @@ function s = sweep(key, instruments, s, cnt)
                 s = struct('rate', 3, 'pause', 1, ...
                     'range', 0:2:100);
             case {102, 'f'}
-                s = struct('rate', 20, 'pause', 8, ...
-                    'range', 1e6*[4.81:.001:4.88]);
+                s = struct('rate', 20, 'pause', 6, ...
+                    'range', 1e6*[4.832:.0005:4.840]);
             case {97, 'a'}
                 s = struct('rate', 6, 'pause', 4, ...
                     'range', [.1:.1:5]);
             case 9894   %fa: Modulation 2D sweep
-                f = 1e6*(4.4:.01:5.2);
-                a = [.02:.02:.8];
+                f = 1e6*(4.4:.02:5.3);
+                a = [.05:.05:2];
                 [F,A] = meshgrid(f,a);
                 [n,m] = size(F);
                 F_flat = flatten_mesh(F);
@@ -30,20 +30,28 @@ function s = sweep(key, instruments, s, cnt)
                 s = struct('rate', 10, 'pause', 9, ...
                     'range', [F_flat; A_flat], 'shape', [n,m]);
                 
+            case 9603   %ca: laser current and modulation amplitude sweep
+                c = [0:3:30];
+                a = [.01, (.1:.2:2)];
+                [C,A] = meshgrid(c,a);
+                [n,m] = size(C);
+                C_flat = flatten_mesh(C);
+                A_flat = flatten_mesh(A);
+                s = struct('rate', 200, 'pause', 10, ...
+                    'range', [C_flat; A_flat], 'shape', [n,m]);
+                
             case 14520 %xy: Kerr 2D scan
                 x0 = 13.;
                 y0 = 13.;
-                %x = x0 + (-1.3:.01:-.7);
-                %y = y0 + (-.3:.01:.3);
-                x = x0 + (0.6:.01:0.65);
-                y = y0 + (-.05:.01:0.0);
+                x = x0 + (-1:.025:1);
+                y = y0 + (-1:.025:-.5);
                 [X,Y] = meshgrid(x,y);
                 [n,m] = size(X);
                 X_flat = flatten_mesh(X);
                 Y_flat = flatten_mesh(Y);
                 %DC measurement min rate is 3s, pause 2s
                 %Kerr measurement min rate is 9s, pause 8s
-                s = struct('rate', 20, 'pause', 8, ...
+                s = struct('rate', 3, 'pause', 2, ...
                     'range', [X_flat; Y_flat], 'shape', [n,m], ...
                     'origin', [x0, y0]);
 
@@ -56,15 +64,16 @@ function s = sweep(key, instruments, s, cnt)
             case {105, 'i'}
                 s = struct('rate', 30, 'pause', 5, 'range', 65:1:95);
 
-            case {121, 11128}    
+            case {121, 11128, 1346488}    
                 %y: Hysteresis test
                 %hk: Kerr vs field
-                mag = 640;  % current, mA
+                %khy: Kerr vs field
+                mag = 3200;  % current, mA
                 sgn = 1;
-                step = 80;
+                step = 320;
                 range = sgn*1e-3*[0:step:mag, ...
                     (mag-.5*step):-step:0, 0];
-                s = struct('rate', 20, 'pause', 5, 'range', range, 'sign', sgn);
+                s = struct('rate', 30, 'pause', 8, 'range', range, 'sign', sgn);
 
             case 11960  %hs: Hall sensor
                 mag = 600;
@@ -86,12 +95,12 @@ function s = sweep(key, instruments, s, cnt)
                 range = 1e3*[.001:.001:.019, .02:.01:1, 1.05:.05:10];
                 s = struct('rate', 9, 'pause', 8, 'range', range);
 
-            case {11682, 11286}  
+            case {11682, 11286}
                 %cv: Capacitance vs voltage
                 %cr: Capacitance, Resistance vs voltage
                 %range = [(0.0:0.01:0.1), (0.1:-0.01:-0.1), (-0.1:0.01:0.0)];
-                vmax = 3.5;
-                range = [-vmax:0.02:0];
+                vmax = .8;
+                range = [-vmax:0.01:0];
                 s = struct('rate', 2, 'pause', 1, 'range', range);
                 
             case 10593  %kc: kerr vs strain (capacitance)
@@ -125,6 +134,10 @@ function s = sweep(key, instruments, s, cnt)
                 val = s.range(:,1);
                 instruments.waveform.set('freq', val(1));
                 instruments.waveform.set('ampl', val(2));
+            case {9603, 'ca'}
+                val = s.range(:,1);
+                instruments.diode.output(val(1));
+                instruments.waveform.set('ampl', val(2));
             case 14520  %xy: Kerr 2D scan
                 val = s.range(:,1);
                 instruments.X.set('position', val(1));
@@ -133,9 +146,10 @@ function s = sweep(key, instruments, s, cnt)
                 instruments.Y.set('position', val);
             case {105, 'i'}
                 instruments.diode.output(val);
-            case {121, 11128}    
+            case {121, 11128, 1346488}    
                 %y: Hysteresis test
                 %hk: Kerr vs field
+                %khy:
                 instruments.magnet.output(abs(val));
             case {11960, make.key('hs:')} % Hall sensor
                 instruments.magnet.output(abs(val));
@@ -186,6 +200,10 @@ function s = sweep(key, instruments, s, cnt)
                 val = s.range(:,i);
                 instruments.waveform.set('freq', val(1));
                 instruments.waveform.set('ampl', val(2));
+            case {9603, 'ca'}
+                val = s.range(:,i);
+                instruments.diode.output(val(1));
+                instruments.waveform.set('ampl', val(2));
             case 14520  %xy: Kerr 2D scan
                 try
                     val = s.range(:,i);
@@ -199,9 +217,10 @@ function s = sweep(key, instruments, s, cnt)
                 instruments.Y.set('position', val);
             case {105, 'i'}
                 instruments.diode.output(val);
-            case {121, 11128}    
+            case {121, 11128, 1346488}    
                 %y: Hysteresis test
                 %hk: Kerr vs field
+                %khy:
                 instruments.magnet.output(abs(val));
 %                 if val == 0 
 %                     sound(sin(1:5000));

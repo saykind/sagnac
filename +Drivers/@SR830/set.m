@@ -19,6 +19,7 @@ function set(obj, varargin)
     addParameter(p, 'tc', NaN, @isnumeric);
     addParameter(p, 'timeConstant', NaN, @isnumeric);
     addParameter(p, 'AUXV1', NaN, @isnumeric);
+    addParameter(p, 'AUXV2', NaN, @isnumeric);
     
     parse(p, varargin{:});
     parameters = p.Results;
@@ -29,14 +30,12 @@ function set(obj, varargin)
     if ~isnan(parameters.freq), f = parameters.freq; end
     if ~isnan(parameters.frequency), f = parameters.frequency; end
     if ~isnan(f)
-        obj.frequency = f;
         obj.write(sprintf("freq %f", f));
     end
     ph = NaN;
     if ~isnan(parameters.ph), ph = parameters.ph; end
     if ~isnan(parameters.phase), ph = parameters.phase; end
     if ~isnan(ph)
-        obj.phase = ph;
         obj.write(sprintf("phas %f", ph));
     end
     a = NaN;
@@ -44,7 +43,6 @@ function set(obj, varargin)
     if ~isnan(parameters.ampl), a = parameters.ampl; end
     if ~isnan(parameters.amplitude), a = parameters.amplitude; end
     if ~isnan(a)
-        obj.amplitude = a;
         obj.write(sprintf("slvl %f", a))
     end
     tc = NaN;
@@ -60,5 +58,8 @@ function set(obj, varargin)
     end
     if ~isnan(parameters.AUXV1)
         obj.write(sprintf("AUXV 1, %f", parameters.AUXV1));
+    end
+    if ~isnan(parameters.AUXV2)
+        obj.write(sprintf("AUXV 2, %f", parameters.AUXV2));
     end
 end

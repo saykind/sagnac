@@ -28,11 +28,9 @@ function varargout = get(obj, varargin)
             %   - harmonic
             case {'freq', 'frequency'}
                 f = str2double(obj.query("freq?"));
-                obj.frequency = f;
                 varargout{i} = f;
             case {'ph', 'phase', 'Phase'}
                 phase = str2double(obj.query("phas?"));
-                obj.phase = phase;
                 varargout{i} = phase;
             case {'tc', 'timeConstant', 'time constant', 'time_constant'}
                 tc = str2double(obj.query("oflt?"))-8;
@@ -52,11 +50,10 @@ function varargout = get(obj, varargin)
                     tc = tc-1;
                 end
                 res = res*power(10,tc/2);
-                obj.timeConstant = res;
+                obj.sensitivity = res;
                 varargout{i} = res;
             case {'harm', 'harmonic'}
                 h = str2double(obj.query("harm?"));
-                obj.harmonic = h;
                 varargout{i} = h;
             %Fields:
             %   - X = V_real

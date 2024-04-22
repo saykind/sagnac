@@ -10,6 +10,8 @@ switch key
         title = "Hall sensor";
     case 84     %T: Temperature only
         title = "Temperature measurement";
+    case 114     %r: time vs Resistance
+        title = "Resistance measurement";
     case 68     %D: Diode temperature
         title = "Diode Temperature measurement";
     case 104    %h: Hall effect
@@ -48,6 +50,8 @@ switch key
         title = "Kerr vs Field";
     case 121    %y: Kerr vs field, hysteresis test
         title = "Hysteresis Kerr";
+    case 1346488%khy: Kerr vs field, hysteresis sweep
+        title = "Hysteresis Kerr";
     case 1228788    %ktc: kerr, transport, capacitance
         title = "Kerr and strain";
     case 10593  %kc: kerr vs strain (capacitance)
@@ -61,6 +65,8 @@ switch key
         title = "Modulation amplitude sweep";
     case 9894   %fa: frequency and amplitude sweep
         title = "Modulation frequency and amplituide sweep";
+    case 9603   %ca: laser current and modulation amplitude sweep
+        title = "Laser current and modulation amplitude sweep";
     case 14520  %xy: Kerr 2D scan
         title = "Kerr 2D scan";
     case 120    %x: Kerr 1D scan

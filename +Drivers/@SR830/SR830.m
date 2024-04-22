@@ -53,6 +53,20 @@ classdef SR830 < Drivers.Device
             
             obj.update();
         end
+
+        % Getters
+        function f = get.frequency(obj), f = obj.get('frequency'); end
+        function ph = get.phase(obj), ph = obj.get('phase'); end
+        function a = get.amplitude(obj), a = obj.get('amplitude'); end
+        function AUXV1 = get.AUXV1(obj), AUXV1 = obj.get('AUXV1'); end
+        function AUXV2 = get.AUXV2(obj), AUXV2 = obj.get('AUXV2'); end
+
+        % Setters
+        function set.frequency(obj, value), obj.set('frequency', value); end
+        function set.phase(obj, value), obj.set('phase', value); end
+        function set.amplitude(obj, value), obj.set('amplitude', value); end
+        function set.AUXV1(obj, value), obj.set('AUXV1', value); end
+        function set.AUXV2(obj, value), obj.set('AUXV2', value); end
         
         function ramp(obj, V1, rate, period)
         %Ramp AUXV1 voltage to specified value

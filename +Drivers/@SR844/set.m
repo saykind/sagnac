@@ -29,7 +29,6 @@ function set(obj, varargin)
     if ~isnan(parameters.freq), f = parameters.freq; end
     if ~isnan(parameters.frequency), f = parameters.frequency; end
     if ~isnan(f)
-        obj.frequency = f;
         obj.write(sprintf("freq %f", f));
         obj.write("keyp 49");
     end
@@ -37,7 +36,6 @@ function set(obj, varargin)
     if ~isnan(parameters.ph), ph = parameters.ph; end
     if ~isnan(parameters.phase), ph = parameters.phase; end
     if ~isnan(ph)
-        obj.phase = ph;
         obj.write(sprintf("phas %f", ph));
         obj.write("keyp 43");
     end
@@ -64,9 +62,8 @@ function set(obj, varargin)
     end
     harm = NaN;
     if ~isnan(parameters.harm), harm = parameters.harm; end
-    if ~isnan(parameters.harmonic), seharmns = parameters.harmonic; end
+    if ~isnan(parameters.harmonic), harm = parameters.harmonic; end
     if ~isnan(harm)
-        obj.harmonic = harm;
         obj.write(sprintf("harm %i", harm));
     end
 end

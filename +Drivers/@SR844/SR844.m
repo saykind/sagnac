@@ -42,6 +42,24 @@ classdef SR844 < Drivers.Device
                 'sensitivity', 'harmonic'};
             obj.update();
         end
+
+        % Getters (parameters)
+        function f = get.frequency(obj), f = obj.get('f'); end
+        function phase = get.phase(obj), phase = obj.get('ph'); end
+        function harm = get.harmonic(obj), harm = obj.get('harm'); end
+        % Getters( fields)
+        function x = get.X(obj), x = obj.get('X'); end
+        function y = get.Y(obj), y = obj.get('Y'); end
+        function r = get.R(obj), r = obj.get('R'); end
+        function q = get.Q(obj), q = obj.get('Q'); end
+        function aux1 = get.AUX1(obj), aux1 = obj.get('AUX1'); end
+        function aux2 = get.AUX2(obj), aux2 = obj.get('AUX2'); end
+
+        % Setters
+        function set.frequency(obj, value), obj.set('f', value); end
+        function set.phase(obj, value), obj.set('ph', value); end
+        function set.harmonic(obj, value), obj.set('harm', value); end
+
     end
 end
 

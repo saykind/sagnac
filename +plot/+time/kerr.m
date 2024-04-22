@@ -12,9 +12,9 @@ function fig = kerr(varargin)
 %   - 'offset'      : default [-inf,inf] 
 %                   : Temperature range to calculte kerr offset.
 %                     kerr := kerr - mean(kerr(T in offset)).
-%   - 'dT'          : default 0.4
-%                   : Scalar specifying the temperature interval for 
-%                     coarse-graining the data.
+%   - 'dt'          : default 10
+%                   : Scalar specifying the time interval for 
+%                     coarse-graining the data, in seconds
 %   - 'sls'         : default 0.25
 %                   : Scalar specifying the second harmonic lockin
 %                     sensitivity in Volts.
@@ -30,7 +30,7 @@ function fig = kerr(varargin)
 %
 %   Example:
 %   plot.kerr();
-%   plot.kerr('range', [10, 30], 'dT', 0.4, 'offset', [25, 30]);
+%   plot.kerr('range', [10, 30], 'offset', [25, 30]);
 %
 %   Notes:
 %   - The function requires that the .mat files contain a 'logdata' 
@@ -53,9 +53,9 @@ function fig = kerr(varargin)
     addParameter(p, 'filenames', [], @isstring);
     addParameter(p, 'range', [-inf, inf], @isnumeric);
     addParameter(p, 'ylim', NaN, @isnumeric);
-    addParameter(p, 'offset', [-inf, inf], @isnumeric);
+    addParameter(p, 'offset', [inf, -inf], @isnumeric);
     addParameter(p, 'baseline', 0, @isnumeric);
-    addParameter(p, 'dT', .4, @isnumeric);
+    addParameter(p, 'dt', 10, @isnumeric);
     addParameter(p, 'sls', .25, @isnumeric);
     addParameter(p, 'errorbar', true, @islogical);
     addParameter(p, 'legends', [], @isstring);
@@ -67,7 +67,7 @@ function fig = kerr(varargin)
     ylim_value = parameters.ylim;
     offset = parameters.offset;
     baseline = parameters.baseline;
-    dT = parameters.dT;
+    dt = parameters.dt;
     sls = parameters.sls;
     plot_errorbar = parameters.errorbar;
     legends = parameters.legends;
@@ -92,7 +92,7 @@ function fig = kerr(varargin)
         filename = filenames(i);
         [~, name, ~] = fileparts(filename);
         logdata = load(filename).logdata;
-        temp = logdata.tempcont.A;
+        time = logdata.timer.time;
         
         V1X = logdata.lockin.X;
         V2 = sls*sqrt(logdata.lockin.AUX1.^2+logdata.lockin.AUX2.^2);
@@ -101,7 +101,7 @@ function fig = kerr(varargin)
         if offset(1) >= offset(2)
             kerr_offset = 0;
         else
-            idx = temp > offset(1) & temp < offset(2);
+            idx = time > offset(1) & time < offset(2);
             kerr_offset = mean(kerr(idx));
         end
         if baseline ~= 0
@@ -111,11 +111,11 @@ function fig = kerr(varargin)
             fprintf("%s: offset %.2d\n", legends(i), kerr_offset);
         end
         kerr = kerr - kerr_offset;
-        [T, K, K2] = util.coarse.grain(dT, temp, kerr);
+        [T, K, K2] = util.coarse.grain(dt, time, kerr);
         if plot_errorbar
-            errorbar(ax, T, K, K2, '.-', 'LineWidth', 1, 'DisplayName', name);
+            errorbar(ax, T/60, K, K2, '.-', 'LineWidth', 1, 'DisplayName', name);
         else
-            plot(ax, T, K, '.-', 'LineWidth', 1, 'DisplayName', name);
+            plot(ax, T/60, K, '.-', 'LineWidth', 1, 'DisplayName', name);
         end
     end
     
@@ -123,7 +123,7 @@ function fig = kerr(varargin)
         ylim(ylim_value);
     end
     ylabel(ax, '\DeltaKerr (\murad)');
-    xlabel(ax, 'Temperature (K)');
+    xlabel(ax, 'Times (min)');
     if isempty(legends)
         l = legend(ax, 'Location', 'best');
     else
@@ -132,6 +132,6 @@ function fig = kerr(varargin)
     set(l, 'Interpreter', 'none');
     
     [~, name, ~] = fileparts(filenames(1));
-    saveas(fig, sprintf('output/%s_k.png', name), 'png');
+    saveas(fig, sprintf('output/%s_time_kerr.png', name), 'png');
 end
     

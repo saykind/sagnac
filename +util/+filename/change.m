@@ -8,13 +8,19 @@ function new_filename = change(filename, new_name, varargin)
 %       'data\1.csv' = change('data\1.mat', '1.csv')
 %       'data\1a.mat' = change('data\1.mat', '1')
 %       'data\1.mat' = change('data\1.mat', '1', 'overwrite', true)
-
-
+    
+    % Default parameters
+    if ispc
+        defaultSlash = '\'; % Windows (\)
+    else
+        defaultSlash = '/'; % UNIX (/)
+    end
+    
     % Acquire parameters
     p = inputParser;
-    addParameter(p, 'slash', '\', @ischar);     % Windows (\) or UNIX (/)
+    addParameter(p, 'slash', defaultSlash, @ischar);     % Windows (\) or UNIX (/)
     addParameter(p, 'postfix', '', @ischar);
-    addParameter(p, 'overwrite',  false, @islogical);
+    addParameter(p, 'overwrite', false, @islogical);
     parse(p, varargin{:});
     parameters = p.Results;
     slash = parameters.slash;
@@ -32,7 +38,7 @@ function new_filename = change(filename, new_name, varargin)
     if isempty(new_name), new_name = name; end
        
     new_filename = [new_folder, slash, new_name, postfix, new_ext];
-    disp(new_filename)
+    %disp(new_filename)
     
     if ~overwrite
         new_filename_bare = [new_folder, slash, new_name];

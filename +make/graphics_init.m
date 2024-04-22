@@ -105,7 +105,35 @@ switch make.key(key)
         hold(axisA, 'on'); 
         hold(axisB, 'on');
         xtickformat(axisA, '%.0f');
-        %xtickformat(axisB, 'hh:mm:ss');
+        a = [axisA, axisB];
+        
+        
+    case 114     %r: time vs Resistance
+        set(f,  'Position',  [0, 0, 25, 10]);
+        t = tiledlayout(f,1,1);
+        axisA = axes(t, ...
+            'FontSize', 12, ...
+            'FontName', 'Arial', ...
+            'XGrid', 'on', ...
+            'YGrid', 'on', ...
+            'Box', 'off', ...
+            'YColor', 'r');
+        xlabel(axisA, "Time, min");
+        ylabel(axisA, "resistance, mOhm");
+        axisB = axes(t, ...
+            'FontSize', 12, ...
+            'FontName', 'Arial', ...
+            'XGrid', 'on', ...
+            'YGrid', 'on', ...
+            'Box', 'off', ...
+            'Color', 'none', ...
+            'XAxisLocation', 'top', ...
+            'YAxisLocation', 'right', ...
+            'YColor', 'b');
+        ylabel(axisB, "Temp B, K");
+        hold(axisA, 'on'); 
+        hold(axisB, 'on');
+        xtickformat(axisA, '%.0f');
         a = [axisA, axisB];
 
     case 107    %k: Kerr (main)
@@ -298,7 +326,7 @@ switch make.key(key)
              axisPowera, axisPowerb];
          
          
-case 1290848    %kth: Kerr, transport, hall
+    case 1290848    %kth: Kerr, transport, hall
         set(f,  'Position',  [0, 0, 36, 21]);
         sizeLeft = 2.5;
         sizeBottomA = 14;
@@ -497,7 +525,7 @@ case 1290848    %kth: Kerr, transport, hall
         set(axisHall, 'YColor', 'b');
         yyaxis(axisHall, 'left');
         set(axisHall, 'YColor', 'r');
-        ylabel(axisHall, "Voltage, \muV");
+        ylabel(axisHall, "Field, mT");
         xlabel(axisHall, "Time, min");
         
         axisTr = axes(tabTrans);
@@ -511,7 +539,8 @@ case 1290848    %kth: Kerr, transport, hall
         set(axisTr, 'YColor', 'b');
         yyaxis(axisTr, 'left');
         set(axisTr, 'YColor', 'r');
-        ylabel(axisTr, "Resistance, mOhm");
+        %ylabel(axisTr, "Resistance, mOhm");
+        ylabel(axisTr, "Field, mT");
         xlabel(axisTr, "Temp, K");
 
         a = [axisTimeA, axisTimeB, axisTimeC, ...
@@ -521,6 +550,52 @@ case 1290848    %kth: Kerr, transport, hall
              axisPowera, axisPowerb, ...
              axisHall, ...
              axisTr];
+
+
+    case 1346488    %khy: Kerr, hysteresis
+        set(f,  'Position',  [0, 0, 24, 24]);
+        tl = tiledlayout(f,3,1);
+
+        axisA = nexttile(tl);
+        hold(axisA, 'on');
+        grid(axisA, 'on');
+        title(axisA, 'Magnetic field sweep');
+        set(axisA, 'Units', 'centimeters');
+        set(axisA, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisA, 'right');
+        set(axisA, 'YColor', 'b');
+        ylabel(axisA, "DC Voltage, mV");
+        yyaxis(axisA, 'left');
+        set(axisA, 'YColor', 'r');
+        ylabel(axisA, "Kerr, \murad");
+        xlabel(axisA, "Magnetic field, mT");
+
+        axisB = nexttile(tl);
+        hold(axisB, 'on');
+        grid(axisB, 'on');
+        set(axisB, 'Units', 'centimeters');
+        set(axisB, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisB, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisB, 'right');
+        set(axisB, 'YColor', 'b');
+        ylabel(axisB, "1\omega Voltage Y, \muV");
+        yyaxis(axisB, 'left');
+        set(axisB, 'YColor', 'r');
+        ylabel(axisB, "1\omega Voltage X, \muV");
+
+        axisC = nexttile(tl);
+        hold(axisC, 'on');
+        grid(axisC, 'on');
+        set(axisC, 'Units', 'centimeters');
+        set(axisC, 'FontSize', 12, 'FontName', 'Arial', 'YColor', 'r');
+        set(axisC, 'FontSize', 12, 'FontName', 'Arial');
+        yyaxis(axisC, 'left');
+        set(axisC, 'YColor', 'r');
+        ylabel(axisC, "Magnetic field, mT");
+        yyaxis(axisC, 'left');
+        xlabel(axisC, "Magnet current, mA");
+
+        a = [axisA, axisB, axisC];
 
 
 case 1228788    %ktc: kerr, transport, capacitance
@@ -1076,6 +1151,34 @@ case 1278436    %ktg: Kerr, transport, gate
         title(axisA, 'DC power P_0, \muW');
         title(axisB, 'AC power P_{AC}, \muW');
         %title(axisB, '1\omega Power Ratio, P_1/P_0');
+        
+        colorbar(axisA);
+        colorbar(axisB);
+
+        for i = 1:length(a)
+            axis = a(i);
+            hold(axis, 'on');
+            grid(axis, 'on');
+            set(axis, 'Units', 'centimeters');
+            set(axis, 'FontSize', 12, 'FontName', 'Arial');
+            xlabel(axis, xylabels(1));
+            ylabel(axis, xylabels(2));
+        end
+        
+    case 9603   %ca: laser current and modulation amplitude sweep
+        set(f,  'Position',  [0, 0, 24, 24]);
+        tl = tiledlayout(f, 2, 1);
+
+        axisA = nexttile(tl);
+        axisB = nexttile(tl);
+
+        a = [axisA, axisB];
+        xylabels = [...
+            "Current, mA",      "Amplitude, Vpp"; ...
+            ];
+
+        title(axisA, ' STD V_{R}, \muV');
+        title(axisB, 'Mean V_{R}, \muV');
         
         colorbar(axisA);
         colorbar(axisB);
