@@ -1,5 +1,11 @@
-function graphics = z(graphics, logdata)
+function graphics = z(graphics, logdata, options)
 %Graphics plotting function.
+
+arguments
+    graphics struct;
+    logdata struct;
+    options.plot_magnitude (1,1) logical = true;
+end
 
     axisA = graphics.axes(1);
     axisB = graphics.axes(2);
@@ -18,11 +24,26 @@ function graphics = z(graphics, logdata)
 
     yyaxis(axisA, 'left');
     plot(axisA, d, x1, 'Color', 'r');
+
     yyaxis(axisA, 'right');
-    plot(axisA, d, y1, 'Color', 'b');
-    yyaxis(axisB, 'left');
-    plot(axisB, t, x2, 'Color', 'r');
-    yyaxis(axisB, 'right');
-    plot(axisB, t, y2, 'Color', 'b');
+    plot(axisA, d, y1, 'Color', 'b');    
+
+    if options.plot_magnitude
+        yyaxis(axisB, 'left');
+        ylabel(axisB, 'Mag, mV');
+        set(axisB, 'YColor', 'k');
+        plot(axisB, t, abs(x2 + 1j*y2), 'Color', 'k');
+
+        yyaxis(axisB, 'right');
+        ylabel(axisB, 'Phase (rad)');
+        set(axisB, 'YColor', 'm');
+        plot(axisB, t, angle(x2 + 1j*y2), 'Color', 'm');
+    else
+        yyaxis(axisB, 'left');
+        plot(axisB, t, x2, 'Color', 'r');
+
+        yyaxis(axisB, 'right');
+        plot(axisB, t, y2, 'Color', 'b');
+    end
     
 end
