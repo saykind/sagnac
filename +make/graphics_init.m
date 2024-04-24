@@ -13,6 +13,11 @@ if nargin < 1, error("[make.graphics_init] Please provide seed/key."); end
 f = figure('Units', 'centimeters');
 
 switch make.key(key)
+    case 122    %z: HF2LI lockin data only
+        close(f);
+        graphics = make.canvas.z();
+        return;
+
     case 12412 %tk: time vs Kerr
         set(f,  'Position',  [0, 0, 24, 15]);
         tl = tiledlayout(f,3,1);
@@ -80,6 +85,12 @@ switch make.key(key)
 
 
     case 84     %T: Temperature
+        close(f);
+        graphics = make.canvas.T();
+        return;
+
+
+    case 108     %l: time vs lcokin
         set(f,  'Position',  [0, 0, 25, 10]);
         t = tiledlayout(f,1,1);
         axisA = axes(t, ...
@@ -90,7 +101,7 @@ switch make.key(key)
             'Box', 'off', ...
             'YColor', 'r');
         xlabel(axisA, "Time, min");
-        ylabel(axisA, "Temp A, K");
+        ylabel(axisA, "Mag, nV");
         axisB = axes(t, ...
             'FontSize', 12, ...
             'FontName', 'Arial', ...
@@ -101,7 +112,7 @@ switch make.key(key)
             'XAxisLocation', 'top', ...
             'YAxisLocation', 'right', ...
             'YColor', 'b');
-        ylabel(axisB, "Temp B, K");
+        ylabel(axisB, "Phase, deg");
         hold(axisA, 'on'); 
         hold(axisB, 'on');
         xtickformat(axisA, '%.0f');

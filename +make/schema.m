@@ -12,13 +12,21 @@ if nargin < 1, fprintf("[make.schema] Please provide a seed/key."); return; end
 key = make.key(seed);
 
 switch key
+    case 122    %z: HF2LI lockin data only
+        schema = make.schema.z();
+        return
+        
     case 84     %T: Single temperature controller
-        name =      "tempcont";
-        driver =    "LSCI331";
+        schema = make.schema.T();
+        return
+
+    case 108     %l: Single lock-in
+        name =      "lockin";
+        driver =    "SR844";
         interface = "visa";
-        address =   23;
-        parameters = {{nan}};
-        fields =    {{}};
+        address =   9;
+        parameters = {{}};
+        fields =    {{'X', 'Y'}};
         
     case 107    %k: Kerr (main)
         name =      ["diode";   "waveform"; "voltmeter";        "lockin";   "tempcont";   "magnet"];

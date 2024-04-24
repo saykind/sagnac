@@ -6,10 +6,15 @@ function title = title(seed)
 key = make.key(seed);
 
 switch key
+    case 122    %z: HF2LI lockin data only
+        title = "HF2LI lockin";
+
     case 11960  %hs: Hall sensor
         title = "Hall sensor";
     case 84     %T: Temperature only
         title = "Temperature measurement";
+    case 108    %l: Lockin measurement
+        title = "Lockin measurement";
     case 114     %r: time vs Resistance
         title = "Resistance measurement";
     case 68     %D: Diode temperature
@@ -29,7 +34,7 @@ switch key
 
     case 112    %p: optical power using Newport 1830-C
         title = "Optical power measurement";
-    case 100    %d: laser current sweep, DC power measurement
+    case 100    %d: laser current sweep DC power measurement
         title = "DC voltage, Diode current sweep";
     case 477128 %LIV:  Laser IV characteristic
         title = "Laser IV";

@@ -31,7 +31,6 @@ classdef (Sealed = true) AH2500A < Drivers.Device
             obj.interface = "gpib";
             obj = obj.init(varargin{:});
             obj.rename("AM2500A");
-            obj.remote = true;
             obj.fields = {'C', 'L', 'V'};
             obj.parameters = {'status'};
             obj.update();

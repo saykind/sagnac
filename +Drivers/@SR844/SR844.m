@@ -36,7 +36,6 @@ classdef SR844 < Drivers.Device
         function obj = SR844(varargin)
             obj = obj.init(varargin{:});
             obj.rename("SR844");
-            obj.remote = true;
             obj.fields = {'X', 'Y', 'R', 'Q', 'AUX1', 'AUX2'};
             obj.parameters = {'freq', 'phase', 'tc', ...
                 'sensitivity', 'harmonic'};

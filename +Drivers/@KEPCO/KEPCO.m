@@ -35,7 +35,6 @@ classdef (Sealed = true) KEPCO < Drivers.Device
         %KEPCO constructor
             obj = obj.init(varargin{:});
             obj.rename("KEPCO");
-            obj.remote = true;
             obj.fields = {'I', 'V'};
             obj.parameters = {'voltageLimit', 'currentLimit'};
             obj.update();
@@ -71,7 +70,7 @@ classdef (Sealed = true) KEPCO < Drivers.Device
             obj.rampInfo.I_array = linspace(I0, I1, num);
             
             
-            util.clearTimers(0, 'KEPCO');
+            util.timers.clearall(0, 'KEPCO');
             obj.ramper = timer('Tag', 'KEPCO');
             obj.rampInfo.name = obj.ramper.Name;
             obj.ramper.Period = period;

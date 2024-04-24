@@ -28,7 +28,6 @@ classdef A33220A < Drivers.Device
         function obj = A33220A(varargin)
             obj = obj.init(varargin{:});
             obj.rename("A33220A");
-            obj.remote = true;
             obj.fields = {};
             obj.parameters = {'freq', 'ampl', ...
                 'offset', 'waveform', 'on'};

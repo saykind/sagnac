@@ -41,7 +41,10 @@ classdef Device < handle
     methods
         function obj = Device(varargin)
             %Constructor. See Device.init() method for more information
+            obj.address = NaN;
             obj.interface = 'visa';
+            obj.id = "";
+            obj.handle = [];
             obj.fields = {};
             obj.parameters = {};
             obj.units = {};

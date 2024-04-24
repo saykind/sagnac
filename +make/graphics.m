@@ -1,93 +1,70 @@
-function graphics = graphics(seed, graphics, logdata, varargin)
-%Graphics initialization and plotting function.
-%   Seed selects pre-defined experiment setups.
-%   When nargin = 1, figure is created.
-%   When nargin > 1, plot is made.
-%
-%   See also:
-%       make.key();
+function graphics = graphics(seed, graphics, logdata, options)
+%Graphics plotting function.
 
-
-%% Header
-if nargin < 1, error("[make.graphics] Please provide seed/key."); end
-
-% parse parameters
-p = inputParser;
-addParameter(p, 'title', [], @ischar);
-addParameter(p, 'interactive', false, @islogical);
-parse(p, varargin{:});
-parameters = p.Results;
-
-% Covert seed to key
-if isnumeric(seed)
-    key = seed;
-    seedname = '';
-else
-    [key, seedname] = make.key(seed);
-end
-key = make.key(key);
-
-% Select plot title
-if ~isempty(parameters.title)
-    plottitle = parameters.title;
-elseif ~isempty(seedname)
-    plottitle = seedname;
-else
-    plottitle = make.title(seed);
+arguments
+    seed (1,1) double
+    graphics (1,1) struct
+    logdata (1,1) struct
+    options.sls (1,1) double = .1           % second-harmonic lockin sensitivity, Volts
+    options.f0 (1,1) double = 4.836         % MHz
+    options.a0 (1,1) double = 1.14          % Vpp
+    options.detector (1,:) char = '1811'    % detector model
+    options.coil_const (1,1) double = 25;   % mT/A
 end
 
-%% Create graphics
-if nargin == 1
-    
-    graphics = make.graphics_init(key);
-    set(graphics.figure, 'Name', plottitle);
-    
-    if parameters.interactive
-        for i = 1:numel(graphics.axes), disableDefaultInteractivity(a(i)); end
+    % Covert seed to key
+    if isnumeric(seed)
+        key = seed;
+    else
+        [key, ~] = make.key(seed);
     end
-    
-    return
-end
+    key = make.key(key);
 
-%% Parameters. Detector responsitivity
-sls = .1; % second harm lockin sensitivity
-%sls = sls*1.025; % 20 db filter
-%Proper modulation parameters
-%830 nm
-f0 = 4.8425;  % MHz
-a0 = 0.55;  % Vpp
-%1550 nm
-f0 = 4.86;  % MHz
-a0 = 1.1;  % Vpp
 
-detector = '1811';
+    %% Parameters
+    sls = options.sls; % second-harmonic lockin sensitivity, Volts
+    coil_const = options.coil_const; % mT/A
+    curr = 0.1; %A
 
-switch detector
-    case '1811' % 1550 nm
-        resp_dc = 10*1.04;      %   V/mW, should be 10.4 V/mW
-        resp_ac = 40*1.04;      %   V/mW, should be 40.16 V/mW
-        a0 = 1.1;               %   Vpp
-    case '1801' % 830 nm
-        resp_dc = 4.7;          %   V/mW, should be 4.7 V/mW
-        resp_ac = 5.15;         %   V/mW, should be 18.8 V/mW
-    case '1601' % 830 nm
-        resp_dc = 10*1.04;      %   V/mW, should be 4.7 V/mW
-        resp_ac = .5*1.04;      %   V/mW
-    case 'PDA'  % 830 nm
-        resp_dc = 1e-3*1.51*1e3*0.63;  %V/mW
-    case 'APD430C-4'
-        resp_dc = 36;           %   V/mW
-    case 'APD430C-20'
-        resp_dc = 180;          %   V/mW
-end
+    %Proper modulation parameters
+    %830 nm
+    f0 = 4.8425;  % MHz
+    a0 = 0.55;  % Vpp
+    %1550 nm
+    f0 = 4.86;  % MHz
+    a0 = 1.1;  % Vpp
 
-coil_const = 23.5;   %mT/A
-curr = 0.1; %A
+    detector = options.detector;
+
+    switch detector
+        case '1811' % 1550 nm
+            resp_dc = 10*1.04;      %   V/mW, should be 10.4 V/mW
+            resp_ac = 40*1.04;      %   V/mW, should be 40.16 V/mW
+            a0 = 1.1;               %   Vpp
+        case '1801' % 830 nm
+            resp_dc = 4.7;          %   V/mW, should be 4.7 V/mW
+            resp_ac = 5.15;         %   V/mW, should be 18.8 V/mW
+        case '1601' % 830 nm
+            resp_dc = 10*1.04;      %   V/mW, should be 4.7 V/mW
+            resp_ac = .5*1.04;      %   V/mW
+        case 'PDA'  % 830 nm
+            resp_dc = 1e-3*1.51*1e3*0.63;  %V/mW
+        case 'APD430C-4'
+            resp_dc = 36;           %   V/mW
+        case 'APD430C-20'
+            resp_dc = 180;          %   V/mW
+    end
 
 
 %% Given graphics, draw a plot    
 switch key
+    case 122    %z: HF2LI lockin data only
+        make.draw.z(graphics, logdata);
+
     case 84     %T: time vs Temperature
+        make.draw.T(graphics, logdata);
+        
+    case 108     %l: lockin
         axisA = graphics.axes(1);
         axisB = graphics.axes(2);
         cla(axisA); cla(axisB);
@@ -95,21 +72,19 @@ switch key
         t = logdata.timer.time/60;
         d = datetime(logdata.timer.datetime);
         d = dateshift(d,'start','minute') + seconds(round(second(d),0));
-        %t = (1:numel(logdata.timer.time(:,1)));
-        %t = t/60;
-        %d = datetime(logdata.timer.time);
-        TA = logdata.tempcont.A;
-        TB = logdata.tempcont.B;
+        X = 1e9*logdata.lockin.X;   % 1st harm Voltage X, nV
+        Y = 1e9*logdata.lockin.Y;   % 1st harm Voltage Y, nV
+        R = sqrt(X.^2+Y.^2);        % 1st harm Voltage R, nV
+        Q = atan2(Y,X)*180/pi;      % 1st harm Voltage Q, deg
 
-        plot(axisA, t, TA, 'Color', 'r');
-        plot(axisB, d, TB, 'Color', 'b');
-
+        %plot(axisA, t, X, 'Color', 'r');
+        plot(axisA, t, R, 'Color', 'r');
+        plot(axisB, d, Q, 'Color', 'b');
+        
         set(axisA, 'XLim', [min(t), max(t)], ...
             'XTick', linspace(min(t), max(t), 7));
         set(axisB, 'XLim', [min(d), max(d)], ...
             'XTick', linspace(min(d), max(d), 7));
-        %xtickformat(axisB, 'hh:mm:ss');
-        
         
     case 114     %r: time vs Resistance
         axisA = graphics.axes(1);

@@ -39,7 +39,6 @@ classdef (Sealed = true) ILX3724 < Drivers.Device
         %ILX3724 constructor
             obj = obj.init(varargin{:});
             obj.rename("ILX3724");
-            obj.remote = true;
             obj.fields = {};
             obj.parameters = {'las', 'lasmode', 'current', 'voltage', ...
                 'tec', 'tecmode', 'temperature', 'resistance'};

@@ -41,7 +41,6 @@ classdef SR830 < Drivers.Device
         %SR830 Constructor.
             obj = obj.init(varargin{:});
             obj.rename("SR830");
-            obj.remote = true;
             
             obj.fields = {'X', 'Y', 'R', 'Q', 'AUX1', 'AUX2'};
             fieldsUnits = {'V', 'V', 'V', 'deg', 'V', 'V'};

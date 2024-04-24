@@ -1,6 +1,6 @@
-function fig = kerr2d(varargin)
+function fig = kerr(varargin)
 %Plots kerr data from signle datafile containing xy scan.
-%   plot.kerr2d(Name, Value) specifies additional 
+%   plot.xy.kerr(Name, Value) specifies additional 
 %   options with one or more Name, Value pair arguments. 
 % 
 %   Name-Value Pair Arguments:
@@ -37,8 +37,8 @@ function fig = kerr2d(varargin)
 %   - fig           : Graphics handle.
 %
 %   Example:
-%   plot.kerr();
-%   plot.kerr('range', [10, 30], 'dT', 0.4, 'offset', [25, 30]);
+%   plot.xy.kerr();
+%   plot.xy.kerr('range', [10, 30], 'dT', 0.4, 'offset', [25, 30]);
 %
 %   Notes:
 %   - The function requires that the .mat files contain a 'logdata' 
@@ -55,7 +55,7 @@ function fig = kerr2d(varargin)
 %   - The figure is saved in the 'output' directory with the name format:
 %     <first_filename>_k.png.
 %
-%   See also plot.kerr();
+%   See also plot.temp.kerr();
     
     %% Acquire parameters
     p = inputParser;
@@ -178,8 +178,8 @@ function fig = kerr2d(varargin)
 
     if ~isempty(climit)
         % check matlab version
-        if verLessThan('matlab', '9.12')
-            caxis(ax, climit);
+        if isMATLABReleaseOlderThan('R2021a')
+            caxis(ax, climit); %#ok<CAXIS>
         else
             clim(ax, climit);
         end

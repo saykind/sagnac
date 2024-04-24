@@ -57,7 +57,6 @@ classdef (Sealed = true) LSCI331 < Drivers.Device
             obj.interface = "visa";
             obj = obj.init(varargin{:});
             obj.rename("LSCI331");
-            obj.remote = true;
             
             obj.fields = {'A', 'B', 'S', 'current'};
             fieldsUnits = {'K', 'K', 'K', 'A'};

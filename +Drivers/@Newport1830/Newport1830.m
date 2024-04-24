@@ -37,8 +37,6 @@ classdef (Sealed = true) Newport1830 < Drivers.Device
             obj.interface = "gpib";
             obj = obj.init(varargin{:});
             obj.rename("Newport1830");
-            %if obj.query('l?') == "1", obj.remote = true;
-            %else, obj.remote = false; end
             
             obj.fields = {'power'};
             fieldsUnits = {'W'};

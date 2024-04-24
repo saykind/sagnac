@@ -1,4 +1,4 @@
-function clearTimers(verbose, tag)
+function clearall(verbose, tag)
     if nargin < 1, verbose = 1; end
     if nargin < 2
         timers = timerfindall();
