@@ -8,6 +8,8 @@ key = make.key(seed);
 switch key
     case 122    %z: HF2LI lockin data only
         title = "HF2LI lockin";
+    case 5978   %z1: HF2LI lockin single demodulator data only
+        title = "HF2LI lockin";
 
     case 11960  %hs: Hall sensor
         title = "Hall sensor";

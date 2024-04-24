@@ -61,6 +61,9 @@ switch key
     case 122    %z: HF2LI lockin data only
         make.draw.z(graphics, logdata);
 
+    case 5978   %z1: HF2LI lockin single demodulator data only
+        make.draw.z1(graphics, logdata);
+
     case 84     %T: time vs Temperature
         make.draw.T(graphics, logdata);
         

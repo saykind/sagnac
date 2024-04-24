@@ -14,10 +14,17 @@ key = make.key(seed);
 switch key
     case 122    %z: HF2LI lockin data only
         schema = make.schema.z();
+        schema.Properties.Description = "z";
+        return
+
+    case 5978   %z1: HF2LI lockin single demodulator data only
+        schema = make.schema.z();
+        schema.Properties.Description = "z1";
         return
         
     case 84     %T: Single temperature controller
         schema = make.schema.T();
+        schema.Properties.Description = "T";
         return
 
     case 108     %l: Single lock-in

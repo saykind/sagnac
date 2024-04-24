@@ -9,5 +9,4 @@ function schema = T()
     fields =    {{}};
 
     schema = table(name, driver, interface, address, parameters, fields);
-    schema.Properties.Description = "T";
 end

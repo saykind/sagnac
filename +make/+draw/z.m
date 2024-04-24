@@ -3,20 +3,26 @@ function graphics = z(graphics, logdata)
 
     axisA = graphics.axes(1);
     axisB = graphics.axes(2);
-    cla(axisA); cla(axisB);
+    for ax = graphics.axes
+        yyaxis(ax, 'left');
+        cla(ax);
+        yyaxis(ax, 'right');
+        cla(ax);
+    end
 
     t = logdata.timer.time/60;
     d = datetime(logdata.timer.datetime);
     d = dateshift(d,'start','minute') + seconds(round(second(d),0));
-    x = 1e6*logdata.lockin.x(:,1);
-    y = 1e6*logdata.lockin.y(:,1);
+    [x1, y1, x2, y2] = util.logdata.lockin(logdata.lockin);
+    [x1, y1, x2, y2] = deal(x1*1e6, y1*1e6, x2*1e3, y2*1e3);
 
-    plot(axisA, t, x, 'Color', 'r');
-    plot(axisB, d, y, 'Color', 'b');
-
-    set(axisA, 'XLim', [min(t), max(t)], ...
-        'XTick', linspace(min(t), max(t), 7));
-    set(axisB, 'XLim', [min(d), max(d)], ...
-        'XTick', linspace(min(d), max(d), 7));
+    yyaxis(axisA, 'left');
+    plot(axisA, d, x1, 'Color', 'r');
+    yyaxis(axisA, 'right');
+    plot(axisA, d, y1, 'Color', 'b');
+    yyaxis(axisB, 'left');
+    plot(axisB, t, x2, 'Color', 'r');
+    yyaxis(axisB, 'right');
+    plot(axisB, t, y2, 'Color', 'b');
     
 end

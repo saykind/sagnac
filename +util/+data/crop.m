@@ -89,7 +89,7 @@ function logdata_new = cropfield(logdata, field, range, verbose)
             for j = 1:numel(fn2)
                 if ~isnumeric(logdata.(fn1{i}).(fn2{j})), continue; end
                     logdata_new.(fn1{i}).(fn2{j}) = ...
-                    logdata.(fn1{i}).(fn2{j})(idx); 
+                    logdata.(fn1{i}).(fn2{j})(idx,:); 
             end
         end
         if verbose, fprintf("Removed %d points.\n", num_extra); end

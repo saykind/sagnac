@@ -27,7 +27,7 @@ function [data, g] = data(filename)
 
     if isfield(data, 'key') && isfield(data, 'logdata')
         try
-            g = make.graphics(data.key, make.graphics(data.key), data.logdata);
+            g = make.graphics(data.key, make.graphics_init(data.key), data.logdata);
         catch ME
             fprintf("[plot.data] failed to use make.graphics()");
             disp(ME);

@@ -27,7 +27,7 @@ function obj = init(obj, device_id)
         end
         try
             device_id = ziAutoDetect();
-            disp(['Device ID: ' device_id]);
+            disp(['[Drivers.HF2LI.init] Device ID: ' device_id]);
         catch ME
             disp('[Drivers.HF2LI.init] Error auto-detecting the device.');
             disp(ME.message);

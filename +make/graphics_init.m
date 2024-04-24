@@ -18,6 +18,11 @@ switch make.key(key)
         graphics = make.canvas.z();
         return;
 
+    case 5978   %z1: HF2LI lockin single demodulator data only
+        close(f);
+        graphics = make.canvas.z1();
+        return;
+
     case 12412 %tk: time vs Kerr
         set(f,  'Position',  [0, 0, 24, 15]);
         tl = tiledlayout(f,3,1);
