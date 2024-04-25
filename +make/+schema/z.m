@@ -9,5 +9,5 @@ function schema = z()
     fields =    {{'x', 'y'}};
 
     schema = table(name, driver, interface, address, parameters, fields);
-    schema.Properties.Description = "z";
+    schema.Properties.Description = mfilename;
 end

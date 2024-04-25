@@ -6,7 +6,7 @@ function configure(obj)
     end
 
     % Input
-    obj.set('input_range',          [.05 .5]);
+    obj.set('input_range',          [.03 .3]);
     obj.set('input_ac',             [  1  1]);
     obj.set('input_impedance_50',   [  1  1]);
 

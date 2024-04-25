@@ -58,14 +58,29 @@ end
 
 %% Given graphics, draw a plot    
 switch key
-    case 122    %z: HF2LI lockin data only
+    case 122        %z: HF2LI lockin data only
         make.draw.z(graphics, logdata);
 
-    case 5978   %z1: HF2LI lockin single demodulator data only
+    case 5978       %z1: HF2LI lockin single demodulator data only
         make.draw.z1(graphics, logdata);
 
-    case 84     %T: time vs Temperature
+    case 84         %T: time vs Temperature
         make.draw.T(graphics, logdata);
+
+    case 14520      %xy: Kerr 2D scan
+        make.draw.xy(graphics, logdata);
+    
+    case 1771440    %zxy: Kerr XY scan
+        make.draw.zxy(graphics, logdata);
+        
+    case 107    %k: Kerr effect (main)
+        make.draw.k(graphics, logdata);
+    
+    case 13054      %zk: Kerr effect + temperature
+        make.draw.zk(graphics, logdata);
+
+    case 14762      %zy: Hysteresis in Kerr signal
+        make.draw.zy(graphics, logdata);
         
     case 108     %l: lockin
         axisA = graphics.axes(1);
@@ -205,114 +220,6 @@ switch key
         t2 = sprintf("MAX = %.2f mV.", max(dc));
         text(ax, .0, .65, t1, 'FontSize', 120);
         text(ax, .0, .35, t2, 'FontSize', 120, 'Color', 'red');
-        
-        
-
-    case 107    %k: Kerr effect (main)
-        axisA = graphics.axes(1);
-        axisB = graphics.axes(2);
-        axisC = graphics.axes(3);
-        axisTtA = graphics.axes(4);
-        axisTtB = graphics.axes(5);
-        axisTA = graphics.axes(6);
-        axisTB = graphics.axes(7);
-        axisTC = graphics.axes(8);
-        axisTBA = graphics.axes(9);
-        axisPa = graphics.axes(10);
-        axisPb = graphics.axes(11);
-        cla(axisA); yyaxis(axisA, 'left'); cla(axisA);
-        cla(axisB); yyaxis(axisB, 'left'); cla(axisB);
-        cla(axisC); yyaxis(axisC, 'left'); cla(axisC);
-        cla(axisTtA); yyaxis(axisTtA, 'left'); cla(axisTtA);
-        cla(axisTtB); yyaxis(axisTtB, 'left'); cla(axisTtB);
-        cla(axisTA); yyaxis(axisTA, 'left'); cla(axisTA);
-        cla(axisTB); yyaxis(axisTB, 'left'); cla(axisTB);
-        cla(axisTC); yyaxis(axisTC, 'left'); cla(axisTC);
-        cla(axisTBA); yyaxis(axisTBA, 'left'); cla(axisTBA);
-        cla(axisPa); yyaxis(axisPa, 'left'); cla(axisPa);
-        cla(axisPb); yyaxis(axisPb, 'left'); cla(axisPb);
-
-        t = logdata.timer.time/60;      % Time, min
-        TA = logdata.tempcont.A;         % Temp, K
-        TB = logdata.tempcont.B;         % Temp, K
-        dc = 1e3*logdata.voltmeter.v1;  % DC voltage, mV
-        V1X = 1e3*logdata.lockin.X;     % 1st harm Voltage X, uV
-        V1Y = 1e3*logdata.lockin.Y;     % 1st harm Voltage Y, uV
-        V2X = 1e3*logdata.lockin.AUX1;  % 2nd harm Voltage X, mV
-        V2Y = 1e3*logdata.lockin.AUX2;  % 2nd harm Voltage Y, mV
-        V2 = sqrt(V2X.^2+V2Y.^2);
-        try
-            %sls = util.data.sls(dc, V2);
-            %disp(sls);
-        catch
-            disp("Wasn't able to find correct lockin sensitivity;")
-        end
-        V2X = sls*V2X;
-        V2Y = sls*V2Y;
-        V2 = sls*V2;
-        
-        kerr = util.math.kerr(V1X, V2);
-        V1X = 1e3*V1X;
-        V1Y = 1e3*V1Y;
-
-        % Kerr vs Time
-        yyaxis(axisA, 'left');
-        plot(axisA, t, kerr, 'Color', 'r');
-        yyaxis(axisA, 'right');
-        plot(axisA, t, dc, 'Color', 'b');
-
-        yyaxis(axisB, 'left');
-        plot(axisB, t, V1X, 'Color', 'r');
-        yyaxis(axisB, 'right');
-        plot(axisB, t, V1Y, 'Color', 'b');
-
-        yyaxis(axisC, 'left');
-        plot(axisC, t, V2X, 'Color', 'r');
-        plot(axisC, t, V2, 'k-');
-        yyaxis(axisC, 'right');
-        plot(axisC, t, V2Y, 'Color', 'b');
-
-        % Temp vs Time
-        yyaxis(axisTtA, 'left');
-        plot(axisTtA, t, TA, 'Color', 'r');
-        yyaxis(axisTtA, 'right');
-        plot(axisTtA, t, TB, 'Color', 'b');
-
-        % Kerr vs Temp A
-        yyaxis(axisTA, 'left');
-        plot(axisTA, TA, kerr, 'Color', 'r');
-        yyaxis(axisTA, 'right');
-        plot(axisTA, TA, dc, 'Color', 'b');
-
-        yyaxis(axisTB, 'left');
-        plot(axisTB, TA, V1X, 'Color', 'r');
-        yyaxis(axisTB, 'right');
-        plot(axisTB, TA, V1Y, 'Color', 'b');
-
-        yyaxis(axisTC, 'left');
-        plot(axisTC, TA, V2X, 'Color', 'r');
-        %plot(axisTC, TA, V2, 'k-');
-        yyaxis(axisTC, 'right');
-        plot(axisTC, TA, V2Y, 'Color', 'b');
-        
-        %xlim(axisTA, [-inf, 120]);
-        %xlim(axisTB, [-inf, 120]);
-        %xlim(axisTC, [-inf, 120]);
-
-        % Kerr vs Temp B
-        yyaxis(axisTBA, 'left');
-        plot(axisTBA, TB, kerr, 'Color', 'r');
-        yyaxis(axisTBA, 'right');
-        plot(axisTBA, TB, dc, 'Color', 'b');
-
-        % Kerr vs Power
-        yyaxis(axisPa, 'left');
-        plot(axisPa, dc, kerr, 'r.');
-        yyaxis(axisPa, 'right');
-
-        yyaxis(axisPb, 'left');
-        plot(axisPb, V2, kerr, 'r.');
-        yyaxis(axisPb, 'right');
         
         
     case 1290848    %kth: Kerr effect, transport, hall
@@ -927,105 +834,7 @@ switch key
         plot(ax, Y, KERR, 'r.-');
         yyaxis(ax, 'right');
         plot(ax, Y, V0, 'b.-');
-        yyaxis(ax, 'left');
-        
-        
-    case 14520 %xy: Kerr 2D scan
-        axisA = graphics.axes(1);
-        axisB = graphics.axes(2);
-        cla(axisA);
-        cla(axisB);
-
-        resp_dc = 4.7;   %   V/mW
-        resp_ac = 5.15;   %   V/mW
-        splitter = .673;
-
-        p0  = 1e3*logdata.voltmeter.v1;                 % DC Power, uW
-        V1X = 1e3*logdata.lockin.X;                     % 1st harm Power X, mV
-        V1Y = 1e3*logdata.lockin.Y;                     % 1st harm Power Y, mV
-        V2X  = 1e3*logdata.lockin.AUX1;                 % 2nd harm Power R, mV
-        V2Y  = 1e3*logdata.lockin.AUX2;                 % 2nd harm Power R, mV
-        V2   = sqrt(V2X.^2+V2Y.^2);
-        try
-            sls = util.data.sls(p0, V2);
-            %disp(sls);
-        catch
-            disp("Wasn't able to find correct lockin sensitivity;")
-        end
-        V2 = sls*V2;
-        
-        kerr = util.math.kerr(V1X, V2);
-        
-        n = numel(kerr);
-        k = logdata.sweep.rate-logdata.sweep.pause;
-        k = k(1);                                       %FIXME
-        m = fix(n/k);
-        KERR = mean(reshape(kerr, [k, m]),1);
-        P0 = mean(reshape(p0, [k, m]),1);
-        
-        shape = logdata.sweep.shape;
-        x = 1e3*logdata.sweep.range(1,:);
-        y = 1e3*logdata.sweep.range(2,:);
-        if isfield(logdata.sweep, 'origin')
-            x = x - 1e3*logdata.sweep.origin(1);
-            y = y - 1e3*logdata.sweep.origin(2);
-        end
-        
-        X = util.mesh.combine(x, shape);
-        Y = util.mesh.combine(y, shape);
-        n0 = length(logdata.sweep.range);
-        n_curr = length(P0);
-        
-        p0 = zeros(1, n0);
-        p0(1:n_curr) = P0;
-        if n_curr ~= n0, p0(n_curr:end) = p0(1); end
-        P0 = util.mesh.combine(p0, shape);
-        
-        kerr = zeros(1, n0);
-        kerr(1:n_curr) = KERR;
-        if n_curr ~= n0, kerr(n_curr:end) = kerr(1); end
-        KERR = util.mesh.combine(kerr, shape);
-        
-        %P0 = log(P0);
-        % Mask low power points
-        P0_cutoff = 200;
-        P0_maxlim = inf;
-        n_cutoff = 5*fix(n0/4);
-        if n_curr > n_cutoff
-            low_power_idx = P0 < P0_cutoff;
-            KERR_good = KERR(~low_power_idx);
-            kerr_max = max(KERR(~low_power_idx));
-            kerr_min = min(KERR(~low_power_idx));
-            P0_min = min(P0(~low_power_idx));
-            P0_max = max(P0(~low_power_idx));
-            kerr_bad = mean([kerr_max kerr_min]) + kerr_max-kerr_min;
-            KERR(low_power_idx) = kerr_bad;
-        end
-        
-        axis(axisA, 'tight');
-        axis(axisB, 'tight');
-        surf(axisA, X, Y, P0, 'EdgeAlpha', .2);
-        surf(axisB, X, Y, KERR, 'EdgeAlpha', .2);
-        
-        if n_curr > n_cutoff
-            low_power_idx = P0 < P0_cutoff;
-            if any(low_power_idx, 'all')
-                zlim(axisA, [P0_cutoff inf]);
-                caxis(axisA, [P0_cutoff P0_maxlim]); %Renamed to clim in R2022a
-                zlim(axisB, [kerr_min kerr_max]);
-                caxis(axisB, [kerr_min kerr_max]); %Renamed to clim in R2022a
-            end
-            if n_curr == n0
-                kerr_std = std(KERR(~low_power_idx));
-                kerr_mean = mean(KERR(~low_power_idx));
-                fprintf("kerr_avg = %.1f urad.\n", kerr_mean);
-                fprintf("kerr_std = %.1f urad.\n", kerr_std);
-            end
-        else
-            caxis(axisA, [-inf inf]);  %Renamed to clim in R2022a
-            caxis(axisB, [-inf inf]); %Renamed to clim in R2022a
-        end
-                
+        yyaxis(ax, 'left');                
         
         
         if n_curr > n0
@@ -1586,5 +1395,5 @@ switch key
 
 
     otherwise
-        disp("Unknown seed.")
+        disp("[make.graphics] Unknown seed");
 end

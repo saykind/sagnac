@@ -40,11 +40,13 @@ function s = sweep(key, instruments, s, cnt)
                 s = struct('rate', 200, 'pause', 10, ...
                     'range', [C_flat; A_flat], 'shape', [n,m]);
                 
-            case 14520 %xy: Kerr 2D scan
+            case {14520, 1771440} 
+                %xy: Kerr 2D scan
+                %zxy: Kerr XY scan
                 x0 = 13.;
                 y0 = 13.;
-                x = x0 + (-1:.025:1);
-                y = y0 + (-1:.025:-.5);
+                x = x0 + (-1.2:.04:3.6);
+                y = y0 + (-2:.04:2);
                 [X,Y] = meshgrid(x,y);
                 [n,m] = size(X);
                 X_flat = flatten_mesh(X);
@@ -64,13 +66,14 @@ function s = sweep(key, instruments, s, cnt)
             case {105, 'i'}
                 s = struct('rate', 30, 'pause', 5, 'range', 65:1:95);
 
-            case {121, 11128, 1346488}    
+            case {121, 11128, 1346488, 14762}    
                 %y: Hysteresis test
                 %hk: Kerr vs field
                 %khy: Kerr vs field
-                mag = 3200;  % current, mA
+                %zy: Kerr vs field
+                mag = 400;  % current, mA
                 sgn = 1;
-                step = 320;
+                step = 200;
                 range = sgn*1e-3*[0:step:mag, ...
                     (mag-.5*step):-step:0, 0];
                 s = struct('rate', 30, 'pause', 8, 'range', range, 'sign', sgn);
@@ -138,7 +141,9 @@ function s = sweep(key, instruments, s, cnt)
                 val = s.range(:,1);
                 instruments.diode.output(val(1));
                 instruments.waveform.set('ampl', val(2));
-            case 14520  %xy: Kerr 2D scan
+            case {14520, 1771440} 
+                %xy: Kerr 2D scan
+                %zxy: Kerr XY scan
                 val = s.range(:,1);
                 instruments.X.set('position', val(1));
                 instruments.Y.set('position', val(2));
@@ -146,10 +151,11 @@ function s = sweep(key, instruments, s, cnt)
                 instruments.Y.set('position', val);
             case {105, 'i'}
                 instruments.diode.output(val);
-            case {121, 11128, 1346488}    
+            case {121, 11128, 1346488, 14762}    
                 %y: Hysteresis test
                 %hk: Kerr vs field
                 %khy:
+                %zy: Kerr vs field
                 instruments.magnet.output(abs(val));
             case {11960, make.key('hs:')} % Hall sensor
                 instruments.magnet.output(abs(val));
@@ -204,7 +210,9 @@ function s = sweep(key, instruments, s, cnt)
                 val = s.range(:,i);
                 instruments.diode.output(val(1));
                 instruments.waveform.set('ampl', val(2));
-            case 14520  %xy: Kerr 2D scan
+            case {14520, 1771440} 
+                %xy: Kerr 2D scan
+                %zxy: Kerr XY scan
                 try
                     val = s.range(:,i);
                 catch ME
@@ -217,10 +225,11 @@ function s = sweep(key, instruments, s, cnt)
                 instruments.Y.set('position', val);
             case {105, 'i'}
                 instruments.diode.output(val);
-            case {121, 11128, 1346488}    
+            case {121, 11128, 1346488, 14762}    
                 %y: Hysteresis test
                 %hk: Kerr vs field
                 %khy:
+                %zy: Kerr vs field
                 instruments.magnet.output(abs(val));
 %                 if val == 0 
 %                     sound(sin(1:5000));

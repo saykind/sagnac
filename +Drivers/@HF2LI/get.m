@@ -48,6 +48,12 @@ function varargout = get(obj, varargin)
                     impedance(j) = ziDAQ('getInt', ['/' obj.id '/sigins/' num2str(j-1) '/imp50']);
                 end
                 varargout{i} = impedance;
+            case {'input'}
+                input = struct();
+                input.range = obj.get('input_range');
+                input.ac = obj.get('input_ac');
+                input.impedance_50ohm = obj.get('input_impedance_50');
+                varargout{i} = input;
             
             % Output parameters:
             %   - output_on
@@ -87,6 +93,13 @@ function varargout = get(obj, varargin)
                     mixer(j) = ziGetDefaultSigoutMixerChannel(obj.props, j-1);
                 end
                 varargout{i} = mixer;
+            case {'output'}
+                output = struct();
+                output.on = obj.get('output_on');
+                output.range = obj.get('output_range');
+                output.amplitude = obj.get('output_amplitude');
+                output.mixer = obj.get('output_mixer');
+                varargout{i} = output;
 
             % Oscillator parameters:
             %   - oscillator_frequency
@@ -96,6 +109,10 @@ function varargout = get(obj, varargin)
                     f(j) = ziDAQ('getDouble', ['/' obj.id '/oscs/' num2str(j-1) '/freq']);
                 end
                 varargout{i} = f;
+            case {'oscillator'}
+                oscillator = struct();
+                oscillator.frequency = obj.get('oscillator_frequency');
+                varargout{i} = oscillator;
 
             % Demodulator parameters:
             %   - demodulator_enable
@@ -160,6 +177,17 @@ function varargout = get(obj, varargin)
                     input(j) = 1 + ziDAQ('getInt', ['/' obj.id '/demods/' num2str(j-1) '/adcselect']);
                 end
                 varargout{i} = input;
+            case {'demodulator'}
+                demodulator = struct();
+                demodulator.enable = obj.get('demodulator_enable');
+                demodulator.oscillator = obj.get('demodulator_oscillator');
+                demodulator.harmonic = obj.get('demodulator_harmonic');
+                demodulator.phase = obj.get('demodulator_phase');
+                demodulator.order = obj.get('demodulator_order');
+                demodulator.time_constant = obj.get('demodulator_time_constant');
+                demodulator.sampling_rate = obj.get('demodulator_sampling_rate');
+                demodulator.input = obj.get('demodulator_input');
+                varargout{i} = demodulator;
 
 
             %%Fields:

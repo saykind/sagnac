@@ -6,10 +6,16 @@ function title = title(seed)
 key = make.key(seed);
 
 switch key
-    case 122    %z: HF2LI lockin data only
+    case 122        %z: HF2LI lockin data only
         title = "HF2LI lockin";
-    case 5978   %z1: HF2LI lockin single demodulator data only
+    case 5978       %z1: HF2LI lockin single demodulator data only
         title = "HF2LI lockin";
+    case 1771440    %zxy: Kerr XY scan
+        title = "HF2LI and XY scan";
+    case 13054      %zk: kerr effect + temperature
+        title = "Kerr Effect";
+    case 14762      %zy: Hysteresis Kerr
+        title = "Hysteresis Kerr";
 
     case 11960  %hs: Hall sensor
         title = "Hall sensor";

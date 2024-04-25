@@ -14,7 +14,6 @@ key = make.key(seed);
 switch key
     case 122    %z: HF2LI lockin data only
         schema = make.schema.z();
-        schema.Properties.Description = "z";
         return
 
     case 5978   %z1: HF2LI lockin single demodulator data only
@@ -24,7 +23,14 @@ switch key
         
     case 84     %T: Single temperature controller
         schema = make.schema.T();
-        schema.Properties.Description = "T";
+        return
+
+    case 14520      %xy: Kerr XY scan
+        schema = make.schema.xy();
+        return
+
+    case 1771440    %zxy: Kerr XY scan
+        schema = make.schema.zxy();
         return
 
     case 108     %l: Single lock-in
@@ -36,23 +42,16 @@ switch key
         fields =    {{'X', 'Y'}};
         
     case 107    %k: Kerr (main)
-        name =      ["diode";   "waveform"; "voltmeter";        "lockin";   "tempcont";   "magnet"];
-        driver =    ["ILX3724"; "A33220A";  "Keithley2182A";    "SR844";    "LSCI331";    "KEPCO"];
-        interface = ["gpib";    "gpib";     "gpib";             "gpib";     "gpib";       "visa"];
-        address =   [15;        19;         17;                 9;          23;           5];
-        parameters = ...
-                    {{}; ...
-                     {}; ...
-                     {nan}; ...
-                     {}; ...
-                     {nan}; ...
-                     {}};
-        fields =    {{nan}; ...
-                     {nan}; ...
-                     {'v1'}; ...
-                     {'X', 'Y', 'R', 'Q', 'AUX1', 'AUX2'}; ...
-                     {'A', 'B'}; ...
-                     {}};
+        schema = make.schema.k();
+        return
+    
+    case 13054      %zk: Kerr effect + temperature
+        schema = make.schema.zk();
+        return
+
+    case 14762      %zy: Hysteresis in Kerr signal
+        schema = make.schema.zy();
+        return
                  
     case 11021    %kg: Kerr + gate sweep
         name =      ["diode";    "waveform";  "voltmeter"; ...
@@ -196,20 +195,6 @@ switch key
         fields =    {{'v1'}; ...
                      {'X', 'Y', 'R', 'Q', 'AUX1', 'AUX2'}};
                  
-    case 14520      %xy: Kerr XY scan
-        name =      ["voltmeter";        "lockin";   "X";       "Y"];
-        driver =    ["Keithley2182A";    "SR844";    "Agilis";  "Agilis"];
-        interface = ["gpib";             "gpib";     "serial";  "serial"];
-        address =   [17;                 9;          5;         6];
-        parameters = ...
-                    {{nan}; ...
-                     {}; ...
-                     {nan}; ...
-                     {nan}};
-        fields =    {{'v1'}; ...
-                     {'X', 'Y', 'R', 'Q', 'AUX1', 'AUX2'}; ...
-                     {'position'}; ...
-                     {'position'}};
                  
     case 120      %x: Kerr X scan
         name =      ["voltmeter";        "lockin";   "X";    "Y"];
@@ -269,7 +254,7 @@ switch key
         fields =    {{'v1'}; ...
                      {'X', 'Y', 'R', 'Q', 'AUX1', 'AUX2'}; ...
                      {'A', 'B'}; ...
-                     {}};
+                     {'I'}};
     
     case 121    %y: Hysteresis in Kerr signal
         name =      ["voltmeter";        "lockin";   "tempcont";   "magnet"];
@@ -284,7 +269,7 @@ switch key
         fields =    {{'v1'}; ...
                      {'X', 'Y', 'R', 'Q', 'AUX1', 'AUX2'}; ...
                      {'A', 'B'}; ...
-                     {}};
+                     {'I'}};
                  
     case 1346488    %khy: Hysteresis sweep in Kerr signal
         name =      ["voltmeter";        "lockin";   "tempcont";   "magnet";    "lockinA"];

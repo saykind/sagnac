@@ -5,8 +5,8 @@ classdef HF2LI < Drivers.Device
     %   lockin = Drivers.HF2LI('dev18120');
     %   lockin.get('demodulator_frequency')
     %   lockin.set('demodulator_frequency', 5e6);
+    %   lockin.demodulator.frequency(2) = 4.8e6;
     %   lockin.demodulator.frequency
-    %   lockin.demodulator.frequency = 4.8e6;
     %   [X, Y] = lockin.get('x', 'y');
     
     properties
@@ -84,9 +84,11 @@ classdef HF2LI < Drivers.Device
             end
             if nargin < 1, device_id = ''; end
             if isnan(device_id), device_id = ''; end
+            if isnumeric(device_id), device_id = ['dev' num2str(device_id)]; end
             obj.init(device_id);
+            obj.configure();
             obj.fields = {'x', 'y'};
-            obj.parameters = {'frequency', 'phase', 'time_constant'};
+            obj.parameters = {'input', 'output', 'oscillator', 'demodulator'};
         end
 
         % Getters (parameters)
@@ -139,7 +141,6 @@ classdef HF2LI < Drivers.Device
 
         % Setters
         function set.input(obj, input)
-            disp(input)
             obj.set('input_range', input.range);
             obj.set('input_ac', input.ac);
             obj.set('input_impedance_50', input.impedance_50ohm);
