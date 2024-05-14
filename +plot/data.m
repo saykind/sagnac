@@ -1,9 +1,10 @@
-function [data, g] = data(filename)
+function [data, g] = data(filename, varargin)
 %Load a file and plot the data.
 % 
 %  Input Arguments:
 %  - <empty> :  When no arguments given, file browser opens.
 %  - filename : filename to load.
+%  - options :  Options for the plot.
 %
 %  Output Arguments:
 %  - data :     Output of load(filename).
@@ -27,10 +28,11 @@ function [data, g] = data(filename)
 
     if isfield(data, 'key') && isfield(data, 'logdata')
         try
-            g = make.graphics(data.key, make.graphics_init(data.key), data.logdata);
+            g = make.graphics(data.key, make.graphics_init(data.key), data.logdata, varargin{:});
         catch ME
             fprintf("[plot.data] failed to use make.graphics()");
             disp(ME);
+            disp([ME.stack.file]);
         end
     end
 end

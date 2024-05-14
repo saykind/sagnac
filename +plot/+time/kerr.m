@@ -1,137 +1,145 @@
-function fig = kerr(varargin)
+function [fig, ax] = kerr(options)
 %Plots kerr data from several files.
 %   plot.kerr(Name, Value) specifies additional 
 %   options with one or more Name, Value pair arguments. 
-% 
-%   Name-Value Pair Arguments:
-%   - 'filenames'   : default []
-%                   : filename to load.
-%                     When filenames is empty, file browser open.
-%   - 'range'       : default [-inf,inf] 
-%                   : Temperature range to plot (uses logdata.tempcont.A).
-%   - 'offset'      : default [-inf,inf] 
-%                   : Temperature range to calculte kerr offset.
-%                     kerr := kerr - mean(kerr(T in offset)).
-%   - 'dt'          : default 10
-%                   : Scalar specifying the time interval for 
-%                     coarse-graining the data, in seconds
-%   - 'sls'         : default 0.25
-%                   : Scalar specifying the second harmonic lockin
-%                     sensitivity in Volts.
-%   - 'errorbar'    : default true
-%                     Logical specifying whether to plot with error bars.
-%   - 'legend'      : default []
-%                   : String array of legends for each dataset. 
-%                     If empty or not provided, the file names 
-%                     will be used as legends.
 %
 %   Output Arguments:
 %   - fig           : Graphics handle.
-%
-%   Example:
-%   plot.kerr();
-%   plot.kerr('range', [10, 30], 'offset', [25, 30]);
+%   - ax            : Axes handle.
 %
 %   Notes:
-%   - The function requires that the .mat files contain a 'logdata' 
-%     structure with fields:
-%       'tempcont.A',
-%       'lockin.X',
-%       'lockin.AUX1',
-%       'lockin.AUX2'.
-%   - The Kerr signal is calculated using the formula:
-%     Kerr = 0.5 * atan(c * (V1X) ./ V2) * 1e6 (in microradians),
-%     where c is a constant calculated using Bessel functions.
-%   - The function uses the 'util.coarse.grain' function for coarse-graining.
-%   - The figure is saved in the 'output' directory with the name format:
-%     <first_filename>_k.png.
+%   - The function util.logdata.lockin() is used to extract the lock-in data.
+%   - The Kerr signal using util.math.kerr().
+%   - The function the util.coarse.grain() is used for coarse-graining.
+%   - The figure is saved in the 'output' directory.
 %
 %   See also plot.data();
+
+arguments
+    options.filenames string = [];
+    options.ax = [];
+    options.xlim double {mustBeNumeric} = NaN;
+    options.ylim double {mustBeNumeric} = NaN;
+    options.color string = [];
+    options.time_shift double {mustBeNumeric} = 0;
+    options.offset_range double {mustBeNumeric} = [0, 0];
+    options.offset double {mustBeNumeric} = 0;
+    options.x1_offset double {mustBeNumeric} = 0;
+    options.dt double {mustBeNumeric} = 20;
+    options.slope double {mustBeNumeric} = 0;   %urad/mT
+    options.sls double {mustBeNumeric} = 0.25;
+    options.coil_const double {mustBeNumeric} = 0;   % mT/A
+    options.errorbar logical = true;
+    options.default_display_names logical = true;
+    options.show_legend logical = true;
+    options.legends string = [];
+    options.save logical = true;
+    options.verbose logical = false;
+end
     
-    % Acquire parameters
-    p = inputParser;
-    addParameter(p, 'filenames', [], @isstring);
-    addParameter(p, 'range', [-inf, inf], @isnumeric);
-    addParameter(p, 'ylim', NaN, @isnumeric);
-    addParameter(p, 'offset', [inf, -inf], @isnumeric);
-    addParameter(p, 'baseline', 0, @isnumeric);
-    addParameter(p, 'dt', 10, @isnumeric);
-    addParameter(p, 'sls', .25, @isnumeric);
-    addParameter(p, 'errorbar', true, @islogical);
-    addParameter(p, 'legends', [], @isstring);
-    parse(p, varargin{:});
-    parameters = p.Results;
-    
-    filenames = parameters.filenames;
-    range = parameters.range;
-    ylim_value = parameters.ylim;
-    offset = parameters.offset;
-    baseline = parameters.baseline;
-    dt = parameters.dt;
-    sls = parameters.sls;
-    plot_errorbar = parameters.errorbar;
-    legends = parameters.legends;
+    filenames = options.filenames;
+    ax = options.ax;
+    offset_range = options.offset_range;
+    offsets = options.offset;
+    x1_offsets = options.x1_offset;
+    slope = options.slope;
+    dt = options.dt;
+    plot_errorbar = options.errorbar;
+    legends = options.legends;
+    verbose = options.verbose;
 
     % If no filename is given, open file browser
     if isempty(filenames)
         filenames = convertCharsToStrings(util.filename.select());
-        filenames = flip(filenames);
+        %filenames = flip(filenames);
+    end
+    if isempty(filenames)
+        warning('No file selected.');
+        return;
+    end
+
+    % Fill in missing values for offsets
+    n = numel(filenames);
+    if numel(offsets) ~= n
+        offsets = [offsets, repmat(offsets(end), 1, n - 1)];
+    end
+    if numel(x1_offsets) ~= n
+        x1_offsets = [x1_offsets, repmat(x1_offsets(end), 1, n - 1)];
     end
     
     % Create figure
-    fig = figure('Name', 'Kerr Signal', ...
-        'Units', 'centimeters', ...
-        'Position', [0 0 20.5 12.9]);
-    set(fig, 'PaperUnits', 'centimeters', 'PaperSize', [11 9]);
-    ax = axes(fig);
+    if isempty(ax)
+        fig = figure('Name', 'Kerr Signal', ...
+            'Units', 'centimeters', ...
+            'Position', [0 0 20.5 12.9]);
+        set(fig, 'PaperUnits', 'centimeters', 'PaperSize', [11 9]);
+        ax = axes(fig);
+    else
+        fig = get(ax, 'Parent');
+    end
     hold(ax, 'on'); 
     grid(ax, 'on');
-    xlim(range);
     
     for i = 1:numel(filenames)
         filename = filenames(i);
         [~, name, ~] = fileparts(filename);
         logdata = load(filename).logdata;
-        time = logdata.timer.time;
+        offset = offsets(i);
+        x1_offset = x1_offsets(i);
         
-        V1X = logdata.lockin.X;
-        V2 = sls*sqrt(logdata.lockin.AUX1.^2+logdata.lockin.AUX2.^2);
-        kerr = util.math.kerr(V1X, V2);
+        % Extract data
+        time = logdata.timer.time;
+        if options.time_shift ~= 0
+            time = time + options.time_shift;
+        end
+        if options.coil_const ~= 0
+            curr = logdata.magnet.I;         % Magnet curr, A
+            field = curr*options.coil_const; % Magnetic field, mT
+        end
+        [x1, ~, x2, y2] = util.logdata.lockin(logdata.lockin, sls=options.sls);
+        if x1_offset ~= 0, x1 = x1 - x1_offset; end
+        r2 = sqrt(x2.^2 + y2.^2);
+        kerr = util.math.kerr(x1, r2);
 
-        if offset(1) >= offset(2)
-            kerr_offset = 0;
-        else
-            idx = time > offset(1) & time < offset(2);
+        % Remove offset
+        kerr_offset = 0;
+        if offset_range(1) < offset_range(2)
+            idx = temp > offset(1) & temp < offset(2);
             kerr_offset = mean(kerr(idx));
         end
-        if baseline ~= 0
-            kerr_offset = baseline;
-        end
-        if ~isempty(legends)
-            fprintf("%s: offset %.2d\n", legends(i), kerr_offset);
-        end
+        if offset ~= 0, kerr_offset = offset; end
         kerr = kerr - kerr_offset;
-        [T, K, K2] = util.coarse.grain(dt, time, kerr);
-        if plot_errorbar
-            errorbar(ax, T/60, K, K2, '.-', 'LineWidth', 1, 'DisplayName', name);
-        else
-            plot(ax, T/60, K, '.-', 'LineWidth', 1, 'DisplayName', name);
+
+        if slope ~= 0
+            kerr = kerr - slope*field;
         end
+
+        % Coarse-grain
+        [T, K, K2] = util.coarse.grain(dt, time, kerr);
+
+        if plot_errorbar
+            plt = errorbar(ax, T/60, K, K2, '.-', 'LineWidth', 1);
+        else
+            plt = plot(ax, T/60, K, '.-', 'LineWidth', 1);
+        end
+        if ~isempty(options.color), plt.Color = options.color; end 
+        if options.default_display_names, plt.DisplayName = name; end
     end
-    
-    if ~isnan(ylim_value)
-        ylim(ylim_value);
-    end
+
+    % Format plot
+    if ~isnan(options.xlim), xlim(options.xlim); end
+    if ~isnan(options.ylim), ylim(options.ylim); end
     ylabel(ax, '\DeltaKerr (\murad)');
     xlabel(ax, 'Times (min)');
-    if isempty(legends)
-        l = legend(ax, 'Location', 'best');
-    else
-        l = legend(ax, legends);
+    if options.show_legend, legend(ax, 'Location', 'best'); set(l, 'Interpreter', 'none'); end
+    if ~isempty(legends), legend(ax, legends, 'Location', 'best'); end
+    
+    
+    % Save figure
+    if options.save
+        [~, name, ~] = fileparts(filenames(1));
+        save_filename = fullfile('output', strcat(name, '_time_kerr.png'));
+        if options.verbose, fprintf('Saving figure to %s\n', save_filename); end
+        saveas(fig, save_filename, 'png');
     end
-    set(l, 'Interpreter', 'none');
-    
-    [~, name, ~] = fileparts(filenames(1));
-    saveas(fig, sprintf('output/%s_time_kerr.png', name), 'png');
 end
-    

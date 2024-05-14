@@ -7,6 +7,8 @@ arguments
     options.dT (1,1) double = 0;
     options.x1_offset (1,1) double = 0;
 end
+    %options.x1_offset = .43*1e-6;
+    %options.x1_offset = 1.5*1e-6;
 
     [axisA, axisB, axisC, axisTtA, axisTtB, axisTA, axisTB, axisTC, axisTBA, axisPa, axisPb] = util.unpack(graphics.axes);
     for ax = graphics.axes
@@ -17,18 +19,12 @@ end
     TA = logdata.tempcont.A;        % Temp, K
     TB = logdata.tempcont.B;        % Temp, K
     dc = 1e3*logdata.voltmeter.v1;  % DC voltage, mV
-    [x1, y1, x2, y2] = util.logdata.lockin(logdata.lockin);
-    options.x1_offset = .5*1e-6;
-    %options.x1_offset = 1.5*1e-6;
-    if options.x1_offset
-        x1 = x1 - options.x1_offset;
-    end
-    [V1X, V1Y, V2X, V2Y] = deal(1e3*x1, 1e3*y1, 1e3*x2, 1e3*y2);
-    V2 = sqrt(V2X.^2+V2Y.^2);
+    [x1, y1, x2, y2, r2, kerr] = util.logdata.lockin(logdata.lockin, 'x1_offset', options.x1_offset);
     
-    kerr = util.math.kerr(V1X, V2);
-    V1X = 1e3*V1X;
-    V1Y = 1e3*V1Y;
+    %r1 = sqrt(x1.^2 + y1.^2);
+    %x5 = 1e6*logdata.lockin.x(:,5);
+    %y5 = 1e6*logdata.lockin.y(:,5);
+    %r5 = sqrt(x5.^2 + y5.^2);
 
     % Kerr vs Time
     yyaxis(axisA, 'left');
@@ -37,17 +33,17 @@ end
     plot(axisA, t, dc, 'Color', 'b');
 
     yyaxis(axisB, 'left');
-    plot(axisB, t, V1X, 'Color', 'r');
+    plot(axisB, t, x1, 'Color', 'r');
     yyaxis(axisB, 'right');
-    plot(axisB, t, V1Y, 'Color', 'b');
-    %V1R = sqrt(V1X.^2+V1Y.^2);
-    %plot(axisB, t, V1R, 'Color', 'k');
+    plot(axisB, t, y1, 'Color', 'b');
 
     yyaxis(axisC, 'left');
-    plot(axisC, t, V2X, 'Color', 'r');
-    plot(axisC, t, V2, 'k-');
+    plot(axisC, t, r2, 'Color', 'r');
+    %plot(axisC, t, r2, 'k-');
+
+    coeff = besselj(2,2*.92)/(1+besselj(0,2*.92))*(.673/.25);
     yyaxis(axisC, 'right');
-    plot(axisC, t, V2Y, 'Color', 'b');
+    plot(axisC, t, r2./dc/coeff, 'Color', 'b');
 
     % Temp vs Time
     yyaxis(axisTtA, 'left');
@@ -67,14 +63,14 @@ end
     plot(axisTA, TA, dc, 'Color', 'b');
 
     yyaxis(axisTB, 'left');
-    plot(axisTB, TA, V1X, 'Color', 'r');
+    plot(axisTB, TA, x1, 'Color', 'r');
     yyaxis(axisTB, 'right');
-    plot(axisTB, TA, V1Y, 'Color', 'b');
+    plot(axisTB, TA, y1, 'Color', 'b');
 
     yyaxis(axisTC, 'left');
-    plot(axisTC, TA, V2X, 'Color', 'r');
+    plot(axisTC, TA, r2, 'Color', 'k');
     yyaxis(axisTC, 'right');
-    plot(axisTC, TA, V2Y, 'Color', 'b');
+    plot(axisTC, TA, y2, 'Color', 'b');
 
     % Kerr vs Temp B
     yyaxis(axisTBA, 'left');
@@ -88,7 +84,7 @@ end
     yyaxis(axisPa, 'right');
 
     yyaxis(axisPb, 'left');
-    plot(axisPb, V2, kerr, 'r.');
+    plot(axisPb, dc, x1, 'r.');
     yyaxis(axisPb, 'right');
     
 end

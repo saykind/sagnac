@@ -10,8 +10,8 @@ function graphics = zxy()
     axisB = nexttile(tl);
 
     a = [axisA, axisB];
-    axesTitles = ["DC power P_0, mV", "Kerr signal \theta, \murad"];
-    quantities = ["P_0, mV", "\theta, \murad"];
+    axesTitles = ["DC power P_0, mV", "1\omega In-Phase, \muV"];
+    quantities = ["P_0, mV", "X_{1\omega}, \muV"];
     xylabels = ["X, \mum",      "Y, \mum";];
 
     for i = 1:length(a)

@@ -52,6 +52,46 @@ switch key
     case 14762      %zy: Hysteresis in Kerr signal
         schema = make.schema.zy();
         return
+
+    case 12810      %zi: Laser current sweep
+        schema = make.schema.zi();
+        return
+
+    case 1207068    %zfa: Frequency and amplitude sweep
+        schema = make.schema.zfa();
+        return
+
+    case 11834      %za: Amplitude sweep
+        schema = make.schema.za();
+        return
+
+    case 12444      %zf: Frequency sweep
+        schema = make.schema.zf();
+        return
+
+    case 1313574    %zao: Amplitude offset set
+        schema = make.schema.zao();
+        return
+
+    case 1488156    %zkr: Kerr + temperature + resistance
+        schema = make.schema.zkr();
+        return
+
+    case 13110      %sr: Strain + resistance (no bridge)
+        schema = make.schema.sr();
+        return
+
+    case 950796     %bcb: BCB voltage and optical power
+        schema = make.schema.bcb();
+        return
+
+    case 1076922    %bco: BCB offset voltage sweep
+        schema = make.schema.bco();
+        return
+
+    case 1327116    %zbo: BCB offset voltage sweep
+        schema = make.schema.zbo();
+        return
                  
     case 11021    %kg: Kerr + gate sweep
         name =      ["diode";    "waveform";  "voltmeter"; ...
@@ -85,22 +125,22 @@ switch key
                      "lockin";       ...
                      "tempcont";     ...
                      "magnet";       ...
-                     "lockinA";]; 
+                     "lockinA"]; 
         driver =    ["Keithley2182A";...
                      "SR844";        ...
                      "LSCI331";      ...
                      "KEPCO";        ...
-                     "SR830";];
+                     "SR830"];
         interface = ["gpib";         ...
                      "gpib";         ...
                      "gpib";         ...
                      "visa";         ...
-                     "gpib";];
+                     "gpib"];
         address =   [17;             ...
                      9;              ...
                      23;             ...
                      5;              ...
-                     12;];
+                     12];
         parameters = ...
                     {{nan}; ...
                      {}; ...

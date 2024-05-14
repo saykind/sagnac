@@ -38,6 +38,57 @@ switch make.key(key)
         graphics = make.canvas.zy();
         return;
 
+    case 12810      %zi: Laser current sweep
+        close(f);
+        graphics = make.canvas.zi();
+        return;
+    
+    case 1207068    %zfa: Frequency and amplitude sweep
+        close(f);
+        graphics = make.canvas.zfa();
+        return;
+
+    case 11834      %za: Amplitude sweep
+        close(f);
+        graphics = make.canvas.za();
+        return;
+
+    case 12444      %zf: Frequency sweep
+        close(f);
+        graphics = make.canvas.zf();
+        return;
+
+    case 1313574    %zao: Amplitude offset set
+        close(f);
+        graphics = make.canvas.zao();
+        return;
+
+    case 1488156    %zkr: Kerr + temperature + resistance
+        close(f);
+        graphics = make.canvas.zkr();
+        return;
+
+    case 13110      %sr: Strain + resistance (no bridge)
+        close(f);
+        graphics = make.canvas.sr();
+        return;
+
+    case 950796     %bcb: BCB voltage and optical power
+        close(f);
+        graphics = make.canvas.bcb();
+        return;
+    
+    case 1076922    %bco: BCB offset voltage sweep
+        close(f);
+        graphics = make.canvas.bco();
+        return;
+    
+    case 1327116    %zbo: BCB offset voltage sweep
+        close(f);
+        graphics = make.canvas.zbo();
+        return;
+        
+
     case 12412 %tk: time vs Kerr
         set(f,  'Position',  [0, 0, 24, 15]);
         tl = tiledlayout(f,3,1);

@@ -1,16 +1,5 @@
-function graphics = graphics(seed, graphics, logdata, options)
+function graphics = graphics(seed, graphics, logdata, varargin)
 %Graphics plotting function.
-
-arguments
-    seed (1,1) double
-    graphics (1,1) struct
-    logdata (1,1) struct
-    options.sls (1,1) double = .1           % second-harmonic lockin sensitivity, Volts
-    options.f0 (1,1) double = 4.836         % MHz
-    options.a0 (1,1) double = 1.14          % Vpp
-    options.detector (1,:) char = '1811'    % detector model
-    options.coil_const (1,1) double = 25;   % mT/A
-end
 
     % Covert seed to key
     if isnumeric(seed)
@@ -22,8 +11,8 @@ end
 
 
     %% Parameters
-    sls = options.sls; % second-harmonic lockin sensitivity, Volts
-    coil_const = options.coil_const; % mT/A
+    sls = .1; % second-harmonic lockin sensitivity, Volts
+    coil_const = 25; % mT/A
     curr = 0.1; %A
 
     %Proper modulation parameters
@@ -34,7 +23,7 @@ end
     f0 = 4.86;  % MHz
     a0 = 1.1;  % Vpp
 
-    detector = options.detector;
+    detector = '1811';
 
     switch detector
         case '1811' % 1550 nm
@@ -81,6 +70,36 @@ switch key
 
     case 14762      %zy: Hysteresis in Kerr signal
         make.draw.zy(graphics, logdata);
+
+    case 12810      %zi: Laser current sweep
+        make.draw.zi(graphics, logdata);
+
+    case 950796     %bcb: BCB voltage and optical power
+        make.draw.bcb(graphics, logdata);
+
+    case 1207068    %zfa: Frequency and amplitude sweep
+        make.draw.zfa(graphics, logdata);
+
+    case 11834      %za: Amplitude sweep
+        make.draw.za_rmcd(graphics, logdata, varargin{:});
+
+    case 12444      %zf: Frequency sweep
+        make.draw.zf(graphics, logdata);
+
+    case 1313574    %zao: Amplitude offset set
+        make.draw.zao(graphics, logdata);
+
+    case 1488156    %zkr: Kerr + temperature + resistance
+        make.draw.zkr(graphics, logdata);
+
+    case 13110      %sr: Strain + resistance (no bridge)
+        make.draw.sr(graphics, logdata);
+
+    case 1076922    %bco: BCB offset voltage sweep
+        make.draw.bco(graphics, logdata);
+
+    case 1327116    %zbo: BCB offset voltage sweep
+        make.draw.zbo(graphics, logdata);
         
     case 108     %l: lockin
         axisA = graphics.axes(1);

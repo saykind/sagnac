@@ -1,7 +1,7 @@
 function schema = zk()
 %Create and save table with instrument information for a given experiment.
 
-    name =      ["voltmeter";        "lockin";      "tempcont";];
+    name =      ["voltmeter";        "lockin";      "tempcont"];
     driver =    ["Keithley2182A";    "HF2LI";       "LSCI331"];
     interface = ["gpib";             "ziDAQ";       "gpib"];
     address =   [ 17;                 18120;         23];

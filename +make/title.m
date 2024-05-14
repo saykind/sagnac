@@ -12,10 +12,29 @@ switch key
         title = "HF2LI lockin";
     case 1771440    %zxy: Kerr XY scan
         title = "HF2LI and XY scan";
-    case 13054      %zk: kerr effect + temperature
+    case 13054      %zk: Kerr effect + temperature
         title = "Kerr Effect";
     case 14762      %zy: Hysteresis Kerr
         title = "Hysteresis Kerr";
+    case 1207068    %zfa: Frequency and amplitude sweep
+        title = "Frequency and amplitude sweep";
+    case 11834      %za: Amplitude sweep
+        title = "Amplitude sweep";
+    case 12444      %zf: Frequency sweep
+        title = "Frequency sweep";
+    case 1313574    %zao: Amplitude offset set
+        title = "Amplitude offset set";
+    case 1488156    %zkr: Kerr + temperature + resistance
+        title = "Kerr and resistance";
+    case 13110      %sr: Strain + resistance (no bridge)
+        title = "Strain and resistance";
+    case 950796     %bcb: BCB voltage and optical power
+        title = "Bias Control Board";
+    case 1076922    %bco: BCB offset voltage sweep
+        title = "BCB offset voltage sweep";
+    case 1327116    %zbo" BCB offset voltage sweep
+        title = "BCB offset voltage sweep";
+
 
     case 11960  %hs: Hall sensor
         title = "Hall sensor";

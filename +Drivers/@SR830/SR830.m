@@ -86,7 +86,7 @@ classdef SR830 < Drivers.Device
             obj.rampInfo.V_array = linspace(V0, V1, num);
             
             
-            util.clearTimers(0, 'SR830');
+            util.timers.clearall(0, 'SR830');
             obj.ramper = timer('Tag', 'SR830');
             obj.rampInfo.name = obj.ramper.Name;
             obj.ramper.Period = period;

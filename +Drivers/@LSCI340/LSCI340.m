@@ -63,7 +63,6 @@ classdef (Sealed = true) LSCI340 < Drivers.Device
         ramp(obj, setp, rate)               %   Ramp temperature to setpoint 
         room(obj)                           %   Warmup to room temperature
         
-
         % Getters (Parameters)
         function cm = get.control_mode(obj), cm = obj.get('control_mode'); end
         function ce = get.control_enable(obj), ce = obj.get('control_enable'); end

@@ -45,6 +45,7 @@ classdef HF2LI < Drivers.Device
                                     %    - on
                                     %    - mixer (channel)
                                     %    - range (V)
+                                    %    - offset (V)
                                     %    - amplitude (V, peak-to-peak)
         oscillator;                 %   Structure array with oscillator settings
                                     %    - frequency
@@ -86,7 +87,7 @@ classdef HF2LI < Drivers.Device
             if isnan(device_id), device_id = ''; end
             if isnumeric(device_id), device_id = ['dev' num2str(device_id)]; end
             obj.init(device_id);
-            obj.configure();
+            % obj.configure();
             obj.fields = {'x', 'y'};
             obj.parameters = {'input', 'output', 'oscillator', 'demodulator'};
         end
@@ -101,9 +102,10 @@ classdef HF2LI < Drivers.Device
         function output = get.output(obj)
             on = obj.get('output_on');
             range = obj.get('output_range');
+            offset = obj.get('output_offset');
             amplitude = obj.get('output_amplitude');
             mixer = obj.get('output_mixer');
-            output = struct('on', on, 'range', range, 'amplitude', amplitude, 'mixer', mixer);
+            output = struct('on', on, 'range', range, 'offset', offset, 'amplitude', amplitude, 'mixer', mixer);
         end
         function oscillator = get.oscillator(obj)
             frequency = obj.get('oscillator_frequency');
@@ -150,6 +152,7 @@ classdef HF2LI < Drivers.Device
             obj.set('output_on', output.on);
             obj.set('output_mixer', output.mixer);
             obj.set('output_range', output.range);
+            obj.set('output_offset', output.offset);
             obj.set('output_amplitude', output.amplitude);
         end
 

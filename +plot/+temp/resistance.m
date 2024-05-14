@@ -30,6 +30,8 @@ function resistance(varargin)
     addParameter(p, 'filenames', [], @isstring);
     addParameter(p, 'foldername', "", @isstring);
     addParameter(p, 'current', .1, @isnumeric);
+    addParameter(p, 'derivative', false, @islogical);
+    addParameter(p, 'verbose', false, @islogical);
     parse(p, varargin{:});
     parameters = p.Results;
     filenames = parameters.filenames;
@@ -55,7 +57,9 @@ function resistance(varargin)
     filenames = string(filenames);
 
     % Current (Voltage/resistance coefficient)
-    disp('Current: ' + string(curr) + ' A');
+    if parameters.verbose
+        disp('Current: ' + string(curr) + ' A');
+    end
 
     %%% Make figure
     fig = figure('Name', 'Resistance', ...
@@ -79,6 +83,17 @@ function resistance(varargin)
         r = logdata.lockinA.X/curr;
 
         % Plot data
+        if parameters.derivative
+            % coarse grain
+            [t, r] = util.coarse.grain(.5, t, r);
+            % spline interpolation
+            t_new = linspace(t(1), t(end), 1000);
+            r = spline(t, r, t_new);
+            t = t_new;
+            % derivative
+            r = diff(r)./diff(t);
+            t = t(1:end-1);
+        end
         plot(ax, t, r, 'DisplayName', name);
     end
 

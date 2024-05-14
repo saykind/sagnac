@@ -7,6 +7,7 @@ function set(obj, options)
     %   - input_impedance_50
     %   - output_on
     %   - output_range
+    %   - output_offset
     %   - output_amplitude
     %   - output_mixer
     %   - oscillator_frequency
@@ -31,6 +32,7 @@ function set(obj, options)
         % Output parameters
         options.output_on double = [];
         options.output_range double = [];
+        options.output_offset double = [];
         options.output_amplitude double = [];
         options.output_mixer double = [];
         % Oscillator parameters
@@ -111,13 +113,24 @@ function set(obj, options)
         end
     end
 
+    if ~isempty(options.output_offset)
+        offset = options.output_offset;
+        value = offset./obj.get('output_range');
+        if numel(value) > obj.num.outputs
+            error('[Drivers.HF2LI.set] The number of output offsets must be smaller then the number of outputs.');
+        end
+        for j = 1:numel(offset)
+            ziDAQ('setDouble', ['/' obj.id '/sigouts/' num2str(j-1) '/offset'], value(j));
+        end
+    end
+
     if ~isempty(options.output_amplitude)
         amplitude = options.output_amplitude;
         value = amplitude./obj.get('output_range');
         if numel(value) > obj.num.outputs
             error('[Drivers.HF2LI.set] The number of output amplitudes must be smaller then the number of outputs.');
         end
-        for j = 1:numel(value)
+        for j = 1:numel(amplitude)
             mixer_channel = ziGetDefaultSigoutMixerChannel(obj.props, j-1);
             ziDAQ('setDouble', ['/' obj.id '/sigouts/' num2str(j-1) '/amplitudes/' mixer_channel], value(j));
         end

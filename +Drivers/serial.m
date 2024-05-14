@@ -18,18 +18,18 @@ if nargin < 1
 end
 
 if ~any(strcmp(port, serialportList))
-    %fprintf('Serial port %s does not exist.\n', port);
+    util.msg('Serial port %s does not exist.', port);
     instrument = [];
     return
 end
 
 if ~any(strcmp(port, serialportListAvailable))
-    fprintf('Serial port %s is not available.\n', port);
+    util.msg('Serial port %s is not available.', port);
     instrument = [];
     return
 end
 
 instrument = serialport(port, baudrate, 'Timeout', 1);
-configureTerminator(instrument, terminator)
+configureTerminator(instrument, terminator);
 
 end

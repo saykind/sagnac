@@ -63,10 +63,10 @@ function graphics = zk()
     set(axisTimeC, 'FontSize', 12, 'FontName', 'Arial');
     yyaxis(axisTimeC, 'right');
     set(axisTimeC, 'YColor', 'b');
-    ylabel(axisTimeC, "2\omega Voltage Y, mV");
+    ylabel(axisTimeC, "P_{2\omega}/P_0 (norm.)");
     yyaxis(axisTimeC, 'left');
     set(axisTimeC, 'YColor', 'r');
-    ylabel(axisTimeC, "2\omega Voltage X, mV");
+    ylabel(axisTimeC, "2\omega Voltage R, mV");
     xlabel(axisTimeC, "Time, min");
 
     axisTempa = axes(tabTemp);
@@ -182,8 +182,8 @@ function graphics = zk()
     set(axisPowerb, 'YColor', 'b');
     yyaxis(axisPowerb, 'left');
     set(axisPowerb, 'YColor', 'r');
-    ylabel(axisPowerb, "Kerr signal, \murad");
-    xlabel(axisPowerb, "2\omega Magnitude, mV");
+    ylabel(axisPowerb, "1\omega Voltage X, \muV");
+    xlabel(axisPowerb, "DC Voltage, mV");
 
     a = [axisTimeA, axisTimeB, axisTimeC, ...
             axisTempa, axisTempb, ...

@@ -58,6 +58,7 @@ function varargout = get(obj, varargin)
             % Output parameters:
             %   - output_on
             %   - output_range
+            %   - output_offset
             %   - output_amplitude
             %   - output_mixer
             %   - output_default_mixer
@@ -73,12 +74,22 @@ function varargout = get(obj, varargin)
                     range(j) = ziDAQ('getDouble', ['/' obj.id '/sigouts/' num2str(j-1) '/range']);
                 end
                 varargout{i} = range;
+            case {'output_offset'}
+                offset = zeros(1, obj.num.outputs);
+                for j = 1:obj.num.outputs
+                    offset(j) = ziDAQ('getDouble', ['/' obj.id '/sigouts/' num2str(j-1) '/offset']);
+                end
+                range = obj.get('output_range');
+                offset = offset.*range;
+                varargout{i} = offset;
             case {'output_amplitude'}
                 amplitude = zeros(1, obj.num.outputs);
                 for j = 1:obj.num.outputs
                     mixer_channel = ziGetDefaultSigoutMixerChannel(obj.props, j-1);
                     amplitude(j) = ziDAQ('getDouble', ['/' obj.id '/sigouts/' num2str(j-1) '/amplitudes/' mixer_channel]);
                 end
+                range = obj.get('output_range');
+                amplitude = amplitude.*range;
                 varargout{i} = amplitude;
             case {'output_mixer'}
                 mixer = zeros(1, obj.num.outputs);
