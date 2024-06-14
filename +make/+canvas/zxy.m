@@ -11,7 +11,7 @@ function graphics = zxy()
 
     a = [axisA, axisB];
     axesTitles = ["DC power P_0, mV", "1\omega In-Phase, \muV"];
-    quantities = ["P_0, mV", "X_{1\omega}, \muV"];
+    quantities = ["P_0, mV", "10^6 X_{1\omega}/P_0"];
     xylabels = ["X, \mum",      "Y, \mum";];
 
     for i = 1:length(a)

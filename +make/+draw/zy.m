@@ -18,7 +18,7 @@ end
 
     I   = 1e3*logdata.magnet.I;         % Magnet curr, mA
     v0  = 1e3*logdata.voltmeter.v1;     % DC Volt, mV
-    [x1, y1, x2, y2, r2, kerr] = util.logdata.lockin(logdata.lockin, 'x1_offset', options.x1_offset);
+    [x1, y1, x2, y2, r1, r2, kerr] = util.logdata.lockin(logdata.lockin, 'x1_offset', options.x1_offset);
     
     n = numel(kerr);
     k = logdata.sweep.rate-logdata.sweep.pause;

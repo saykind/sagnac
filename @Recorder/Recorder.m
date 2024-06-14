@@ -65,7 +65,6 @@ classdef (Sealed = true) Recorder < handle
         end
         
         construct(obj, seed);
-        function i(obj), obj.instruments = make.instruments(obj.schema); end
         function g(obj), obj.graphics = make.graphics_init(obj.key); end
         function s(obj)
             obj.sweep = make.sweep(obj.key); 
@@ -88,6 +87,14 @@ classdef (Sealed = true) Recorder < handle
         logError(obj, event);
         save(obj, event);
         record(obj);
+
+        function instr = i(obj, instr)
+        %Instrument initialization function.
+        %If instr is given, take available instruments from it, create the rest.
+            if nargin < 2, instr = struct(); end
+            instr = make.instruments(obj.schema, instr); 
+            obj.instruments = instr;
+        end
     end
 end
 

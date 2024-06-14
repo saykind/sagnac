@@ -87,6 +87,11 @@ switch make.key(key)
         close(f);
         graphics = make.canvas.zbo();
         return;
+
+    case 707600     %z2t: Zurich 2 demods + temperature
+        close(f);
+        graphics = make.canvas.z2t();
+        return;
         
 
     case 12412 %tk: time vs Kerr

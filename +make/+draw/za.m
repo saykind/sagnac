@@ -22,7 +22,7 @@ end
     %Unpack data
     A = logdata.sweep.range;            % Amplitude, Vpp
     dc = 1e3*logdata.voltmeter.v1;      % DC voltage, mV
-    [x1, y1, x2, y2, r2, kerr] = ...
+    [x1, y1, x2, y2, r1, r2, kerr] = ...
         util.logdata.lockin(logdata.lockin, 'x1_offset', options.x1_offset);
     r1 = sqrt(x1.^2 + y1.^2);       % 1f magnitude, mV
     q1 = flip(unwrap(flip(atan2(y1, x1))))*180/pi;      % 1f phase, deg

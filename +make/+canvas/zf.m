@@ -44,6 +44,8 @@ function graphics = zf()
         xlabel(ax, x_label);
         title(ax, axes_titles(i));
     end
+
+    % DC and Kerr
     yyaxis(axis_dc, 'left');
     ylabel(axis_dc, 'V_0, mV');
     set(axis_dc, 'YColor', 'k');
@@ -59,30 +61,31 @@ function graphics = zf()
     set(axis_kerr, 'YColor', 'k');
     set(axis_kerr, 'YTick', []);
 
+    % 1f Harmonic
     yyaxis(axis_x1y1, 'left');
     set(axis_x1y1, 'YColor', 'r');
-    ylabel(axis_x1y1, 'X_1, \muV');
+    ylabel(axis_x1y1, '10^3 X_1/DC');
     yyaxis(axis_x1y1, 'right');
     set(axis_x1y1, 'YColor', 'b')
-    ylabel(axis_x1y1, 'Y_1, \muV');
+    ylabel(axis_x1y1, '10^3 Y_1/DC');
 
     yyaxis(axis_x2y2, 'left');
     set(axis_x2y2, 'YColor', 'r');
-    ylabel(axis_x2y2, 'X_2, \muV');
+    ylabel(axis_x2y2, '10^3 X_2/DC');
     yyaxis(axis_x2y2, 'right');
     set(axis_x2y2, 'YColor', 'b');
-    ylabel(axis_x2y2, 'Y_2, \muV');
+    ylabel(axis_x2y2, '10^3 Y_2/DC');
 
     yyaxis(axis_r1q1, 'left');
     set(axis_r1q1, 'YColor', 'r');
-    ylabel(axis_r1q1, 'R_1, \muV');
+    ylabel(axis_r1q1, '10^3 R_1/DC');
     yyaxis(axis_r1q1, 'right');
     set(axis_r1q1, 'YColor', 'b');
     ylabel(axis_r1q1, 'Q_1, deg');
 
     yyaxis(axis_r2q2, 'left');
     set(axis_r2q2, 'YColor', 'r');
-    ylabel(axis_r2q2, 'R_2, \muV');
+    ylabel(axis_r2q2, '10^3 R_2');
     yyaxis(axis_r2q2, 'right');
     set(axis_r2q2, 'YColor', 'b');
     ylabel(axis_r2q2, 'Q_2, deg');

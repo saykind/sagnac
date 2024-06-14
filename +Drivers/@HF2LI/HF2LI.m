@@ -79,7 +79,7 @@ classdef HF2LI < Drivers.Device
     
     methods
         function obj = HF2LI(device_id)
-            obj.verbose = Inf; %FIXME set to 0 later
+            obj.verbose = 0;
             if obj.verbose
                 disp('[Drivers.HF2LI] Constructing the object...');
             end

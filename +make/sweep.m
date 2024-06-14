@@ -23,8 +23,8 @@ function s = sweep(key, instruments, s, cnt)
                 
             case 12444
                 %zf: Modulation frequency sweep
-                s = struct('rate', 40, 'pause', 8, ...
-                    'range', 1e6*[.1:.05:10]);
+                s = struct('rate', 10, 'pause', 6, ...
+                    'range', 1e6*[12:.01:12.6]);
 
             case {97, 'a'}
                 s = struct('rate', 6, 'pause', 4, ...
@@ -87,15 +87,15 @@ function s = sweep(key, instruments, s, cnt)
                 %zxy: Kerr XY scan
                 x0 = 13.;
                 y0 = 13.;
-                x = x0 + (-.2:.02:.6);
-                y = y0 + (-.4:.02:.1);
+                x = x0 + (-.025:.005:.025);
+                y = y0 + (-.025:.005:.025);
                 [X,Y] = meshgrid(x,y);
                 [n,m] = size(X);
                 X_flat = flatten_mesh(X);
                 Y_flat = flatten_mesh(Y);
                 %DC measurement min rate is 3s, pause 2s
                 %Kerr measurement min rate is 9s, pause 8s
-                s = struct('rate', 3, 'pause', 2, ...
+                s = struct('rate', 10, 'pause', 6, ...
                     'range', [X_flat; Y_flat], 'shape', [n,m], ...
                     'origin', [x0, y0]);
 

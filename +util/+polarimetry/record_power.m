@@ -1,22 +1,21 @@
-function new_angle = record(angle, power)
+function new_angle = record_power(power)
 %RECORD a signle datapoint into the datafile.
 %   Make new datafile if it does not exist.
 %   Append the data to the end of the file.
+%   Angle is assumed to be zero if there is no datafile,
+%   or 10 degrees more then the last angle in the datafile.
 %   
-%   angle: angle between fast axis of QWP and polarizer axis in degrees
 %   power: optical power in microWatts 
-
-    if nargin == 1
-        util.polarimetry.record_power(angle);
-        return
-    end
 
     if exist('polarimetry.mat', 'file') == 2
         data = load('polarimetry.mat');
-        angle = [data.angle; angle];
+        new_angle = 10 + data.angle(end);
+        angle = [data.angle; new_angle];
         power = [data.power; power];
+    else
+        angle = 0;
+        new_angle = 0;
     end
-    new_angle = angle(end);
 
     save('polarimetry.mat', 'angle', 'power');
 

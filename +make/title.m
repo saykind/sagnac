@@ -34,6 +34,8 @@ switch key
         title = "BCB offset voltage sweep";
     case 1327116    %zbo" BCB offset voltage sweep
         title = "BCB offset voltage sweep";
+    case 707600     %z2t: Zurich 2 demods + temperature
+        title = "HF2LI lockin: RMCD";
 
 
     case 11960  %hs: Hall sensor

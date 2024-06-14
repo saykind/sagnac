@@ -13,6 +13,7 @@ function set(obj, varargin)
     addParameter(p, 'pid', NaN, @isnumeric);
     addParameter(p, 'manualOutput', NaN, @isnumeric);
     addParameter(p, 'heaterRange', NaN, @isnumeric);
+    addParameter(p, 'ramp_on', NaN, @isnumeric);
     addParameter(p, 'S', NaN, @isnumeric);
     
     parse(p, varargin{:});
@@ -48,6 +49,10 @@ function set(obj, varargin)
     if ~isnan(parameters.heaterRange)
         obj.heaterRange = parameters.heaterRange;
         obj.write(sprintf("RANGE %d", obj.heaterRange));
+    end
+    if ~isnan(parameters.ramp_on)
+        obj.rampOn = parameters.ramp_on;
+        obj.write(sprintf("RAMP %d, %d, %.2f", obj.loop, obj.rampOn, obj.rampRate));
     end
     if ~isnan(parameters.S)
         obj.S = parameters.S;

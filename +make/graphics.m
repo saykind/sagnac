@@ -100,6 +100,9 @@ switch key
 
     case 1327116    %zbo: BCB offset voltage sweep
         make.draw.zbo(graphics, logdata);
+
+    case 707600     %z2t: Zurich 2 demods + temperature
+        make.draw.z2t(graphics, logdata);
         
     case 108     %l: lockin
         axisA = graphics.axes(1);

@@ -13,7 +13,7 @@ end
     cla(axisB);
 
     p0  = 1e3*logdata.voltmeter.v1;                 % DC Power, uW
-    [x1, y1, x2, y2, r2, kerr] = ...
+    [x1, y1, x2, y2, r1, r2, kerr] = ...
         util.logdata.lockin(logdata.lockin);
 
     n = numel(kerr);
@@ -23,6 +23,7 @@ end
     X1 = mean(reshape(x1, [k, m]),1);
     KERR = mean(reshape(kerr, [k, m]),1);
     P0 = mean(reshape(p0, [k, m]),1);
+    X1 = 1e3*X1./P0;    % 10^6 factor
 
     shape = logdata.sweep.shape;
     x = 1e3*logdata.sweep.range(1,:);

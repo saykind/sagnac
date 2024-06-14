@@ -10,7 +10,7 @@ classdef (Sealed = true) LSCI340 < Drivers.Device
     %   tempcont.A
     %   tempcont.ramp_rate = 10;
     %   tempcont.S = 290;
-    
+
     
     properties
         % Internal properties
@@ -62,6 +62,7 @@ classdef (Sealed = true) LSCI340 < Drivers.Device
 
         ramp(obj, setp, rate)               %   Ramp temperature to setpoint 
         room(obj)                           %   Warmup to room temperature
+        base(obj)                           %   Cool down to base temperature
         
         % Getters (Parameters)
         function cm = get.control_mode(obj), cm = obj.get('control_mode'); end

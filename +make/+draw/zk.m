@@ -19,7 +19,7 @@ end
     TA = logdata.tempcont.A;        % Temp, K
     TB = logdata.tempcont.B;        % Temp, K
     dc = 1e3*logdata.voltmeter.v1;  % DC voltage, mV
-    [x1, y1, x2, y2, r2, kerr] = util.logdata.lockin(logdata.lockin, 'x1_offset', options.x1_offset);
+    [x1, y1, x2, y2, r1, r2, kerr] = util.logdata.lockin(logdata.lockin, 'x1_offset', options.x1_offset);
     
     %r1 = sqrt(x1.^2 + y1.^2);
     %x5 = 1e6*logdata.lockin.x(:,5);

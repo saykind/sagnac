@@ -1,8 +1,8 @@
-function [x1, y1, x2, y2, r2, kerr] = lockin(lockin, options)
+function [x1, y1, x2, y2, r1, r2, kerr] = lockin(lockin, options)
 %LOCKIN extract first and second harmonic data from lockin data structure array.
 %
 % Example:
-%   [x1, y1, x2, y2, r2, kerr] = util.logdata.lockin(logdata.lockin, 'x1_offset', options.x1_offset);
+%   [x1, y1, x2, y2, r1, r2, kerr] = util.logdata.lockin(logdata.lockin, 'x1_offset', options.x1_offset);
 
 arguments
     lockin (1,:) struct
@@ -31,23 +31,34 @@ end
         if options.verbose
             disp('[util.logdata.lockin] Assuming data was recorded by ZI HF2LI.');
         end
-        attenuation1 = options.attenuation1;
-        attenuation2 = options.attenuation2;
-        x1 = lockin.x(:,1)*attenuation1;
-        y1 = lockin.y(:,1)*attenuation1;
-        x2 = lockin.x(:,4)*attenuation2;
-        y2 = lockin.y(:,4)*attenuation2;
+        if ~isnan(lockin.x(1,4))
+            attenuation1 = options.attenuation1;
+            attenuation2 = options.attenuation2;
+            x1 = lockin.x(:,1)*attenuation1;
+            y1 = lockin.y(:,1)*attenuation1;
+            x2 = lockin.x(:,4)*attenuation2;
+            y2 = lockin.y(:,4)*attenuation2;
+        end
+        if isnan(lockin.x(1,4))
+            x1 = lockin.x(:,1);
+            y1 = lockin.y(:,1);
+            x2 = lockin.x(:,2);
+            y2 = lockin.y(:,2);
+        end
     end
 
-        if options.x1_offset
-            x1 = x1 - options.x1_offset;
-        end
-        if nargout > 4
-            r2 = sqrt(x2.^2 + y2.^2);
-        end
-        if nargout > 5
-            kerr = util.math.kerr(x1, r2);
-        end
+    if options.x1_offset
+        x1 = x1 - options.x1_offset;
+    end
+    if nargout > 4
+        r1 = sqrt(x1.^2 + y1.^2);
+    end
+    if nargout > 5
+        r2 = sqrt(x2.^2 + y2.^2);
+    end
+    if nargout > 6
+        kerr = util.math.kerr(x1, r2);
+    end
 
     if options.scale1 ~= 1
         x1 = x1*options.scale1;
@@ -57,6 +68,9 @@ end
         x2 = x2*options.scale2;
         y2 = y2*options.scale2;
         if nargout > 4
+            r1 = r1*options.scale2;
+        end
+        if nargout > 5
             r2 = r2*options.scale2;
         end
     end

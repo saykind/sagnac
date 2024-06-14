@@ -1,4 +1,4 @@
-function [fig, ax] = kerr(options)
+function [fig, ax] = rmcd(options)
 %Plots kerr data from several files.
 %   plot.kerr(Name, Value) specifies additional 
 %   options with one or more Name, Value pair arguments. 
@@ -24,12 +24,14 @@ arguments
     options.offset_range double {mustBeNumeric} = [0, 0];
     options.offset double {mustBeNumeric} = 0;
     options.x1_offset double {mustBeNumeric} = 0;
+    options.y1_offset double {mustBeNumeric} = 0;
+    options.phase_offset double {mustBeNumeric} = 0;
+    options.A double {mustBeNumeric} = 34.3;  %38.9; RMCD amplitude/DC
     options.dT double {mustBeNumeric} = 0.6;
-    options.sls double {mustBeNumeric} = 0.25;
     options.errorbar logical = true;
     options.legends string = [];
-    options.save logical = true;
-    options.verbose logical = false;
+    options.save logical = false;
+    options.verbose logical = true;
 end
     
     filenames = options.filenames;
@@ -37,7 +39,8 @@ end
     offset_range = options.offset_range;
     offsets = options.offset;
     x1_offsets = options.x1_offset;
-    sls = options.sls;
+    y1_offsets = options.y1_offset;
+    A = options.A;
 
     % If no filename is given, open file browser
     if isempty(filenames)
@@ -47,14 +50,19 @@ end
         warning('No file selected.');
         return;
     end
+    %reverse filenames
+    %filenames = filenames(end:-1:1);
 
-    % Fill in missing values for offsets
+    % Fill in missing values for offsets (multiple files)
     n = numel(filenames);
     if numel(offsets) ~= n
         offsets = [offsets, repmat(offsets(end), 1, n - 1)];
     end
     if numel(x1_offsets) ~= n
         x1_offsets = [x1_offsets, repmat(x1_offsets(end), 1, n - 1)];
+    end
+    if numel(y1_offsets) ~= n
+        y1_offsets = [y1_offsets, repmat(y1_offsets(end), 1, n - 1)];
     end
     
     % Create figure
@@ -77,34 +85,52 @@ end
         logdata = load(filename).logdata;
         offset = offsets(i);
         x1_offset = x1_offsets(i);
+        y1_offset = y1_offsets(i);
 
         % Extract data
         temp = logdata.tempcont.A;
-        [x1, y1, x2, y2, r1, r2, kerr] = util.logdata.lockin(logdata.lockin, 'sls', sls, 'x1_offset', x1_offset);
+        dc = 1e3*logdata.voltmeter.v1;  % DC voltage, mV
+        [x1, y1, x2, y2, r1, r2] = util.logdata.lockin(logdata.lockin, 'scale1', 1e6, 'scale2', 1e6);
 
-        % Remove offset
-        kerr_offset = 0;
-        if offset_range(1) < offset_range(2)
-            idx = temp > offset_range(1) & temp < offset_range(2);
-            kerr_offset = mean(kerr(idx));
+        if options.phase_offset ~= 0
+            z1 = x1 + 1i*y1;
+            z1 = z1.*exp(1i*options.phase_offset*pi/180);
+            x1 = real(z1);
+            y1 = imag(z1);
         end
-        if offset ~= 0, kerr_offset = offset; end
-        kerr = kerr - kerr_offset;
 
-        % Coarse-grain
-        [T, K, K2] = util.coarse.grain(options.dT, temp, kerr);
+        x1 = x1 - x1_offset;
+        y1 = y1 - y1_offset;
 
-        % Plot
-        if options.errorbar
-            errorbar(ax, T, K, K2, '.-', 'LineWidth', 1, 'DisplayName', name);
-        else
-            plot(ax, T, K, '.-', 'LineWidth', 1, 'DisplayName', name);
+        for x = [x1]
+            rmcd = x./dc/A; % RMCD in rad
+            rmcd = -rmcd*1e6; % RMCD in urad
+
+            % Remove offset
+            rmcd_offset = 0;
+            if offset_range(1) < offset_range(2)
+                idx = temp > offset_range(1) & temp < offset_range(2);
+                rmcd_offset = mean(rmcd(idx));
+            end
+            if offset ~= 0, rmcd_offset = offset; end
+            rmcd = rmcd - rmcd_offset;
+
+            % Coarse-grain
+            [T, RMCD, RMCD2] = util.coarse.grain(options.dT, temp, rmcd);
+
+            % Plot
+            if options.errorbar
+                RMCD2 = RMCD2;
+                errorbar(ax, T, RMCD, RMCD2, '.-', 'LineWidth', 1, 'DisplayName', name);
+            else
+                plot(ax, T, RMCD, '.-', 'LineWidth', 1, 'DisplayName', name);
+            end
         end
     end
     
     % Format plot
     if ~isnan(options.ylim), ylim(options.ylim); end
-    ylabel(ax, '\DeltaKerr (\murad)');
+    ylabel(ax, '\Delta RMCD \epsilon = \sigma_{\Delta}/\sigma_{\Sigma} (\murad)');
     xlabel(ax, 'Temperature (K)');
     if isempty(options.legends)
         l = legend(ax, 'Location', 'best');

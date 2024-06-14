@@ -26,7 +26,7 @@ end
     dc = 1e3*logdata.voltmeter.v1;  % DC voltage, mV
     curr = .1;                      % Current, A
     res = 1e3*logdata.lockinA.X/curr;   % Resistance, mOhm
-    [x1, y1, x2, y2, r2, kerr] = util.logdata.lockin(logdata.lockin, 'x1_offset', options.x1_offset);
+    [x1, y1, x2, y2, r1, r2, kerr] = util.logdata.lockin(logdata.lockin, 'x1_offset', options.x1_offset);
 
 
     % Kerr vs Time

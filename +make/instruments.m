@@ -1,16 +1,19 @@
-function instruments = instruments(schema)
+function instruments = instruments(schema, instr)
 %Create cell with instrument objects given the scheme.
+%If instr is given, take available instruments from it, create the rest.
+arguments
+    schema table
+    instr struct = struct()
+end
 
 instruments = struct();
 
-if ~nargin || ~istable(schema)
-    warning("make.instruemnts() requires argument of class table (schema)."); 
-    return
-end
-
-n = height(schema);
-for i = 1:n
+for i = 1:height(schema)
     name = schema.name{i};
+    if isfield(instr, name)
+        instruments.(name) = instr.(name);
+        continue
+    end
     driver = schema.driver{i};
     address = schema.address(i);
     try

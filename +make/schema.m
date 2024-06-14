@@ -92,6 +92,10 @@ switch key
     case 1327116    %zbo: BCB offset voltage sweep
         schema = make.schema.zbo();
         return
+
+    case 707600     %z2t: Zurich 2 demods + temperature
+        schema = make.schema.z2t();
+        return
                  
     case 11021    %kg: Kerr + gate sweep
         name =      ["diode";    "waveform";  "voltmeter"; ...

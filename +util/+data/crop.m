@@ -70,7 +70,7 @@ function logdata_new = cropfield(logdata, field, range, verbose)
     if ~isempty(field) && ~isempty(range)
         if strcmp(field, 'index')
             idx = range(1):range(2);
-            num_extra = -1;
+            num_extra = length(logdata) - length(idx);
         else
             fields = split(field,'.');
             temp = getfield(logdata, fields{:});
