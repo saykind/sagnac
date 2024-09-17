@@ -6,91 +6,67 @@ function varargout = get(obj, varargin)
 
     for i = 1:(nargin-1)
         switch varargin{i}
-            %Parameters:
-            %   - remote
-            %   - mode
-            %   - pid
-            %   - heater (value)
-            %   - heater current
-            %   - heater state
-            %   - heater range
-            %   - manual output
-            %   - rampOn
-            %   - ramp rate
-            %   - is ramping
-            %   - set temperature
-            case {'remote'}
-                r = str2double(obj.query("MODE?"));
-                obj.remote = r;
-                varargout{i} = r;
-            case {'mode', 'MODE'}
-                m = str2double(obj.query("CMODE?"));
-                obj.mode = m;
-                varargout{i} = m;
-            case {'pid', 'PID'}
-                pid = str2num(obj.query("PID?")); %#ok<ST2NM>
-                obj.pid = pid;
-                varargout{i} = pid;
-            case {'hr', 'heaterRange', 'range'}
-                hr = str2double(obj.query("RANGE?"));
-                obj.heaterRange = hr;
-                varargout{i} = hr;
-                switch hr
-                    case 0
-                        obj.heaterMaxCurrent = 0;
+            % Parameters
+            case {'control_mode', 'mode'}
+                cm = str2double(obj.query(sprintf("cmode? %d", obj.loop)));
+                switch cm
                     case 1
-                        obj.heaterMaxCurrent = 0.01;
+                        cm_str = 'manual';
                     case 2
-                        obj.heaterMaxCurrent = 0.1;
-                    case 3 
-                        obj.heaterMaxCurrent = 1;
-                    otherwise
-                        warning('[LSCI331.get] Unexpected heater range.')
+                        cm_str = 'zone';
+                    case 3
+                        cm_str = 'open';
+                    case 4
+                        cm_str = 'autotunePID';
+                    case 5
+                        cm_str = 'autotunePI';
+                    case 6
+                        cm_str = 'autotuneP';
                 end
+                varargout{i} = cm_str;
+            case {'control_enable', 'enable'}
+                cset = sscanf(obj.query(sprintf("cset? %d", obj.loop)), '%c,%d,%d,%d,%d');
+                varargout{i} = cset(4);
+            case {'heater_range', 'range'}
+                hr = str2double(obj.query("range?"));
+                varargout{i} = hr;
+            case {'manual_output', 'mout'}
+                mout = str2double(obj.query(sprintf("mout? %d", obj.loop)));
+                varargout{i} = mout;
+            case {'pid', 'PID'}
+                pid = str2num(obj.query(sprintf("pid? %d", obj.loop))); %#ok<ST2NM>
+                varargout{i} = pid;
+            case {'ramp_on', 'ramp'}
+                rr = str2num(obj.query(sprintf("ramp? %d", obj.loop))); %#ok<ST2NM>
+                varargout{i} = rr(1);
+            case {'ramp_rate', 'rate'}
+                rr = str2num(obj.query(sprintf("ramp? %d", obj.loop))); %#ok<ST2NM>
+                varargout{i} = rr(2);
+            case {'ramp_status', 'ramping'}
+                rs = str2double(obj.query(sprintf("rampst? %d", obj.loop)));
+                varargout{i} = rs;
+            
+
+            % Fields
+            case {'A', 'a', 'temp_A', 'temp', 'temperature'}
+                ta = str2double(query(obj.handle, "krdg?a"));
+                varargout{i} = ta; %#ok<*AGROW>
+            case {'B', 'b', 'temp_B'}
+                tb = str2double(query(obj.handle, "krdg?b"));
+                varargout{i} = tb;
+            case {'heater', 'H', 'h', 'htr'}
+                h = str2double(query(obj.handle, "htr?"));
+                varargout{i} = h;
+            case {'S', 'setpoint'}
+                s = str2double(obj.query("SETP? 1"));
+                %obj.S = s;
+                varargout{i} = s;
+
+
+            %FIXME
             case {'heaterMaxCurrent', 'maxCurrent'}
                 obj.get('heaterRange');
                 varargout{i} = obj.heaterMaxCurrent;
-            case {'manual', 'manualOutput'}
-                mout = str2double(obj.query(sprintf("MOUT? %d", obj.loop)));
-                obj.manualOutput = mout;
-                varargout{i} = mout;
-            case {'rampRate', 'rate'}
-                rr = str2num(obj.query("RAMP?")); %#ok<ST2NM>
-                obj.rampOn = rr(1);
-                obj.rampRate = rr(2);
-                varargout{i} = obj.rampRate;
-            case {'rampOn', 'ramp'}
-                rr = str2num(obj.query("RAMP?")); %#ok<ST2NM>
-                obj.rampOn = rr(1);
-                obj.rampRate = rr(2);
-                varargout{i} = obj.rampOn;
-            case {'ramping', 'isRamping', 'rampState'}
-                rs = str2double(obj.query("RAMPST?"));
-                obj.ramping = rs;
-                varargout{i} = rs;
-            case {'s', 'S', 'setp', 'settemp', 'setTemp'}
-                s = str2double(obj.query("SETP?"));
-                obj.S = s;
-                varargout{i} = s;
-            %Fields:
-            %   - temp A
-            %   - temp B
-            case {'a', 'A', 'tA', 'tempA', 'temperatureA', 'temp', 'temperature'}
-                temp = str2double(obj.query("KRDG?A"));
-                obj.A = temp;
-                varargout{i} = temp;
-            case {'b', 'B', 'tB', 'tempB', 'temperatureB'}
-                temp = str2double(obj.query("KRDG?B"));
-                obj.B = temp;
-                varargout{i} = temp;
-            case {'h', 'heater', 'htr'}
-                h = str2double(obj.query("HTR?"));
-                obj.heater = h;
-                varargout{i} = h;
-                if ~isnumeric(obj.heaterMaxCurrent)
-                    obj.get('heaterRange');
-                end
-                obj.heaterCurrent = h*obj.heaterMaxCurrent;
             case {'heaterCurrent', 'current'}
                 obj.get('heater');
                 obj.get('heaterRange');

@@ -4,7 +4,7 @@ function graphics = zf(graphics, logdata, options)
 arguments
     graphics struct;
     logdata struct;
-    options.f0 (1,1) double = 12.285; %3.857;            % Proper frequency, MHz
+    options.f0 (1,1) double = NaN; %5.515; %12.285; %3.857;            % Proper frequency, MHz
     options.verbose (1,1) logical = true;       % Display progress
 end 
 

@@ -15,18 +15,34 @@ classdef (Sealed = true) Keithley2401 < Drivers.Device
     %   v = voltmeter.get('v');
     
     properties
-        sweeper;                        %   timer handle
-        range;                          %   voltage range
-        % Instrument Parameters 
-        % (can be set and read)
         
-        % Instrument Fields 
-        % (cannot be set, can be read)
-        on;                              %
-        voltage;                         %   voltage on channel 1
-        current;                         %   voltage on channel 2
+        % Instrument Parameters
+        on;                             %   output state
+        source;                         %   Structure array with source settings:
+                                        %    - function (voltage/current)
+                                        %    - voltage:
+                                        %       - mode
+                                        %       - level
+                                        %       - range
+                                        %    - current:
+                                        %       - mode
+                                        %       - level
+                                        %       - range
+        sense;                          %   Structure array with sense settings:
+                                        %   - function (voltage/current)
+                                        %   - concurrent (allowed or not)
+                                        %   - voltage:
+                                        %       - protection (compliance)
+                                        %       - range
+                                        %   - current:
+                                        %       - protection (compliance)
+                                        %       - range
+
+        % Instrument Fields
+        voltage;                        %   measured voltage
+        current;                        %   measured current
         
-        % Ramp timer
+        % Ramping parameters
         ramper;
         rampInfo;
         
@@ -41,88 +57,141 @@ classdef (Sealed = true) Keithley2401 < Drivers.Device
             
             obj.fields = {'voltage', 'current'};
             fieldsUnits = {'V', 'A'};
-            obj.parameters = {};
-            parametersUnits = {};
+            obj.parameters = {'source_function', 'source_voltage_mode', ...
+                            'source_voltage_level', 'source_voltage_range', ...
+                            'source_current_mode', 'source_current_level', ...
+                            'source_current_range', 'sense_function', ...
+                            'sense_voltage_protection', 'sense_voltage_range', ...
+                            'sense_current_protection', 'sense_current_range'};
+            parametersUnits = {'', '', 'V', 'V', '', 'A', 'A', '', 'V', 'V', 'A', 'A'};
             units = [[obj.fields, obj.parameters]; ...
                 [fieldsUnits, parametersUnits]];
             obj.units = struct(units{:});
-            
-            %obj.update();
         end
-        function output(obj)
-            obj.write('output %d', 0); 
+
+        sweep(obj, v, dv, dt)
+        sweep_to(obj, v)
+        ramp(obj, V1, rate, period)
+        apply(obj, I1, rate, period)
+
+        % Getters (Parameters)
+        function o = get.on(obj), o = obj.get('on'); end
+        function v = get.voltage(obj), v = obj.get('voltage'); end
+        function c = get.current(obj), c = obj.get('current'); end
+        function s = get.source(obj)
+            %FIXME remove dots from fields names.
+            s = struct();
+            s.function = obj.get('source.function');
+            s.voltage.mode = obj.get('source.voltage.mode');
+            s.voltage.level = obj.get('source.voltage.level');
+            s.voltage.range = obj.get('source.voltage.range');
+            s.current.mode = obj.get('source.current.mode');
+            s.current.level = obj.get('source.current.level');
+            s.current.range = obj.get('source.current.range');
         end
-        
-        function sweep(obj, v, dv, dt)
-            %if nargin < 4, dt = .2; end
-            %if nargin < 3, dv = .005*dt; end
-            if dv/dt > .1
-                warning("Rate is too high.");
-                return
+        function s = get.sense(obj)
+            s = struct();
+            s.function = obj.get('sense.function');
+            s.concurrent = obj.get('sense.function.concurrent');
+            s.voltage.protection = obj.get('sense.voltage.protection');
+            s.voltage.range = obj.get('sense.voltage.range');
+            s.current.protection = obj.get('sense.current.protection');
+            s.current.range = obj.get('sense.current.range');
+        end
+
+        % Setters (Parameters)
+        function set.on(obj, o), obj.set('on', o); end
+        function set.source(obj, s)
+            obj.set('source_function', s.function);
+            switch lower(s.function)
+                case {'voltage', 'volt', 'v'}
+                    obj.set('source_voltage_mode', s.voltage.mode);
+                    obj.set('source_voltage_level', s.voltage.level);
+                    obj.set('source_voltage_range', s.voltage.range);
+                case {'current', 'curr', 'c'}
+                    obj.set('source_current_mode', s.current.mode);
+                    obj.set('source_current_level', s.current.level);
+                    obj.set('source_current_range', s.current.range);
             end
-            v0 = obj.get('source');
-            v_range = linspace(v0, v, fix(abs(v-v0)/dv)+1);
-            for i = 1:numel(v_range)
-                obj.set('v', v_range(i));
-                pause(dt);
+        end
+        function set.sense(obj, s)
+            if (s.voltage.range > s.voltage.protection) && (s.voltage.range ~= obj.sense.voltage.range)
+                s.voltage.range = s.voltage.protection;
+                util.msg("Warning: voltage.range is changed to voltage.protection.");
             end
+
+            if ~ismember(s.function, "res")
+                obj.set('sense_voltage_protection', s.voltage.protection);
+                obj.set('sense_current_protection', s.current.protection);
+            end
+            if ismember(s.function, "volt")
+                obj.set('sense_voltage_range', s.voltage.range);
+            end
+            
+            
+            if obj.sense.concurrent ~= s.concurrent
+                obj.set('sense_function_concurrent', s.concurrent);
+            end
+            obj.set('sense_function', s.function);
+            
+            %FIXME: Error 823 poops up "Invalid with source read-back on"
+            %if ismember(s.function, "curr")
+            %    obj.set('sense_current_range', s.current.range);
+            %end
+        end
+
+        % Display parameters
+        function disp(obj)
+            fprintf("Keithley 2401 Source Meter\n");
+            fprintf("  GPIB Address: %d\n", obj.address);
+
+            fprintf("  Output: %d\n", obj.on);
+            fprintf("  Source:\n");
+            fprintf("    Function: %s\n", obj.source.function);
+            fprintf("    Voltage:\n");
+            fprintf("      Mode: %s\n", obj.source.voltage.mode);
+            fprintf("      Level: %f V\n", obj.source.voltage.level);
+            fprintf("      Range: %f V\n", obj.source.voltage.range);
+            fprintf("    Current:\n");
+            fprintf("      Mode: %s\n", obj.source.current.mode);
+            fprintf("      Level: %f A\n", obj.source.current.level);
+            fprintf("      Range: %f A\n", obj.source.current.range);
+            fprintf("  Sense:\n");
+            fprintf("    Function: %s\n", obj.sense.function);
+            fprintf("    Concurrent: %d\n", obj.sense.concurrent);
+            fprintf("    Voltage:\n");
+            fprintf("      Protection: %f V\n", obj.sense.voltage.protection);
+            fprintf("      Range: %f V\n", obj.sense.voltage.range);
+            fprintf("    Current:\n");
+            fprintf("      Protection: %f A\n", obj.sense.current.protection);
+            fprintf("      Range: %f A\n", obj.sense.current.range);
+
+            fprintf("  Voltage: %f V\n", obj.voltage);
+            fprintf("  Current: %f A\n", obj.current);
+        end
+
+        % Apply (current ramp)
+        function applyStart(obj, ~)
+            obj.source.function = 'current';
+            obj.source.current.mode = 'fixed';
+            obj.on = 1;
         end
         
-        function sweep_to(obj, v)
-            dt = 0.2;
-            dv = .01*dt;
-            obj.sweep(v, dv, dt);
-        end
-        
-        function source(obj, v), obj.set('v', v); end
-        
-        function ramp(obj, V1, rate, period)
-        %Ramp voltage to specified value 'V1' (Volts)
-        %at specified 'rate' (Volts/sec),
-        %changing voltage every 'period'.
-        %Default 'rate' is 0.1 Volts/sec.
-        %Deafult 'period' is 0.1 sec.
-            if nargin < 2, return; end
-            if nargin < 3, rate = 0.1; end
-            if nargin < 4, period = .25; end
-            
-            util.clearTimers(0, 'Keithley2401');
-            
-            obj.rampInfo = {};
-            V0 = obj.get('v');
-            obj.rampInfo.V_initial = V0;
-            obj.rampInfo.V_final = V1;
-            obj.rampInfo.rate = rate;
-            num = fix(abs(V1-V0)/rate)/period;
-            if num < 1, num=1; end
-            obj.rampInfo.V_num = num;
-            obj.rampInfo.V_array = linspace(V0, V1, num);
-            
-            obj.ramper = timer('Tag', 'Keithley2401');
-            obj.rampInfo.name = obj.ramper.Name;
-            obj.ramper.Period = period;
-            obj.ramper.TasksToExecute = num;
-            obj.ramper.ExecutionMode = 'fixedRate';
-            obj.ramper.StartDelay = period;
-            %obj.ramper.StartFcn = @(~, event)obj.rampStart(event);
-            obj.ramper.TimerFcn = @(~, event)obj.rampStep(event);
-            obj.ramper.StopFcn = @(~, event)obj.rampStop(event);
-            %obj.ramper.ErrorFcn = @(~, event)obj.rampStop(event);
-            
-            obj.ramper.start();
-        end
-        
-        function rampStep(obj, event)
+        function applyStep(obj, ~)
             try
                 i = obj.ramper.TasksExecuted;
-                obj.set('v', obj.rampInfo.V_array(i));
+                obj.set('source_current_level', obj.rampInfo.I_array(i));
             catch ME
                 disp(ME)
             end
         end
         
-        function rampStop(obj, event)
+        function applyStop(obj, ~)
+            if obj.rampInfo.I_final == 0
+                obj.on = 0;
+            end
         end
+        
     end
 end
 

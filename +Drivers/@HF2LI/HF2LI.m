@@ -8,11 +8,14 @@ classdef HF2LI < Drivers.Device
     %   lockin.demodulator.frequency(2) = 4.8e6;
     %   lockin.demodulator.frequency
     %   [X, Y] = lockin.get('x', 'y');
+
+    properties(Hidden = true)
+        num = struct('inputs', 2, 'outputs', 2, 'oscillators', 2, 'demodulators', 6);
+    end
     
     properties
         % Instrument Information (iternal)
         props;                      % Properties of the device
-        num = struct('inputs', 2, 'outputs', 2, 'oscillators', 2, 'demodulators', 6);
 
         % Instrument Parameters (temporary)
         %Input Parameters

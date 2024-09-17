@@ -7,11 +7,12 @@ arguments
     options.calculate_sls (1,1) logical = false;
 end
 
-    [axisA, axisB, axisC, axisTtA, axisTtB, axisTA, axisTB, axisTC, axisTBA, axisPa, axisPb] = graphics.axes;
+    disp(1)
+    [axisA, axisB, axisC, axisTtA, axisTtB, axisTA, axisTB, axisTC, axisTBA, axisPa, axisPb] = util.graphics.unpack(graphics.axes);
     for ax = graphics.axes
         cla(ax); yyaxis(ax, 'left'); cla(ax);
     end
-
+    disp(1)
     t = logdata.timer.time/60;      % Time, min
     TA = logdata.tempcont.A;        % Temp, K
     TB = logdata.tempcont.B;        % Temp, K
@@ -21,7 +22,7 @@ end
     V2X = 1e3*logdata.lockin.AUX1;  % 2nd harm Voltage X, mV
     V2Y = 1e3*logdata.lockin.AUX2;  % 2nd harm Voltage Y, mV
     V2 = sqrt(V2X.^2+V2Y.^2);
-
+    disp(1)
     if options.calculate_sls
         try
             sls = util.data.sls(dc, V2);
@@ -29,11 +30,13 @@ end
         catch
             disp("Wasn't able to find correct lockin sensitivity;")
         end
+    else
+        sls = .1;
     end
     V2X = sls*V2X;
     V2Y = sls*V2Y;
     V2 = sls*V2;
-    
+    disp(1)
     kerr = util.math.kerr(V1X, V2);
     V1X = 1e3*V1X;
     V1Y = 1e3*V1Y;

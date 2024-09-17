@@ -33,6 +33,11 @@ switch make.key(key)
         graphics = make.canvas.zxy();
         return;
 
+    case 14640      %zx: Kerr X scan
+        close(f);
+        graphics = make.canvas.zx();
+        return;
+
     case 14762      %zy: Hysteresis in Kerr signal
         close(f);
         graphics = make.canvas.zy();
@@ -55,7 +60,7 @@ switch make.key(key)
 
     case 12444      %zf: Frequency sweep
         close(f);
-        graphics = make.canvas.zf();
+        graphics = make.canvas.zf_kerr();
         return;
 
     case 1313574    %zao: Amplitude offset set
@@ -91,6 +96,21 @@ switch make.key(key)
     case 707600     %z2t: Zurich 2 demods + temperature
         close(f);
         graphics = make.canvas.z2t();
+        return;
+
+    case 1388970    %zcs: Zurich + Keithley current sweep
+        close(f);
+        graphics = make.canvas.zcs();
+        return;
+
+    case 1374940    %zsb: Zurich side band ac kerr
+        close(f);
+        graphics = make.canvas.zsb();
+        return;
+
+    case 1546980    %rsv: Resistance vs AUXV1 (strain voltage)
+        close(f);
+        graphics = make.canvas.rsv();
         return;
         
 

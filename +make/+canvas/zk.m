@@ -139,7 +139,7 @@ function graphics = zk()
     ylabel(axisTempC, "2\omega Voltage Y, mV");
     yyaxis(axisTempC, 'left');
     set(axisTempC, 'YColor', 'r');
-    ylabel(axisTempC, "2\omega Voltage X, mV");
+    ylabel(axisTempC, "2\omega Voltage R, mV");
     xlabel(axisTempC, "Temp, K");
 
     axisTempBa = axes(tabTempB);
@@ -169,7 +169,7 @@ function graphics = zk()
     yyaxis(axisPowera, 'left');
     set(axisPowera, 'YColor', 'r');
     ylabel(axisPowera, "Kerr signal, \murad");
-    xlabel(axisPowera, "DC Voltage, mV");
+    xlabel(axisPowera, "1/DC Voltage, V^{-1}");
 
     axisPowerb = axes(tabPower);
     hold(axisPowerb, 'on');
@@ -182,7 +182,7 @@ function graphics = zk()
     set(axisPowerb, 'YColor', 'b');
     yyaxis(axisPowerb, 'left');
     set(axisPowerb, 'YColor', 'r');
-    ylabel(axisPowerb, "1\omega Voltage X, \muV");
+    ylabel(axisPowera, "Kerr signal, \murad");
     xlabel(axisPowerb, "DC Voltage, mV");
 
     a = [axisTimeA, axisTimeB, axisTimeC, ...

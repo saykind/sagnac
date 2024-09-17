@@ -61,6 +61,9 @@ switch key
     
     case 1771440    %zxy: Kerr XY scan
         make.draw.zxy(graphics, logdata);
+
+    case 14640      %zx: Kerr X scan
+        make.draw.zx(graphics, logdata);
         
     case 107    %k: Kerr effect (main)
         make.draw.k(graphics, logdata);
@@ -81,10 +84,10 @@ switch key
         make.draw.zfa(graphics, logdata);
 
     case 11834      %za: Amplitude sweep
-        make.draw.za_rmcd(graphics, logdata, varargin{:});
+        make.draw.za(graphics, logdata, varargin{:});
 
     case 12444      %zf: Frequency sweep
-        make.draw.zf(graphics, logdata);
+        make.draw.zf_kerr(graphics, logdata);
 
     case 1313574    %zao: Amplitude offset set
         make.draw.zao(graphics, logdata);
@@ -103,6 +106,16 @@ switch key
 
     case 707600     %z2t: Zurich 2 demods + temperature
         make.draw.z2t(graphics, logdata);
+
+    case 1388970    %zcs: Zurich + Keithley current sweep
+        make.draw.zcs(graphics, logdata);
+
+    case 1374940    %zsb: Zurich side band ac kerr
+        make.draw.zsb(graphics, logdata);
+
+    case 1546980    %rsv: Resistance vs AUXV1 (strain voltage)
+        make.draw.rsv(graphics, logdata);
+        
         
     case 108     %l: lockin
         axisA = graphics.axes(1);
@@ -978,7 +991,7 @@ switch key
         plot(axisA, FIELD, KERR, 'r.-');
         %errorbar(axisA, FIELD, KERR, KERRstd, 'r.-', 'MarkerSize', 5);
         yyaxis(axisA, 'right');
-        %plot(axisA, FIELD, V0, 'b.-');
+        plot(axisA, FIELD, V0, 'b.-');
 
         yyaxis(axisB, 'left');
         plot(axisB, I, V1X, 'r');

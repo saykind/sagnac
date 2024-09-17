@@ -44,7 +44,8 @@ function qwp()
         a = A;  % average power
         b = sqrt(B^2 + C^2);    % amplitude of oscillation
         phi = atan2d(C, B);      % phase of oscillation
-        fprintf(" y = a + b*sin(4*x + phi).\n a = %8.1f uW.\n b = %8.1f uW.\n phi = %6.0f deg.\n\n", a, b, phi);
+        min_over_max = 100*(a - b)/(a + b);
+        fprintf(" y = a + b*sin(4*x + phi).\n a = %8.1f uW.\n b = %8.1f uW.\n phi = %6.0f deg.\n min/max = %8.2f%% \n\n", a, b, phi, min_over_max);
 
         % Plot model fit
         angle_model = min(angle):1:max(angle);

@@ -96,10 +96,7 @@ end
             curr = logdata.magnet.I;         % Magnet curr, A
             field = curr*options.coil_const; % Magnetic field, mT
         end
-        [x1, ~, x2, y2] = util.logdata.lockin(logdata.lockin, sls=options.sls);
-        if x1_offset ~= 0, x1 = x1 - x1_offset; end
-        r2 = sqrt(x2.^2 + y2.^2);
-        kerr = util.math.kerr(x1, r2);
+        [~, ~, ~, ~, ~, ~, kerr] = util.logdata.lockin(logdata.lockin, 'sls', options.sls, 'x1_offset', options.x1_offset);
 
         % Remove offset
         kerr_offset = 0;
@@ -131,7 +128,7 @@ end
     if ~isnan(options.ylim), ylim(options.ylim); end
     ylabel(ax, '\DeltaKerr (\murad)');
     xlabel(ax, 'Times (min)');
-    if options.show_legend, legend(ax, 'Location', 'best'); set(l, 'Interpreter', 'none'); end
+    if options.show_legend, l = legend(ax, 'Location', 'best'); set(l, 'Interpreter', 'none'); end
     if ~isempty(legends), legend(ax, legends, 'Location', 'best'); end
     
     

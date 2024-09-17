@@ -12,6 +12,8 @@ switch key
         title = "HF2LI lockin";
     case 1771440    %zxy: Kerr XY scan
         title = "HF2LI and XY scan";
+    case 14640      %zx: Kerr x scan
+        title = "HF2LI and X scan";
     case 13054      %zk: Kerr effect + temperature
         title = "Kerr Effect";
     case 14762      %zy: Hysteresis Kerr
@@ -36,6 +38,14 @@ switch key
         title = "BCB offset voltage sweep";
     case 707600     %z2t: Zurich 2 demods + temperature
         title = "HF2LI lockin: RMCD";
+    case 1388970    %zcs: Zurich + Keithley current sweep
+        title = "Current sweep";
+    case 1374940    %zsb: Zurich side band ac kerr
+        title = "Side band MOKE";
+    case 1546980    %rsv: Resistance vs AUXV1 (strain voltage)
+        title = "Resistance vs AUXV1";
+    case 12810      %zi: Laser current sweep
+        title = "Laser current sweep";
 
 
     case 11960  %hs: Hall sensor

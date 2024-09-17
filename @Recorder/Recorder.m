@@ -92,8 +92,8 @@ classdef (Sealed = true) Recorder < handle
         %Instrument initialization function.
         %If instr is given, take available instruments from it, create the rest.
             if nargin < 2, instr = struct(); end
-            instr = make.instruments(obj.schema, instr); 
-            obj.instruments = instr;
+            [instrum, instr] = make.instruments(obj.schema, instr); 
+            obj.instruments = instrum;
         end
     end
 end

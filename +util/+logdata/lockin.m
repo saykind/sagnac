@@ -7,7 +7,7 @@ function [x1, y1, x2, y2, r1, r2, kerr] = lockin(lockin, options)
 arguments
     lockin (1,:) struct
     options.sls (1,1) double = 0.1              % Second lockin sensitivity
-    options.attenuation1 (1,1) double = 1.03    % Attenuation factor of first harmonic signal
+    options.attenuation1 (1,1) double = 1.03    % Atteplotnuation factor of first harmonic signal
     options.attenuation2 (1,1) double = 10.08   % Attenuation factor of second harmonic signal
     options.x1_offset (1,1) double = 0;         % Offset for first harmonic signal
     options.scale1  (1,1) double = 1e6          % Scale factor for first harmonic signal
@@ -18,7 +18,7 @@ end
     %Check is AUX1 is present as field name
     if isfield(lockin, 'AUX1')
         if options.verbose
-            disp('[util.logdata.lockin] Assuming second harmonic signal is in AUX1 and AUX2 fields.');
+            util.msg('Assuming second harmonic signal is in AUX1 and AUX2 fields.');
         end
         sls = options.sls;
         x1 = lockin.X;
@@ -29,7 +29,7 @@ end
 
     if isfield(lockin, 'x') && size(lockin.x, 2) == 6
         if options.verbose
-            disp('[util.logdata.lockin] Assuming data was recorded by ZI HF2LI.');
+            util.msg('Assuming data was recorded by ZI HF2LI.');
         end
         if ~isnan(lockin.x(1,4))
             attenuation1 = options.attenuation1;
@@ -45,6 +45,11 @@ end
             x2 = lockin.x(:,2);
             y2 = lockin.y(:,2);
         end
+    end
+
+    % Check if x1 and y1 are present
+    if ~exist('x1', 'var') || ~exist('y1', 'var')
+        util.msg('Cannot find first harmonic data in provided lockin data.');
     end
 
     if options.x1_offset

@@ -1,4 +1,4 @@
-function instruments = instruments(schema, instr)
+function [instruments, instr] = instruments(schema, instr)
 %Create cell with instrument objects given the scheme.
 %If instr is given, take available instruments from it, create the rest.
 arguments
@@ -19,9 +19,10 @@ for i = 1:height(schema)
     try
         instruments.(name) = Drivers.(driver)(address);
     catch ME
-        fprintf("[make.instruments] Failed to initialize %s.\n", driver);
+        util.msg("Failed to initialize %s.\n", driver);
         disp(ME)
         instruments = [];
         return
     end
+    instr.(name) = instruments.(name);
 end

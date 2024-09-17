@@ -27,6 +27,7 @@ arguments
     options.sls double {mustBeNumeric} = 0.25;
     options.coil_const double {mustBeNumeric} = 25;   % mT/A
     options.errorbar logical = true;
+    options.linear_fit logical = false;
     options.show_legend logical = true;
     options.legends string = [];
     options.mark_start_end logical = false;
@@ -66,7 +67,7 @@ end
     if isempty(ax)
         fig = figure('Name', 'Kerr Signal', ...
             'Units', 'centimeters', ...
-            'Position', [0 0 20.5 12.9]);
+            'Position', [0 0 12 9]);
         set(fig, 'PaperUnits', 'centimeters', 'PaperSize', [11 9]);
         ax = axes(fig);
     else
@@ -86,10 +87,7 @@ end
         % Extract data
         curr = logdata.magnet.I;         % Magnet curr, A
         field = curr*options.coil_const; % Magnetic field, mT
-        [x1, ~, x2, y2] = util.logdata.lockin(logdata.lockin, 'sls', sls);
-        if x1_offset ~= 0, x1 = x1 - x1_offset; end
-        r2 = sqrt(x2.^2 + y2.^2);
-        kerr = util.math.kerr(x1, r2);
+        kerr = util.logdata.kerr(logdata.lockin, 'sls', sls, 'x1_offset', x1_offset);
 
         % Remove offset
         kerr_offset = 0;
@@ -115,9 +113,11 @@ end
 
         % Plot
         if options.errorbar
-            errorbar(ax, FIELD, KERR, KERRstd, '.-', 'LineWidth', 1, 'DisplayName', name);
+            errorbar(ax, FIELD, KERR, KERRstd, '.', ...
+            'MarkerSize', 10, 'CapSize', 10, 'LineWidth', 2, 'DisplayName', name);
         else
-            plot(ax, FIELD, KERR, '.-', 'LineWidth', 1, 'DisplayName', name);
+            plot(ax, FIELD, KERR, '.', ...
+            'MarkerSize', 10, 'LineWidth', 1, 'DisplayName', name);
         end
 
         % Mark start and end points
@@ -132,13 +132,25 @@ end
                 FIELD(2:end)-FIELD(1:end-1), KERR(2:end)-KERR(1:end-1), 0, ...
                 'Color', 'black', 'MaxHeadSize', 0.02,'DisplayName', name);
         end
+
+        % Linear fit
+        if options.linear_fit
+            [p, ~] = polyfit(FIELD, KERR, 1);
+            field_linear = linspace(min(FIELD), max(FIELD), 100);
+            kerr_linear = polyval(p, field_linear);
+            disp_name = sprintf('%.3f urad/mT + %.2f urad', p(1), p(2));
+            plot(ax, field_linear, kerr_linear, '--', 'LineWidth', 1, 'DisplayName', disp_name);
+        end
     end
     
     % Format plot
     if ~isnan(options.ylim), ylim(options.ylim); end
-    ylabel(ax, '\DeltaKerr (\murad)');
+    ylabel(ax, '\theta_K (\murad)');
     xlabel(ax, 'Magnetic Field (mT)');
-    if options.show_legend, legend(ax, 'Location', 'best'); set(l, 'Interpreter', 'none'); end
+    if options.show_legend
+        l = legend(ax, 'Location', 'best'); 
+        set(l, 'Interpreter', 'none'); 
+    end
     if ~isempty(legends), legend(ax, legends, 'Location', 'best'); end
     
     % Save figure

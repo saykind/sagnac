@@ -1,4 +1,4 @@
-function graphics = xy(graphics, logdata, options)
+function graphics = zxy(graphics, logdata, options)
 %Graphics plotting function.
 
 arguments
@@ -23,7 +23,6 @@ end
     X1 = mean(reshape(x1, [k, m]),1);
     KERR = mean(reshape(kerr, [k, m]),1);
     P0 = mean(reshape(p0, [k, m]),1);
-    X1 = 1e3*X1./P0;    % 10^6 factor
 
     shape = logdata.sweep.shape;
     x = 1e3*logdata.sweep.range(1,:);
@@ -57,5 +56,6 @@ end
     axis(axisB, 'tight');
     surf(axisA, X, Y, P0, 'EdgeAlpha', .2);
     surf(axisB, X, Y, X1, 'EdgeAlpha', .2);
+    %surf(axisB, X, Y, KERR, 'EdgeAlpha', .2);
     
 end

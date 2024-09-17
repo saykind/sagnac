@@ -1,0 +1,47 @@
+function ramp(obj, V1, rate, period)
+    %Ramp voltage to specified value 'V1' (Volts),
+    %at specified 'rate' (V/sec),
+    %changing voltage every 'period'.
+    %Default 'rate' is 0.1 V/sec.
+    %Deafult 'period' is 0.25 sec.
+        if nargin < 2, return; end
+        if nargin < 3, rate = 0.1; end
+        if nargin < 4, period = .25; end
+        
+        util.timers.clearall(0, 'Keithley2401');
+        
+        obj.rampInfo = {};
+        V0 = obj.get('volt');
+        obj.rampInfo.V_initial = V0;
+        obj.rampInfo.V_final = V1;
+        obj.rampInfo.rate = rate;
+        num = fix(abs(V1-V0)/rate)/period;
+        if num < 1, num=1; end
+        obj.rampInfo.V_num = num;
+        obj.rampInfo.V_array = linspace(V0, V1, num);
+        
+        obj.ramper = timer('Tag', 'Keithley2401');
+        obj.rampInfo.name = obj.ramper.Name;
+        obj.ramper.Period = period;
+        obj.ramper.TasksToExecute = num;
+        obj.ramper.ExecutionMode = 'fixedRate';
+        obj.ramper.StartDelay = period;
+        %obj.ramper.StartFcn = @(~, event)obj.rampStart(event);
+        obj.ramper.TimerFcn = @(~, event)rampStep(event);
+        obj.ramper.StopFcn = @(~, event)rampStop(event);
+        %obj.ramper.ErrorFcn = @(~, event)obj.rampStop(event);
+        
+        obj.ramper.start();
+    end
+    
+    function rampStep(obj, event)
+        try
+            i = obj.ramper.TasksExecuted;
+            obj.set('v', obj.rampInfo.V_array(i));
+        catch ME
+            disp(ME)
+        end
+    end
+    
+    function rampStop(obj, event)
+    end

@@ -5,7 +5,7 @@ arguments
     graphics struct;
     logdata struct;
     options.x1_offset (1,1) double = 0;
-    options.a0 (1,1) double = 1.145;            % Proper amplitude, Vpp
+    options.a0 (1,1) double = NaN;            % Proper amplitude, Vpp
     options.f_over_f0 (1,1) double = 1;         % Frequency f over proper frequency f0
     % options.kerr0 (1,1) double = -6.5e-6;       % Assumed Kerr signal, rad
     % options.kerr0 (1,1) double = .335;       % Assumed Kerr signal, rad

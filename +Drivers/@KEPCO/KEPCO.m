@@ -50,13 +50,18 @@ classdef (Sealed = true) KEPCO < Drivers.Device
                 obj.set('output', out);
             end
         end
+
+        % Getters
+        function I = get.I(obj), I = obj.get('I'); end
+        function V = get.V(obj), V = obj.get('V'); end
+            
         
         function ramp(obj, I1, rate, period)
         %Ramp current to specified value (Amps)
         %at specified rate (A/s).
         %Default rate is 0.02 A/s (5 G/s)
             if nargin < 2, return; end
-            if nargin < 3, rate = 0.02; end
+            if nargin < 3, rate = 0.04; end
             if nargin < 4, period = 1; end
             
             obj.rampInfo = {};

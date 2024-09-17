@@ -74,7 +74,6 @@ classdef (Sealed = true) LSCI340 < Drivers.Device
         function rr = get.ramp_rate(obj), rr = obj.get('ramp_rate'); end
         function rs = get.ramp_status(obj), rs = obj.get('ramp_status'); end
         function ts = get.setpoint(obj), ts = obj.get('S'); end
-        
 
         % Getters (Fields)
         function ta = get.A(obj), ta = obj.get('A'); end

@@ -33,6 +33,10 @@ switch key
         schema = make.schema.zxy();
         return
 
+    case 14640      %zx: Kerr X scan
+        schema = make.schema.zx();
+        return
+
     case 108     %l: Single lock-in
         name =      "lockin";
         driver =    "SR844";
@@ -95,6 +99,18 @@ switch key
 
     case 707600     %z2t: Zurich 2 demods + temperature
         schema = make.schema.z2t();
+        return
+
+    case 1388970    %zcs: Zurich + Keithley 2401 current sweep
+        schema = make.schema.zcs();
+        return
+
+    case 1374940    %zsb: Zurich side band ac kerr
+        schema = make.schema.zsb();
+        return
+
+    case 1546980    %rsv: Resistance vs AUXV1 (strain voltage) (no bridge)
+        schema = make.schema.rsv();
         return
                  
     case 11021    %kg: Kerr + gate sweep

@@ -7,7 +7,7 @@ function new_angle = record(angle, power)
 %   power: optical power in microWatts 
 
     if nargin == 1
-        util.polarimetry.record_power(angle);
+        util.polarimetry.record_power(angle); % angle is actually power
         return
     end
 

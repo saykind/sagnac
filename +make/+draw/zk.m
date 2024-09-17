@@ -41,7 +41,8 @@ end
     plot(axisC, t, r2, 'Color', 'r');
     %plot(axisC, t, r2, 'k-');
 
-    coeff = besselj(2,2*.92)/(1+besselj(0,2*.92))*(.673/.25);
+    ac_dc = 4;
+    coeff = besselj(2,2*.92)/(1+besselj(0,2*.92))*.673*ac_dc;
     yyaxis(axisC, 'right');
     plot(axisC, t, r2./dc/coeff, 'Color', 'b');
 
@@ -80,11 +81,11 @@ end
 
     % Kerr vs Power
     yyaxis(axisPa, 'left');
-    plot(axisPa, dc, kerr, 'r.');
+    plot(axisPa, 1e3./dc, kerr, 'r.');
     yyaxis(axisPa, 'right');
 
     yyaxis(axisPb, 'left');
-    plot(axisPb, dc, x1, 'r.');
+    plot(axisPb, dc, kerr, 'r.');
     yyaxis(axisPb, 'right');
     
 end

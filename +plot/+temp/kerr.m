@@ -29,6 +29,7 @@ arguments
     options.errorbar logical = true;
     options.legends string = [];
     options.save logical = true;
+    options.save_folder string = 'output';
     options.verbose logical = false;
 end
     
@@ -42,9 +43,10 @@ end
     % If no filename is given, open file browser
     if isempty(filenames)
         filenames = convertCharsToStrings(util.filename.select());
+        options.filenames = filenames;
     end
     if isempty(filenames)
-        warning('No file selected.');
+        util.msg('No file selected.');
         return;
     end
 
@@ -96,6 +98,7 @@ end
 
         % Plot
         if options.errorbar
+            K2 = K2*3;
             errorbar(ax, T, K, K2, '.-', 'LineWidth', 1, 'DisplayName', name);
         else
             plot(ax, T, K, '.-', 'LineWidth', 1, 'DisplayName', name);
@@ -112,13 +115,9 @@ end
         l = legend(ax, options.legends);
     end
     set(l, 'Interpreter', 'none');
+
     
     % Save figure
-    if options.save
-        [~, name, ~] = fileparts(filenames(1));
-        save_filename = fullfile('output', strcat(name, '_temp_kerr.png'));
-        if options.verbose, fprintf('Saving figure to %s\n', save_filename); end
-        saveas(fig, save_filename, 'png');
-    end
+    plot.save(fig, options);
 end
     
