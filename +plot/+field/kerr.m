@@ -28,6 +28,7 @@ arguments
     options.coil_const double {mustBeNumeric} = 25;   % mT/A
     options.errorbar logical = true;
     options.linear_fit logical = false;
+    options.interp logical = false;
     options.show_legend logical = true;
     options.legends string = [];
     options.mark_start_end logical = false;
@@ -109,14 +110,23 @@ end
         m = fix(n/k);
         KERR = mean(reshape(kerr, [k, m]),1);
         KERRstd = std(reshape(kerr, [k, m]),0,1);
-        FIELD = mean(reshape(field, [k, m]),1);        
+        FIELD = mean(reshape(field, [k, m]),1);      
+        
+        % Smooth data
+        if options.interp
+            IDX = 1:numel(FIELD);
+            IDXq = linspace(IDX(1), IDX(end), 3e2);
+            KERR = interp1(IDX, KERR, IDXq);
+            FIELD = interp1(IDX, FIELD, IDXq);
+        end
+            
 
         % Plot
         if options.errorbar
             errorbar(ax, FIELD, KERR, KERRstd, '.', ...
             'MarkerSize', 10, 'CapSize', 10, 'LineWidth', 2, 'DisplayName', name);
         else
-            plot(ax, FIELD, KERR, '.', ...
+            plot(ax, FIELD, KERR, '.-', ...
             'MarkerSize', 10, 'LineWidth', 1, 'DisplayName', name);
         end
 

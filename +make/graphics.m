@@ -115,6 +115,12 @@ switch key
 
     case 1546980    %rsv: Resistance vs AUXV1 (strain voltage)
         make.draw.rsv(graphics, logdata);
+
+    case 615600     %r2l: resitance 2 lockins
+        make.draw.r2l(graphics, logdata);
+
+    case 1344562    %zkg: Kerr + gate sweep
+        make.draw.zkg(graphics, logdata);        
         
         
     case 108     %l: lockin
@@ -1237,7 +1243,7 @@ switch key
         v = logdata.source.V;
         vAx = 1e9*logdata.lockinA.X;    % Ixx, nA
         vBx = 1e6*logdata.lockinB.X;    % Vxx, uV
-        curr = 1e9*logdata.source.I;    % leakadge current, nA
+        curr = 1e12*logdata.source.I;    % leakadge current, nA
         
         yyaxis(axA, 'left');
         plot(axA, v, vAx, '.-r');

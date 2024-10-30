@@ -1,7 +1,7 @@
 function schema = rsv()
 %Create and save table with instrument information for a given experiment.
 
-    name =      "lockin";
+    name =      "lockinA";
     driver =    "SR830";
     interface = "visa";
     address =   12;

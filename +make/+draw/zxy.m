@@ -5,6 +5,8 @@ arguments
     graphics struct;
     logdata struct;
     options.cutoff (1,1) logical = true;
+    options.plot_kerr (1,1) logical = true;
+    options.correct_offset (1,1) logical = false;
 end
 
     axisA = graphics.axes(1);
@@ -52,10 +54,20 @@ end
     if n_curr ~= n0, x1(n_curr:end) = x1(1); end
     X1 = util.mesh.combine(x1, shape);
 
+    % Substract Kerr vs 1/P0 dependence
+    if options.correct_offset
+        slope = -200; % urad/mV
+        KERR_inf = 0; % urad
+        KERR = KERR - (slope./P0 + KERR_inf);
+    end
+
     axis(axisA, 'tight');
     axis(axisB, 'tight');
     surf(axisA, X, Y, P0, 'EdgeAlpha', .2);
-    surf(axisB, X, Y, X1, 'EdgeAlpha', .2);
-    %surf(axisB, X, Y, KERR, 'EdgeAlpha', .2);
     
+    if options.plot_kerr
+        surf(axisB, X, Y, KERR, 'EdgeAlpha', .2);
+    else
+        surf(axisB, X, Y, X1, 'EdgeAlpha', .2);
+    end
 end

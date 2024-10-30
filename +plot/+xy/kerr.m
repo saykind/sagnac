@@ -59,7 +59,7 @@ function [fig, ax] = kerr(options)
         options.filenames string = [];
         options.sls double {mustBeNumeric} = .25;
         options.offsets double {mustBeNumeric} = 0;
-        options.cutoffs double {mustBeNumeric} = 0;
+        options.cutoffs double {mustBeNumeric} = 50;
         options.slope double {mustBeNumeric} = 0;
         options.x0 double {mustBeNumeric} = 0;
         options.y0 double {mustBeNumeric} = 0;
@@ -159,9 +159,15 @@ function [fig, ax] = kerr(options)
         KERR = util.mesh.combine(kerr, shape_xy);
 
         %% Plot data
+        %% Ignore data points with V0 < cutoff
+        if cutoff > 0
+            mask = V0 < cutoff;
+            KERR(mask) = NaN;
+        end
+
         % Plot histogram
         if options.histogram
-            [fig, ax] = plot_kerr_histogram(KERR, V0);
+            plot_kerr_histogram(KERR, V0);
         end
 
         % Interpolate data
@@ -179,11 +185,6 @@ function [fig, ax] = kerr(options)
             Y = Yq;
         end
 
-        %% Ignore data points with V0 < cutoff
-        if cutoff > 0
-            mask = V0 < cutoff;
-            KERR(mask) = NaN;
-        end
 
         %% Plot kerr data
         if options.surf
@@ -234,13 +235,13 @@ function [fig, ax] = plot_kerr_surf(X, Y, KERR)
     %set(ax, 'DataAspectRatio', [1 1 1]);
     xlabel(ax, "X, \mum");
     ylabel(ax, "Y, \mum");
-    title(ax, "Kerr Signal \theta, \murad");
+    title(ax, "Magnetism");
     cb = colorbar(ax);
     cb.Label.String = "\theta, \murad";
     cb.Label.Rotation = 270;
     cb.Label.FontSize = 12;
     cb.Label.VerticalAlignment = "bottom";
-    colormap(ax, parula);
+    colormap(ax, jet);
 
     %% Plot kerr signal
     axis(ax, 'tight');
@@ -260,7 +261,7 @@ function [fig, ax] = plot_kerr_image(X, Y, KERR, ax)
         set(ax, 'DataAspectRatio', [1 1 1]);
         xlabel(ax, "X, \mum");
         ylabel(ax, "Y, \mum");
-        title(ax, "Kerr Signal \theta, \murad");
+        title(ax, "Magnetism");
         cb = colorbar(ax);
         cb.Label.String = "\theta, \murad";
         cb.Label.Rotation = 270;

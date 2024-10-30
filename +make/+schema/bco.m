@@ -4,7 +4,7 @@ function schema = bco()
     name =      "bcb";
     driver =    "BCB";
     interface = "serial";
-    address =   8;
+    address =   7;
     parameters = {{'mode', 'vpi'}};
     fields =    {{'voltage', 'optical_power'}};
 

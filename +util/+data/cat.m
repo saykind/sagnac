@@ -22,6 +22,7 @@ function cat(varargin)
     addParameter(p, 'saveas',   '', @ischar);
     addParameter(p, 'dim',   1, @isnumeric);
     addParameter(p, 'verbose', true, @islogical);
+    addParameter(p, 'reverse', false, @islogical);
     parse(p, varargin{:});
     parameters = p.Results;
     
@@ -33,6 +34,10 @@ function cat(varargin)
     % If no filename is given, open file browser
     if isempty(filenames)
         filenames = convertCharsToStrings(util.filename.select());
+    end
+
+    if parameters.reverse
+        filenames = fliplr(filenames);
     end
     
     filename = filenames(1);

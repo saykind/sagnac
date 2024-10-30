@@ -26,7 +26,8 @@ arguments
     options.slope double {mustBeNumeric} = 0;   %urad/mT
     options.sls double {mustBeNumeric} = 0.25;
     options.curr_const double {mustBeNumeric} = 1;   % multiply current by a factor
-    options.errorbar logical = true;
+    options.errorbar logical = false;
+    options.spline logical = false;
     options.show_legend logical = true;
     options.legends string = [];
     options.mark_start_end logical = false;
@@ -108,7 +109,14 @@ end
         m = fix(n/k);
         KERR = mean(reshape(kerr, [k, m]),1);
         KERRstd = std(reshape(kerr, [k, m]),0,1);
-        CURR = mean(reshape(curr, [k, m]),1);        
+        CURR = mean(reshape(curr, [k, m]),1);    
+        
+        % Spline interpolation
+        if options.spline
+            CURRq = linspace(CURR(1), CURR(end), 1e3);
+            KERR = spline(CURR, KERR, CURRq);
+            CURR = CURRq;
+        end
 
         % Plot
         if options.errorbar
@@ -133,7 +141,7 @@ end
     
     % Format plot
     if ~isnan(options.ylim), ylim(options.ylim); end
-    ylabel(ax, '\DeltaKerr (\murad)');
+    ylabel(ax, '\theta_K (\murad)');
     xlabel(ax, 'Current (mA)');
     if options.show_legend, l=legend(ax, 'Location', 'best'); set(l, 'Interpreter', 'none'); end
     if ~isempty(legends), legend(ax, legends, 'Location', 'best'); end

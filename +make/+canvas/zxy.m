@@ -1,6 +1,8 @@
 function graphics = zxy()
 %Graphics initialization function.
 
+    plot_kerr = true;
+
     f = figure('Units', 'centimeters');
 
     set(f,  'Position',  [0, 0, 36, 18]);
@@ -10,10 +12,13 @@ function graphics = zxy()
     axisB = nexttile(tl);
 
     a = [axisA, axisB];
-    axesTitles = ["DC power P_0, mV", "1\omega In-Phase, \muV"];
-    quantities = ["P_0, mV", "10^6 X_{1\omega}"];
-    %axesTitles = ["DC power P_0, mV", "Kerr Angle, \murad"];
-    %quantities = ["P_0, mV", "\theta_K, \murad"];
+    if plot_kerr
+        axesTitles = ["DC power P_0, mV", "Kerr Angle, \murad"];
+        quantities = ["P_0, mV", "\theta_K, \murad"];
+    else
+        axesTitles = ["DC power P_0, mV", "1\omega In-Phase, \muV"];
+        quantities = ["P_0, mV", "10^6 X_{1\omega}"];
+    end
     xylabels = ["X, \mum",      "Y, \mum";];
 
     for i = 1:length(a)
@@ -33,7 +38,7 @@ function graphics = zxy()
         cb.Label.VerticalAlignment = "bottom";
     end
     colormap(axisA, parula);
-    colormap(axisB, cool);
+    colormap(axisB, jet);
 
     graphics = struct('figure', f, 'axes', a);
 

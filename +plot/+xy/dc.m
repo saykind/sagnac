@@ -61,7 +61,7 @@ function [fig, ax] = dc(options)
         options.filenames string = [];
         options.sls double {mustBeNumeric} = .25;
         options.offset double {mustBeNumeric} = 0;
-        options.cutoff double {mustBeNumeric} = 0;
+        options.cutoff double {mustBeNumeric} = 50;
         options.x0 double {mustBeNumeric} = 0;
         options.y0 double {mustBeNumeric} = 0;
         options.xlim double {mustBeNumeric} = [];
@@ -191,6 +191,14 @@ function [fig, ax] = dc(options)
         axis(ax, 'off');
     end
 
+    if options.normalize
+        title(ax, "Reflectivity");
+        %change colorbar label
+        cb = colorbar(ax);
+        cb.Label.String = "DC reflectivity, a.u.";
+    end
+        
+
     if ~isempty(climit)
         % check matlab version
         if isMATLABReleaseOlderThan('R2021a')
@@ -234,7 +242,7 @@ function [fig, ax] = plot_kerr_surf(X, Y, KERR)
     cb.Label.Rotation = 270;
     cb.Label.FontSize = 12;
     cb.Label.VerticalAlignment = "bottom";
-    colormap(ax, cool);
+    colormap(ax, parula);
 
     %% Plot kerr signal
     axis(ax, 'tight');
@@ -260,7 +268,7 @@ function [fig, ax] = plot_kerr_image(X, Y, KERR, ax)
         cb.Label.Rotation = 270;
         cb.Label.FontSize = 12;
         cb.Label.VerticalAlignment = "bottom";
-        colormap(ax, cool);
+        colormap(ax, parula);
     else
         fig = get(ax, 'Parent');
     end

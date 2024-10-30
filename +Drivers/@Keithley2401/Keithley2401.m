@@ -170,6 +170,20 @@ classdef (Sealed = true) Keithley2401 < Drivers.Device
             fprintf("  Current: %f A\n", obj.current);
         end
 
+        % Remp (voltage ramp)
+        function rampStep(obj, ~)
+            try
+                i = obj.ramper.TasksExecuted;
+                obj.set('source_voltage_level', obj.rampInfo.V_array(i));
+                %obj.get('volt');
+            catch ME
+                disp(ME)
+            end
+        end
+        
+        function rampStop(obj, ~)
+        end
+
         % Apply (current ramp)
         function applyStart(obj, ~)
             obj.source.function = 'current';

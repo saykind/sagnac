@@ -5,12 +5,23 @@ function graphics = sr(graphics, logdata)
     axisB = graphics.axes(2);
     cla(axisA); cla(axisB);
 
-    curr = .1;  % Current in A
-    coeff = 5.5e-5/3.26;  % Strain gauge coefficient in %/mV
-    auxv1 = 1e3*logdata.lockin.AUXV1;  % Voltage in mV
-    strain = auxv1*coeff; % Strain in %
-    res = 1e3*logdata.lockin.X / curr;  % Resistance in mOhm
-    res_avg = mean(res);
+    if isfield(logdata, 'lockinA')
+        curr = .1;  % Current in A
+        coeff = 5.5e-5/3.26;  % Strain gauge coefficient in %/mV
+        auxv1 = 1e3*logdata.lockinA.AUXV1;  % Voltage in mV
+        strain = auxv1*coeff; % Strain in %
+        res = 1e3*logdata.lockinA.X / curr;  % Resistance in mOhm
+        res_avg = mean(res);
+    end
+    if isfield(logdata, 'lockin')
+        curr = .1;  % Current in A
+        coeff = 5.5e-5/3.26;  % Strain gauge coefficient in %/mV
+        auxv1 = 1e3*logdata.lockin.AUXV1;  % Voltage in mV
+        strain = auxv1*coeff; % Strain in %
+        res = 1e3*logdata.lockin.X / curr;  % Resistance in mOhm
+        res_avg = mean(res);
+    end
+
     
     if isfield(logdata, 'tempcont')
         temp = logdata.tempcont.A;

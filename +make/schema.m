@@ -112,6 +112,14 @@ switch key
     case 1546980    %rsv: Resistance vs AUXV1 (strain voltage) (no bridge)
         schema = make.schema.rsv();
         return
+
+    case 615600     %r2l: resitance 2 lockins
+        schema = make.schema.r2l();
+        return
+
+    case 1344562    %zkg: Kerr + gate sweep
+        schema = make.schema.zkg();
+        return
                  
     case 11021    %kg: Kerr + gate sweep
         name =      ["diode";    "waveform";  "voltmeter"; ...

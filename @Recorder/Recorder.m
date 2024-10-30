@@ -28,6 +28,7 @@ classdef (Sealed = true) Recorder < handle
         
         foldername;                 %   Path to folder with datafiles
         filename;                   %   Path to data.mat file
+        startTime;                  %   Time of the start of the experiment
         
         loginfo;                    %   Intrument parameters
         logdata;                    %   Main data structure
@@ -87,6 +88,16 @@ classdef (Sealed = true) Recorder < handle
         logError(obj, event);
         save(obj, event);
         record(obj);
+
+        function etc(obj)
+            if obj.logger.TasksToExecute < inf
+                duration = obj.logger.Period*seconds(obj.logger.TasksToExecute);
+                duration = duration + seconds(obj.loggerDelay);
+                stopTime = datetime(obj.startTime) + duration;
+                fprintf('[%i] estimated time of completion: %s.\n', ...
+                    obj.key, datestr(stopTime, 'dd-mmm-yyyy HH:MM:SS'));
+            end
+        end
 
         function instr = i(obj, instr)
         %Instrument initialization function.

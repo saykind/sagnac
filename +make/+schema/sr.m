@@ -1,7 +1,7 @@
 function schema = sr()
 %Create and save table with instrument information for a given experiment.
 
-    name =      ["lockin";  "tempcont"];
+    name =      ["lockinA";  "tempcont"];
     driver =    ["SR830";  "LSCI331"];
     interface = ["visa";   "visa"];
     address =   [12;    23];

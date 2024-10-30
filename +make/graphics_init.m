@@ -112,7 +112,16 @@ switch make.key(key)
         close(f);
         graphics = make.canvas.rsv();
         return;
+
+    case 615600     %r2l: resitance 2 lockins
+        close(f);
+        graphics = make.canvas.r2l();
+        return;
         
+    case 1344562    %zkg: Kerr + gate sweep
+        close(f);
+        graphics = make.canvas.zkg();
+        return;
 
     case 12412 %tk: time vs Kerr
         set(f,  'Position',  [0, 0, 24, 15]);
@@ -1423,7 +1432,7 @@ case 1278436    %ktg: Kerr, transport, gate
 
         yyaxis(axisA, 'right');
         set(axisA, 'YColor', 'b');
-        ylabel(axisA, "Gate current, nA");
+        ylabel(axisA, "Gate current, pA");
         yyaxis(axisA, 'left');
         set(axisA, 'YColor', 'r');
         ylabel(axisA, "Current A, nA");

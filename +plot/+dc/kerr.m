@@ -23,6 +23,7 @@ arguments
     options.color string = [];
     options.offset double {mustBeNumeric} = 0;
     options.x1_offset double {mustBeNumeric} = 0;
+    options.cutoff double {mustBeNumeric} = 10;
     options.dv double {mustBeNumeric} = 0;
     options.slope double {mustBeNumeric} = 0;   %urad*V
     options.sls double {mustBeNumeric} = 0.25;
@@ -91,6 +92,13 @@ end
 
         if slope ~= 0
             kerr = kerr - slope./v0;
+        end
+
+        % Remove low V0 values
+        if options.cutoff > 0
+            idx = 1e3*v0 > options.cutoff;
+            v0 = v0(idx);
+            kerr = kerr(idx);
         end
 
         % Coarse-grain

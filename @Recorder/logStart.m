@@ -15,6 +15,7 @@ function logStart(obj, event)
     % Print start message
     if nargin > 1
         startTime = event.Data.time;
+        obj.startTime = startTime;
         if obj.verbose > 0
             fprintf('[%i] %s.\n', obj.key, obj.title);
             fprintf('[%i] started (%s).\n', obj.key, ...

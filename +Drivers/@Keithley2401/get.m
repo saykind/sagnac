@@ -21,7 +21,7 @@ function varargout = get(obj, varargin)
                 s = obj.query(":sour:volt:mode?");
                 s = lower(s(1:end-1));
                 varargout{i} = s;
-            case {'source.voltage.level', 'voltage.level'}
+            case {'source.voltage.level', 'voltage.level', 'source'}
                 v = str2double(obj.query(":sour:volt:lev?"));
                 varargout{i} = v;
             case {'source.voltage.range', 'voltage.range'}

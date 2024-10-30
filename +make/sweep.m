@@ -75,7 +75,7 @@ function s = sweep(key, instruments, s, cnt)
                 
             case 9603   %ca: laser current and modulation amplitude sweep
                 c = [0:3:30];
-               a = [.01, (.1:.2:2)];
+                a = [.01, (.1:.2:2)];
                 [C,A] = meshgrid(c,a);
                 [n,m] = size(C);
                 C_flat = flatten_mesh(C);
@@ -89,8 +89,8 @@ function s = sweep(key, instruments, s, cnt)
                 x0 = 13;
                 y0 = 13;
                 
-                x = x0 + (-.3:.006:.3);
-                y = y0 + (-.3:.006:.6);
+                x = x0 + (1.3:.004:1.6);
+                y = y0 + (.4:.004:.6);
 
                 [X,Y] = meshgrid(x,y);
                 [n,m] = size(X);
@@ -98,7 +98,7 @@ function s = sweep(key, instruments, s, cnt)
                 Y_flat = flatten_mesh(Y);
                 %DC measurement min rate is 3s, pause 2s
                 %Kerr measurement min rate is 9s, pause 8s
-                s = struct('rate', 3, 'pause', 2, ...
+                s = struct('rate', 8, 'pause', 4, ...
                     'range', [X_flat; Y_flat], 'shape', [n,m], ...
                     'origin', [x0, y0]);
 
@@ -106,8 +106,8 @@ function s = sweep(key, instruments, s, cnt)
                 %x: Kerr 1D scan
                 %zx: Kerr 1D scan
                 x0 = 13;
-                x = x0 + (1.5:.01:2.4);
-                s = struct('rate', 3, 'pause', 2, ...
+                x = x0 + (-1.7:.001:-1.65);
+                s = struct('rate', 10, 'pause', 8, ...
                     'range', x, 'origin', x0);
 
             case {105, 12810}
@@ -125,22 +125,24 @@ function s = sweep(key, instruments, s, cnt)
                 %hk: Kerr vs field
                 %khy: Kerr vs field
                 %zy: Kerr vs field
-                mag = 1200;  % current, mA
+                mag = 3900;  % current, mA
                 sgn = 1;
-                step = 400;
+                step = 300;
+                %range = 1e-3*[(mag-.5*step):-step:0,0];
                 range = sgn*1e-3*[0:step:mag, ...
                     (mag-.5*step):-step:0, 0];
-                s = struct('rate', 40, 'pause', 10, 'range', range, 'sign', sgn);
+                s = struct('rate', 12, 'pause', 8, 'range', range, 'sign', sgn);
 
             case 1388970
                 %zcs: Kerr vs current sweep
-                mag = 34;   %  mA
-                step = 1;   %  mA
+                mag = -10;   %  mA
+                step = -1;   %  mA
+                %range = 1e-3*[mag:-step:-mag];
                 %range = 1e-3*[0:step:mag, (mag-.5*step):-step:0, 0];
                 range = 1e-3*[0:step:mag, ...
                     (mag-.5*step):-step:(-mag+.5*step), ...
                     (-mag):step:0];
-                s = struct('rate', 30, 'pause', 10, 'range', range);
+                s = struct('rate', 12, 'pause', 8, 'range', range);
 
             case 11960  %hs: Hall sensor
                 mag = 600;
@@ -150,13 +152,17 @@ function s = sweep(key, instruments, s, cnt)
                         (mag-step):-step:0];
                 s = struct('rate', 5, 'pause', 3, 'range', range);
 
-            case 11948    %tg: Two transport lockins & gate voltage controller
-                range = [0:.05:4];
-                s = struct('rate', 2, 'pause', 1, 'range', range);
-
-            case 1278436  %ktg: Kerr, transport, gate
-                range = [-5.4:.2:0];
-                s = struct('rate', 20, 'pause', 5, 'range', range);
+            case {11948, 1278436, 1344562}    
+                %tg: Two transport lockins & gate voltage controller
+                %ktg: kerr, tansport, gate
+                %zkg: kerr, transport, gate
+                v0 = 7;
+                mag = 4;
+                step = -.1;
+                range = [v0:step:mag];
+                %range = [v0:step:(v0+mag), (v0+mag):-step:(v0-mag), (v0-mag):step:v0];
+                %range = [(v0-mag):step:(v0+mag), (v0+mag-step):(-step):(v0-mag)];
+                s = struct('rate', 12, 'pause', 6, 'range', range);
 
             case 11832  %tf: Transport freq sweep
                 range = 1e3*[.001:.001:.019, .02:.01:1, 1.05:.05:10];
@@ -167,9 +173,9 @@ function s = sweep(key, instruments, s, cnt)
                 %cr: Capacitance, Resistance vs voltage
                 %sr: Strain + resistance (no bridge)
                 %rsv: Resistance vs AUXV1 (strain voltage) (no bridge)
-                v1 = 3.96;
+                v1 = 3.2;
                 v2 = 0;
-                step = -0.05;
+                step = -0.02;
                 range = [v1:step:v2];
                 s = struct('rate', 2, 'pause', 1, 'range', range);
                 
@@ -246,7 +252,7 @@ function s = sweep(key, instruments, s, cnt)
             case {120, 14640}
                 %x: Kerr 1D scan
                 %zx:
-                instruments.X.set('position', val);
+                instruments.Y.set('position', val);
 
             case {105, 12810}
                 %i: laser current sweep
@@ -267,10 +273,10 @@ function s = sweep(key, instruments, s, cnt)
             case {11960, make.key('hs:')} % Hall sensor
                 instruments.magnet.output(abs(val));
 
-            case 11948    %tg: Two transport lockins & gate voltage controller
-                instruments.source.ramp(val);
-
-            case 1278436    %ktg: kerr, tansport, gate
+            case {11948, 1278436, 1344562}    
+                %tg: Two transport lockins & gate voltage controller
+                %ktg: kerr, tansport, gate
+                %zkg: kerr, transport, gate
                 instruments.source.ramp(val);
 
             case 11832  %tf: Transport freq sweep
@@ -281,12 +287,12 @@ function s = sweep(key, instruments, s, cnt)
                 %cr: Capacitance, Resistance vs voltage
                 %sr: Strain + resistance (no bridge)
                 %rsv: Resistance vs AUXV1 (strain voltage)
-                v0 = instruments.lockin.get('AUXV1');
+                v0 = instruments.lockinA.get('AUXV1');
                 if abs(v0-val) > 2e-3
                     error("[11682] Voltage sweep range has incorrect v0.")
                 else
                     %instruments.lockin.ramp(val);
-                    instruments.lockin.set('AUXV1', val);
+                    instruments.lockinA.set('AUXV1', val);
                 end
 
             case 10593
@@ -367,7 +373,7 @@ function s = sweep(key, instruments, s, cnt)
             case {120, 14640}
                 %x: Kerr 1D scan
                 %zx:
-                instruments.X.set('position', val);
+                instruments.Y.set('position', val);
 
             case {105, 12810}
                 %i: laser current sweep
@@ -392,10 +398,10 @@ function s = sweep(key, instruments, s, cnt)
             case {11960, make.key('hs:')} % Hall sensor
                 instruments.magnet.output(abs(val));
 
-            case 11948    %tg: Two transport lockins & gate voltage controller
-                instruments.source.ramp(val);
-
-            case 1278436    %ktg: kerr, tansport, gate
+            case {11948, 1278436, 1344562}    
+                %tg: Two transport lockins & gate voltage controller
+                %ktg: kerr, tansport, gate
+                %zkg: kerr, transport, gate
                 instruments.source.ramp(val);
 
             case 11832  %tf: Transport freq sweep
@@ -409,7 +415,7 @@ function s = sweep(key, instruments, s, cnt)
                 %rsv: Resistance vs AUXV1 (strain voltage)
 
                 %instruments.lockin.ramp(val);
-                instruments.lockin.set('AUXV1', val);
+                instruments.lockinA.set('AUXV1', val);
 
             case 10593
                 %cv: Capacitance vs voltage

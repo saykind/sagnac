@@ -46,6 +46,8 @@ switch key
         title = "Resistance vs AUXV1";
     case 12810      %zi: Laser current sweep
         title = "Laser current sweep";
+    case 615600     %r2l: resitance 2 lockins
+        title = "Transport";
 
 
     case 11960  %hs: Hall sensor

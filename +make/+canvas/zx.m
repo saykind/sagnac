@@ -19,7 +19,7 @@ function graphics = zx()
     xlabel(axis, "Position, \mum");
     ylabel(axis, "Kerr \theta, \murad");
     yyaxis(axis, 'right');
-    ylabel(axis, "DC power, \muW");
+    ylabel(axis, "DC power, mV");
 
     graphics = struct('figure', f, 'axes', a);
 

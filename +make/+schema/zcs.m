@@ -2,9 +2,9 @@ function schema = zcs()
 %Create and save table with instrument information for a given experiment.
 
     name =      ["voltmeter";        "lockin";   "source"];
-    driver =    ["Keithley2182A";    "HF2LI";    "Keithley2401"];
+    driver =    ["Keithley2182A";    "HF2LI";    "Keithley6221"];
     interface = ["gpib";             "ziDAQ";    "gpib"];
-    address =   [17;                 18120;      24];
+    address =   [17;                 18120;      25];
     parameters = ...
                 {{nan}; ...
                 {}; ...
