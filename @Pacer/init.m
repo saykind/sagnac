@@ -1,8 +1,8 @@
 function init(obj, options)
-% Initialize Rec object.
+% Initialize Logan object.
 
 arguments
-    obj (1,1) Rec
+    obj (1,1) Logan
     options.schema = table();
     options.instruments (1,1) struct = struct()
     options.verbose (1,1) double {mustBeInteger, mustBeNonnegative} = 0

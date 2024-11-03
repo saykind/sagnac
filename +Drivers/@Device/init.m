@@ -14,7 +14,7 @@ function obj = init(obj, address, handle, varargin)
         %   handle = Drivers.visadev(address);
         handle = Drivers.(obj.interface)(address);
         if isempty(handle)
-            warning("[Device.init] Unsuccessful connecton.")
+            util.msg("Unsuccessful connecton.")
         end
     elseif ~isa(handle, 'visa') && ~isa(handle, 'visalib.GPIB')
         error("Device constructor accepts visa handles only.");

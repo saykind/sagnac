@@ -1,10 +1,8 @@
-function record(obj)
+function log(obj)
     %Reads instrumets' fields and saves them into logdata.
     
-    if isempty(obj.instruments)
-        disp("Please create instrument structure.");
-        return
-    end
+    if isempty(obj.instruments), util.msg("Instruments are missing."); return; end
+    if isempty(obj.schema), util.msg("Schema is missing."); return; end
     
     names = obj.schema.name;
     for i = 1:numel(names)
@@ -21,19 +19,22 @@ function record(obj)
             try
                 dat = instrument.get(field);
             catch
-                fprintf("[Recorder.record] Failed to get instrument data.\n");
-                fprintf("[Recorder.record] problematic field = %s\n", field);
+                util.msg("Failed to get instrument data.\n");
+                util.msg("instrument = %s\n", name);
+                util.msg("field = %s\n", field);
             end
-            %fprintf("%s : %f\n", field, dat);
+            if obj.verbose > 100
+                fprintf("%s.%s : %f\n", name, field, dat);
+            end
             obj.logdata.(name).(field) = [obj.logdata.(name).(field); dat];
         end
     end
     
-    c = clock();
+    c = util.datetime.clock();
     obj.logdata.timer.datetime = [obj.logdata.timer.datetime; c];
     
     d0 = obj.logdata.timer.datetime(1,:); 
-    t = util.datetimetoseconds(c-d0);
+    t = util.datetime.toseconds(c-d0);
     obj.logdata.timer.time = [obj.logdata.timer.time; t];
     
     

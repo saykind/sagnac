@@ -1,6 +1,6 @@
 function csv(options)
-% open file and save logdata to CSV file.
-% file has structure LOGDATA has fields with INSTRUMENT name
+% Open file and save logdata to CSV file
+% File has structure LOGDATA has fields with INSTRUMENT name
 % and each field has subfields with DATA name
 
 arguments
@@ -45,7 +45,7 @@ end
         end
 
         %save table to csv file
-        [folder, name, ext] = fileparts(filename);
+        [folder, name, ext] = fileparts(filename); %#ok<ASGLU>
         name = convertStringsToChars(name);
         output = [options.output_folder, name, '.csv'];
         writetable(table, output);

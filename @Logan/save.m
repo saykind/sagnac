@@ -1,32 +1,19 @@
-function save(obj, event)
-    %Write data to obj.filename file
+function save(obj, filename)
+% Write data to file
     
-    if isempty(obj.filename)
-        disp("Please provide datafilename.");
-        return
-    end
-    try
-        if ~isempty(obj.logger)
-            obj.loginfo.logger.TasksExecuted = obj.logger.TasksExecuted;
-        end
-    catch
-        fprintf('[%s] Failed to update loginfo.timer.TasksExecuted.\n', obj.title);
+    arguments
+        obj;
+        filename string = util.filename.new();
     end
     
-    data = struct('key', obj.key, ...
-        'seed', obj.seed, ...
-        'title', obj.title, ...
+    data = struct(...
         'schema', obj.schema, ...
         'loginfo', obj.loginfo, ...
         'logdata', obj.logdata);
-    save(obj.filename, '-struct', 'data');
+    save(filename, '-struct', 'data');
     
     if obj.verbose > 1
-        if nargin > 1
-            fprintf('[%s] saved to %s (%s).\n', obj.title, obj.filename, ...
-                datestr(event.Data.time, 'HH:MM:SS'));
-        else
-            fprintf('[%s] saved to %s.\n', obj.title, obj.filename);
-        end
+        now = datetime('now', 'Format', 'HH:mm:ss');
+        fprintf('[%s] (%s) saved to %s.\n', obj.seed, now, filename);
     end
 end

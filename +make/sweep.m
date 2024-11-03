@@ -89,8 +89,8 @@ function s = sweep(key, instruments, s, cnt)
                 x0 = 13;
                 y0 = 13;
                 
-                x = x0 + (1.3:.004:1.6);
-                y = y0 + (.4:.004:.6);
+                x = x0 + (1.35:.004:1.65);
+                y = y0 + (.35:.004:.55);
 
                 [X,Y] = meshgrid(x,y);
                 [n,m] = size(X);
@@ -98,7 +98,7 @@ function s = sweep(key, instruments, s, cnt)
                 Y_flat = flatten_mesh(Y);
                 %DC measurement min rate is 3s, pause 2s
                 %Kerr measurement min rate is 9s, pause 8s
-                s = struct('rate', 8, 'pause', 4, ...
+                s = struct('rate', 5, 'pause', 3, ...
                     'range', [X_flat; Y_flat], 'shape', [n,m], ...
                     'origin', [x0, y0]);
 

@@ -8,7 +8,7 @@ function schema = schema(seed)
 %       100 d -- DC voltage
 %       119 w -- wavelength sweep on Optical power detector
 
-if nargin < 1, fprintf("[make.schema] Please provide a seed/key."); return; end
+if nargin < 1, util.msg("[make.schema] Please provide a seed/key."); return; end
 key = make.key(seed);
 
 switch key

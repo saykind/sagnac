@@ -1,11 +1,6 @@
 function selectedFiles = select(ext)
-%SELECT Selects files and returns their full paths
-%
-% Syntax: selectedFiles = select(varargin)
-%
-% This function prompts the user to select .mat files if no arguments are
-% provided. If arguments are provided, it checks if they exist as files and
-% returns their full paths. If a file does not exist, a warning is issued.
+%SELECT files and return their full paths.
+% This function prompts the user to SELECT files using the uigetfile dialog.
 %
 % Inputs:
 %    ext - String representing the file extension to filter the files by.

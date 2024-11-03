@@ -29,10 +29,10 @@ for i = 1:numel(names)
     end
 end
 
-c = clock();
+c = util.datetime.clock();
 obj.logdata.timer.datetime = [obj.logdata.timer.datetime; c];
 
 d0 = obj.logdata.timer.datetime(1,:); 
-t = util.datetimetoseconds(c-d0);
+t = util.datetime.toseconds(c-d0);
 obj.logdata.timer.time = [obj.logdata.timer.time; t];
 

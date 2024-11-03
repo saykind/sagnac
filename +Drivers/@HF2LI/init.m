@@ -60,7 +60,7 @@ function obj = init(obj, device_id)
         obj.props = '';
     end
 
-    obj.interface = 'ziDAQ';
+    obj.interface = "ziDAQ";
     obj.address = str2double(device_id(4:end));
     obj.name = "HF2LI";
 end
