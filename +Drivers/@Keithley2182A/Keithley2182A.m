@@ -32,7 +32,7 @@ classdef (Sealed = true) Keithley2182A < Drivers.Device
     methods
         function obj = Keithley2182A(varargin)
             %LSCI331 class constructor class
-            obj.interface = "gpib";
+            obj.interface = "visa";
             obj = obj.init(varargin{:});
             obj.rename("Keithley2182A");
             

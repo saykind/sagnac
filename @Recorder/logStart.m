@@ -10,7 +10,7 @@ function logStart(obj, event)
     end
 
     % Make data filename
-    obj.filename = util.filename.new(obj.foldername);
+    obj.filename = util.filename.new(foldername=obj.foldername);
     
     % Print start message
     if nargin > 1

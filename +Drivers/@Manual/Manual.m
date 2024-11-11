@@ -1,16 +1,17 @@
 classdef Manual < Drivers.Device
-    %Fake driver used to record manual data entry.
-    %   Release date: November, 2024.
-    %   This class was created in Kapitulnik research group.
-    %   Written by David Saykin (saykind@itp.ac.ru).
-    %
-    %
-    %   Usage example:
-    %   obj = Drivers.Manual();
+%Manual Fake driver used to record manual data entry.
+%   Release date: November, 2024.
+%   This class was created in Kapitulnik research group.
+%   Written by David Saykin (saykind@itp.ac.ru).
+%
+%
+%   Usage example:
+%   obj = Drivers.Manual();
     
     properties
         % Instrument Fields
         position;                   %   um, position of the stage
+        angle;                      %   deg, HWP/QWP/Polarizer angle
     end
     
     methods
@@ -20,6 +21,7 @@ classdef Manual < Drivers.Device
             obj.rename("Manual");
 
             obj.position = NaN;
+            obj.angle = NaN;
             
             obj.fields = {'position'};
             fieldsUnits = {'thou'};

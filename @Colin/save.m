@@ -1,9 +1,12 @@
 function save(obj, filename)
-% Write data to file
-    
+%SAVE data to file
     arguments
         obj;
         filename string = util.filename.new();
+    end
+
+    if isfield(obj.loginfo, 'filename')
+        filename = obj.loginfo.filename;
     end
     
     data = struct(...

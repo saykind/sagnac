@@ -42,7 +42,7 @@ classdef (Sealed = true) ILX3724 < Drivers.Device
             obj.fields = {};
             obj.parameters = {'las', 'lasmode', 'current', 'voltage', ...
                 'tec', 'tecmode', 'temperature', 'resistance'};
-            obj.update();
+            %obj.update();
         end
         function output(obj, current)
         %Turn output on if it's off and vice versa.

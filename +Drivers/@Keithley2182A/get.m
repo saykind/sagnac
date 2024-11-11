@@ -40,7 +40,8 @@ function varargout = get(obj, varargin)
                 end
                 varargout{i} = v;
             case {'v1', 'volt1', 'voltage1'}
-                ch = obj.get('channel');
+                %ch = obj.get('channel');
+                ch = 1;
                 if ch ~= 1
                     obj.write(":sens:chan 1"); 
                     v = str2num(obj.query(":sens:data:fres?"));

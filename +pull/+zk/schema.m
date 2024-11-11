@@ -18,5 +18,5 @@ function s = schema()
     % Custom properties
     s = addprop(s,{'Seed', 'SourceFile', 'ExperimentDescription'}, {'table', 'table', 'table'});
     s.Properties.CustomProperties.SourceFile = string(mfilename('fullpath'));
-    s.Properties.CustomProperties.ExperimentDescription = "Kerr angle vs temperature.";
+    s.Properties.CustomProperties.ExperimentDescription = "Kerr vs temperature.";
 end

@@ -1,16 +1,14 @@
 function s = schema()
 %Create and save table with instrument information for a given experiment.
 
-    name =      ["voltmeter";        "lockin";   "Z"];
-    driver =    ["Keithley2182A";    "HF2LI";    "Manual"];
-    interface = ["gpib";             "ziDAQ";    ""];
-    address =   [ 17;                 NaN;        NaN];
+    name =      ["lockin";   "Z"];
+    driver =    ["HF2LI";    "Manual"];
+    interface = ["ziDAQ";    ""];
+    address =   [NaN;        NaN];
     parameters = ...
                 {{}; ...
-                {}; ...
                 {nan}};
-    fields =    {{'v1'}; ...
-                {'x', 'y'}; ...
+    fields =    {{'sample'}; ...
                 {'position'}};
 
     s = table(name, driver, interface, address, parameters, fields);
@@ -18,6 +16,6 @@ function s = schema()
     % Custom properties
     s = addprop(s,{'Seed', 'SourceFile', 'ExperimentDescription'}, {'table', 'table', 'table'});
     s.Properties.CustomProperties.SourceFile = string(mfilename('fullpath'));
-    s.Properties.CustomProperties.ExperimentDescription = "Kerr angle as a function of z-position.";
+    s.Properties.CustomProperties.ExperimentDescription = "Kerr vs z-position.";
 end
     

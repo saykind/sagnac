@@ -30,9 +30,19 @@ function [data, g] = data(filename, varargin)
         try
             g = make.graphics(data.key, make.graphics_init(data.key), data.logdata, varargin{:});
         catch ME
-            fprintf("[plot.data] failed to use make.graphics()");
-            disp(ME);
-            disp([ME.stack.file]);
+            util.msg("failed to use make.graphics()");
+            util.msg(ME);
+        end
+    end
+
+    if isfield(data, 'logdata') && isfield(data, 'schema')
+        try
+            seed = data.schema.Properties.CustomProperties.Seed;
+            g = pull.(seed).canvas();
+            g = pull.(seed).plot(g, data.logdata);
+        catch ME
+            util.msg("failed to use pull.graphics()");
+            util.msg(ME);
         end
     end
 end

@@ -47,6 +47,16 @@ end
         end
     end
 
+    if isfield(lockin, 'auxin0')
+        if options.verbose
+            util.msg('Assuming data was recorded by ZI HF2LI.');
+        end
+        x1 = lockin.x(:,1);
+        y1 = lockin.y(:,1);
+        x2 = lockin.x(:,2);
+        y2 = lockin.y(:,2);
+    end
+
     % Check if x1 and y1 are present
     if ~exist('x1', 'var') || ~exist('y1', 'var')
         util.msg('Cannot find first harmonic data in provided lockin data.');

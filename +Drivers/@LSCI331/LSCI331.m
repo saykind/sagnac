@@ -57,8 +57,8 @@ classdef (Sealed = true) LSCI331 < Drivers.Device
             obj = obj.init(varargin{:});
             obj.rename("LSCI331");
             
-            obj.fields = {'A', 'B', 'S', 'current'};
-            fieldUnits = {'K', 'K', 'K', 'A'};
+            obj.fields = {'A', 'B', 'S'};
+            fieldUnits = {'K', 'K', 'K'};
             obj.parameters = {'control_mode', 'control_enable', 'heater_range', 'manual_output', ...
                                 'pid', 'ramp_on', 'ramping', 'ramp_rate', 'setpoint'};
             parameterUnits = {'',             '',               '',             '%', ...

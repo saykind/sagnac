@@ -208,17 +208,20 @@ function varargout = get(obj, varargin)
             %   - x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6
             case {'sample'}
                 for j = 1:obj.num.demodulators
-                    sample(j) = ziDAQ('getSample', ['/' obj.id '/demods/' num2str(j-1) '/sample']);
+                    sample_(j) = ziDAQ('getSample', ['/' obj.id '/demods/' num2str(j-1) '/sample']);
+                    extra_fields = {'timestamp', 'frequency', 'bits', 'trigger'};
+                    sample(j) = rmfield(sample_(j), extra_fields);
                 end
                 varargout{i} = sample;
             case {'x'}
                 x = zeros(1, obj.num.demodulators);
                 for j = 1:obj.num.demodulators
+                    %FIXME: need fast way to collect data
                     % check if demodulator is enabled
-                    if ~ziDAQ('getInt', ['/' obj.id '/demods/' num2str(j-1) '/enable'])
-                        x(j) = NaN;
-                        continue
-                    end
+                    %if ~ziDAQ('getInt', ['/' obj.id '/demods/' num2str(j-1) '/enable'])
+                    %    x(j) = NaN;
+                    %    continue
+                    %end
                     sample = ziDAQ('getSample', ['/' obj.id '/demods/' num2str(j-1) '/sample']);
                     x(j) = sample.x;
                 end
@@ -226,11 +229,12 @@ function varargout = get(obj, varargin)
             case {'y'}
                 y = zeros(1, obj.num.demodulators);
                 for j = 1:obj.num.demodulators
+                    %FIXME: need fast way to collect data
                     % check if demodulator is enabled
-                    if ~ziDAQ('getInt', ['/' obj.id '/demods/' num2str(j-1) '/enable'])
-                        y(j) = NaN;
-                        continue
-                    end
+                    %if ~ziDAQ('getInt', ['/' obj.id '/demods/' num2str(j-1) '/enable'])
+                    %    y(j) = NaN;
+                    %    continue
+                    %end
                     sample = ziDAQ('getSample', ['/' obj.id '/demods/' num2str(j-1) '/sample']);
                     y(j) = sample.y;
                 end

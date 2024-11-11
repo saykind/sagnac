@@ -12,8 +12,11 @@ function varargout = get(obj, varargin)
         switch varargin{i}
             %Fields:
             %   - position
+            %   - angle
             case {'position'}
                 varargout{i} = obj.position;
+            case {'angle'}
+                varargout{i} = obj.angle;
         end
     end
 end
