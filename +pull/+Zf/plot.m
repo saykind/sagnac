@@ -1,37 +1,57 @@
 function graphics = plot(graphics, logdata)
 %Graphics plotting function.
 
-    [ax0f, ax1f, ax2f] = util.unpack(graphics.axes);
-    for ax = util.unpack(graphics.axes)
+    [ax_dc_dc, ax_dc_1f, ax_dc_2f, ax_1f_RQ, ax_1f_XY, ax_2f_RQ, ax_2f_XY] = util.unpack(graphics.axes);
+    for ax = [ax_dc_dc, ax_dc_1f, ax_dc_2f]
+        cla(ax);
+    end
+    for ax = [ax_1f_RQ, ax_1f_XY, ax_2f_RQ, ax_2f_XY]
         yyaxis(ax, 'left'); cla(ax);
         yyaxis(ax, 'right'); cla(ax);
     end
 
     f = 1e-6*logdata.lockin.oscillator_frequency(:,1);
-    aux1 = logdata.lockin.auxin0(:,1);
-    aux2 = logdata.lockin.auxin1(:,1);
-    x1 = logdata.lockin.x(:,1)./aux1;
-    y1 = logdata.lockin.y(:,1)./aux1;
-    x2 = logdata.lockin.x(:,2)./aux1;
-    y2 = logdata.lockin.y(:,2)./aux1;
+    x1 = 1e3*logdata.lockin.x(:,1);
+    y1 = 1e3*logdata.lockin.y(:,1);
     r1 = sqrt(x1.^2 + y1.^2);
+    q1 = atan2d(y1, x1);
+    x2 = 1e3*logdata.lockin.x(:,2);
+    y2 = 1e3*logdata.lockin.y(:,2);
     r2 = sqrt(x2.^2 + y2.^2);
+    q2 = atan2d(y2, x2);
+    aux1 = 1e3*logdata.lockin.auxin0(:,1);
+    %aux2 = 1e3*logdata.lockin.auxin1(:,1);
 
-    yyaxis(ax0f, 'right');
-    %plot(ax0f, angle, aux2, 'b-');
-    yyaxis(ax0f, 'left');
-    plot(ax0f, f, aux1, 'r-');
+    % Normalize
+    dc_avg = mean(aux1);
+    r1n = r1/dc_avg;
+    r2n = r2/dc_avg;
+
+    %% TAB: Normalized
+    plot(ax_dc_dc, f, aux1, 'k-');
+    plot(ax_dc_1f, f, 1e3*r1n, 'k-');
+    plot(ax_dc_2f, f, 1e3*r2n, 'k-');
     
-    yyaxis(ax1f, 'right');
-    plot(ax1f, f, y1, 'b-');
-    yyaxis(ax1f, 'left');
-    plot(ax1f, f, x1, 'r-');    
-    plot(ax1f, f, r1, 'k-');
+    %% TAb: 1f
+    yyaxis(ax_1f_RQ, 'right');
+    plot(ax_1f_RQ, f, q1, 'b-');
+    yyaxis(ax_1f_RQ, 'left');
+    plot(ax_1f_RQ, f, r1, 'r-');
 
-    yyaxis(ax2f, 'right');
-    plot(ax2f, f, y2, 'b-');
-    yyaxis(ax2f, 'left');
-    plot(ax2f, f, x2, 'r-');
-    plot(ax2f, f, r2, 'k-');
+    yyaxis(ax_1f_XY, 'right');
+    plot(ax_1f_XY, f, y1, 'b-');
+    yyaxis(ax_1f_XY, 'left');
+    plot(ax_1f_XY, f, x1, 'r-');
+
+    %% TAB: 2f
+    yyaxis(ax_2f_RQ, 'right');
+    plot(ax_2f_RQ, f, q2, 'b-');
+    yyaxis(ax_2f_RQ, 'left');
+    plot(ax_2f_RQ, f, r2, 'r-');
+
+    yyaxis(ax_2f_XY, 'right');
+    plot(ax_2f_XY, f, y2, 'b-');
+    yyaxis(ax_2f_XY, 'left');
+    plot(ax_2f_XY, f, x2, 'r-');
     
 end
