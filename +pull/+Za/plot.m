@@ -13,6 +13,8 @@ function graphics = plot(graphics, logdata)
     end
 
     a = logdata.lockin.output_amplitude(:,1);
+    dc = 1e3*logdata.lockin.auxin0(:,1);
+    
     x1 = 1e3*logdata.lockin.x(:,1);
     y1 = 1e3*logdata.lockin.y(:,1);
     r1 = sqrt(x1.^2 + y1.^2);
@@ -33,8 +35,6 @@ function graphics = plot(graphics, logdata)
     r4 = sqrt(x4.^2 + y4.^2);
     q4 = atan2d(y4, x4);
 
-    dc = 1e3*logdata.lockin.auxin0(:,1);
-
     % Normalize
     dc_avg = mean(dc);
     r1n = r1/dc_avg;
@@ -45,11 +45,21 @@ function graphics = plot(graphics, logdata)
     plot(ax_dc_1f, a, 1e3*r1n, 'k-');
     plot(ax_dc_2f, a, 1e3*r2n, 'k-');
     
-    %% TAb: 1f
+    %% TAB: 1f
     yyaxis(ax_1f_RQ, 'right');
     plot(ax_1f_RQ, a, q1, 'b-');
     yyaxis(ax_1f_RQ, 'left');
     plot(ax_1f_RQ, a, r1, 'r-');
+    
+    % Fit r1 to linear, set intercept to 0
+    % a1_ = a(a < 0.5);
+    % r1_ = r1(a < 0.5);
+    % r1_ideal = @(x, a) x(1)*a;
+    % x0 = 3;
+    % x = lsqcurvefit(r1_ideal, x0, a1_, r1_);
+    % r1_fit = r1_ideal(x, a);
+    % plot(ax_1f_RQ, a, r1_fit, 'r--');
+    % fprintf("r1 = %.4f a\n", x(1));
 
     yyaxis(ax_1f_XY, 'right');
     plot(ax_1f_XY, a, y1, 'b-');
@@ -62,6 +72,16 @@ function graphics = plot(graphics, logdata)
     yyaxis(ax_2f_RQ, 'left');
     plot(ax_2f_RQ, a, r2, 'r-');
 
+    % fit r2 to quadratic
+    % a2_ = a(a < 1);
+    % r2_ = r2(a < 1);
+    % r2_ideal = @(x, a) x*a.^2;
+    % x0 = .3;
+    % x = lsqcurvefit(r2_ideal, x0, a2_, r2_);
+    % r2_fit = r2_ideal(x, a);
+    % plot(ax_2f_RQ, a, r2_fit, 'r--');
+    % fprintf("r2 = %.4f a^2\n", x(1));
+
     yyaxis(ax_2f_XY, 'right');
     plot(ax_2f_XY, a, y2, 'b-');
     yyaxis(ax_2f_XY, 'left');
@@ -72,6 +92,16 @@ function graphics = plot(graphics, logdata)
     plot(ax_3f_RQ, a, q3, 'b-');
     yyaxis(ax_3f_RQ, 'left');
     plot(ax_3f_RQ, a, r3, 'r-');
+
+    % fit r3 to cubic
+    % a3_ = a(a < 1);
+    % r3_ = r3(a < 1);
+    % r3_ideal = @(x, a) x(1)*a.^3;
+    % x0 = .06;
+    % x = lsqcurvefit(r3_ideal, x0, a3_, r3_);
+    % r3_fit = r3_ideal(x, a);
+    % plot(ax_3f_RQ, a, r3_fit, 'r--');
+    % fprintf("r3 = %.4f a^3\n", x(1));
 
     yyaxis(ax_3f_XY, 'right');
     plot(ax_3f_XY, a, y3, 'b-');

@@ -6,6 +6,8 @@ function graphics = canvas()
     tab_norm = uitab(tg, 'Title', 'Normalized Magnitude');
     tab_1f = uitab(tg, 'Title', 'First Harm (1f)');
     tab_2f = uitab(tg, 'Title', 'Second Harm (2f)');
+    tab_3f = uitab(tg, 'Title', 'Third Harm (3f)');
+    tab_4f = uitab(tg, 'Title', 'Fourth Harm (4f)');
 
     %% TAB: Normalized 
     [~, ax_norm] = plot.paper.measurement(...
@@ -55,11 +57,47 @@ function graphics = canvas()
     yyaxis(ax_2f(2), 'right');
     ylabel(ax_2f(2), "Y_{2\omega}, mV");
 
+    %% TAB: 3f
+    [~, ax_3f] = plot.paper.measurement(...
+        fig = fig, ...
+        tab = tab_3f, ...
+        subplots = [2,1], ...
+        xlabel = "Modulation Frequency (MHz)");
+
+    % Set axis labels
+    yyaxis(ax_3f(1), 'left');
+    ylabel(ax_3f(1), "R_{3\omega}, mV");
+    yyaxis(ax_3f(1), 'right');
+    ylabel(ax_3f(1), "\Theta_{3\omega}, deg");
+
+    yyaxis(ax_3f(2), 'left');
+    ylabel(ax_3f(2), "X_{3\omega}, mV");
+    yyaxis(ax_3f(2), 'right');
+    ylabel(ax_3f(2), "Y_{3\omega}, mV");
+
+    %% TAB: 4f
+    [~, ax_4f] = plot.paper.measurement(...
+        fig = fig, ...
+        tab = tab_4f, ...
+        subplots = [2,1], ...
+        xlabel = "Modulation Frequency (MHz)");
+
+    % Set axis labels
+    yyaxis(ax_4f(1), 'left');
+    ylabel(ax_4f(1), "R_{4\omega}, mV");
+    yyaxis(ax_4f(1), 'right');
+    ylabel(ax_4f(1), "\Theta_{4\omega}, deg");
+
+    yyaxis(ax_4f(2), 'left');
+    ylabel(ax_4f(2), "X_{4\omega}, mV");
+    yyaxis(ax_4f(2), 'right');
+    ylabel(ax_4f(2), "Y_{4\omega}, mV");
+
     %% Epiloge
     % Set font size
     set(findall(fig, '-property', 'FontSize'), 'FontSize', 12);
 
-    ax = cat(1, ax_norm, ax_1f, ax_2f);
+    ax = cat(1, ax_norm, ax_1f, ax_2f, ax_3f, ax_4f);
     graphics = struct('figure', fig, 'axes', ax);
 
 end

@@ -1,6 +1,6 @@
 function delete(obj)
     %Destructor for the Kinesis10CR2 class
-    if isvalid(obj.handle)
+    if ~isempty(obj.handle) && isvalid(obj.handle)
         dev_name = string(obj.handle.GetDeviceName());
         obj.handle.StopPolling()
         obj.handle.Disconnect()

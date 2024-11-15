@@ -14,6 +14,10 @@ classdef Kinesis10CR2 < Drivers.Device
         motorSettings;
         currentDeviceSettings;
         deviceUnitConverter;
+
+        % Operation parameters
+        velocity;                %   deg/s
+        acceleration;            %   deg/s^2
         
         % Instrument Fields
         angle;                   %   deg
@@ -28,8 +32,8 @@ classdef Kinesis10CR2 < Drivers.Device
             
             obj.fields = {'angle'};
             fieldsUnits = {'deg'};
-            obj.parameters = {};
-            parametersUnits = {};
+            obj.parameters = {'velocity'};
+            parametersUnits = {'deg/s'};
             units_ = [[obj.fields, obj.parameters]; ...
                 [fieldsUnits, parametersUnits]];
             obj.units = struct(units_{:});
@@ -41,9 +45,19 @@ classdef Kinesis10CR2 < Drivers.Device
         init(obj);
 
         % Getters
+        function v = get.velocity(obj), v = obj.get('velocity'); end
+        function acc = get.acceleration(obj), acc = obj.get('acceleration'); end
         function a = get.angle(obj), a = obj.get('angle'); end
 
         % Setters
+        function set.velocity(obj, v), obj.set('velocity', v); end
+        function set.acceleration(obj, acc), obj.set('acceleration', acc); end
         function set.angle(obj, a), obj.set('angle', a); end
+
+        % Custom methods
+        function blink(obj)
+            % Blink the LED on the device 5 times.
+            obj.handle.IdentifyDevice();
+        end
     end
 end
