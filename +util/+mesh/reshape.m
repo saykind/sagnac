@@ -5,7 +5,7 @@ function varargout = reshape(shape, varargin)
 
     for var = 1:length(varargin)
         z = varargin{var};
-
+        
         [nz, mz] = size(z);
 
         if nz == 1

@@ -26,6 +26,7 @@ classdef Swann < Logan
             obj.logdata = pull.logdata(obj.instruments, obj.schema);
             obj.sweep = pull.(obj.seed).sweep();
             obj.loginfo.sweep = obj.sweep;
+            obj.logdata.sweep = obj.sweep;
             pull.(obj.seed).sweep(obj.instruments, obj.sweep);
             obj.logInit();
             obj.logger.TasksToExecute = numel(obj.sweep.points)-1;
