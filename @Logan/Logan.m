@@ -31,5 +31,8 @@ classdef Logan < Colin
 
         function start(obj), obj.logInit(); obj.logger.start(); end
         function stop(obj), obj.logger.stop(); obj.logClear(); end
+
+        function canvas(obj), obj.graphics = pull.(obj.seed).canvas(); end
+        function plot(obj), pull.(obj.seed).plot(obj.graphics, obj.logdata); end
     end
 end

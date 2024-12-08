@@ -16,7 +16,7 @@ function [fig, ax] = ram(options)
         options.filenames string = [];
         options.fig = [];
         options.scale double {mustBeNumeric} = 1;
-        options.xlim double {mustBeNumeric} = NaN;
+        options.xlim double {mustBeNumeric} = [0,180];
         options.show_legend logical = false;
         options.legends string = [];
         options.save logical = true;
@@ -26,6 +26,8 @@ function [fig, ax] = ram(options)
     filenames = options.filenames;
     legends = options.legends;
     verbose = options.verbose;
+    min_angle = options.xlim(1);
+    max_angle = options.xlim(2);
 
     % If no filename is given, open file browser
     if isempty(filenames)
@@ -43,7 +45,7 @@ function [fig, ax] = ram(options)
             title = "Rotating QWP test", ...
             single_yticks = true, ...
             subplots = [3,1], ...
-            xlim = [0, 180], ...
+            xlim = [min_angle, max_angle], ...
             xlabel = "QWP angle (deg)" ...
             );
         % Format plot
@@ -55,11 +57,11 @@ function [fig, ax] = ram(options)
         set(ax(2), 'Clipping', 'off');
         set(ax(3), 'Clipping', 'off');
         % Set xticks with 15 degree step
-        xticks(ax(1), 0:15:180);
-        xticks(ax(2), 0:15:180);
-        xticks(ax(3), 0:15:180);
+        xticks(ax(1), min_angle:15:max_angle);
+        xticks(ax(2), min_angle:15:max_angle);
+        xticks(ax(3), min_angle:15:max_angle);
         % Set xticks labels with 30 degree step
-        xticklabels(ax(3), ["0", "", "30", "", "60", "", "90", "", "120", "", "150", "", "180"]);
+        xticklabels(ax(3), ["0", "", "30", "", "60", "", "90", "", "120", "", "150", "", "180", "", "210", "", "240", "", "270", "", "300", "", "330", "", "360"]);
     else
         fig = options.fig;
         ax = fig.Children;

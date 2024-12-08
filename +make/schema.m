@@ -603,7 +603,7 @@ switch key
         schema = table();
         return
     otherwise
-        disp("[make.schema] Unkown experiment configuration.");
+        util.msg("Unkown experiment configuration.");
         name =      "tempcont";
         driver =    "LSCI331";
         interface = "visa";

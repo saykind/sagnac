@@ -5,8 +5,8 @@ function s = sweep(instruments, s, cnt)
 %   nargin=3: make sweep step
 
     if nargin == 0      % Create sweep structure
-        f = 1e6*(.1:.1:14);
-        a = [0:.02:2.5];
+        f = 1e6*(.1:.2:14);
+        a = [0:.04:3];
         [F,A] = meshgrid(f,a);
         [n,m] = size(F);
         F_flat = flatten_mesh(F);

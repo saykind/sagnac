@@ -5,7 +5,7 @@ function s = sweep(instruments, s, cnt)
 %   nargin=3: make sweep step
 
     if nargin == 0      % Create sweep structure
-        s = struct('rate', 6, 'pause', 4, 'range', 0:3:359.99);
+        s = struct('rate', 10, 'pause', 6, 'range', [150:5:300]);
         s.datapoints = sweep_datapoints(s);
         s.points = sweep_points(s);
         s.record = @(cnt) rem(cnt, s.rate) > s.pause-1;
@@ -15,16 +15,14 @@ function s = sweep(instruments, s, cnt)
 
     if nargin == 2      % Configure instrument settings (before the measurement)
         val = s.range(1);
-        instruments.waveplate.set('angle', val);
-        %fprintf("cnt = -, val = %d\n", val);
+        instruments.laser.output(val);
         return
     end
 
     if nargin == 3      % Make a sweep step
         i = fix(cnt/s.rate)+1;
         val = s.range(i);
-        instruments.waveplate.set('angle', val);
-        %fprintf("cnt = %d, val = %d, i=%d\n", cnt, val, i);
+        instruments.laser.output(val);
         return
     end
 end

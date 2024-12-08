@@ -15,6 +15,7 @@ function [fig, ax] = ram(options)
     arguments
         options.filenames string = [];
         options.fig = [];
+        options.f0 double = 10;
         options.scale double {mustBeNumeric} = 1;
         options.xlim double {mustBeNumeric} = NaN;
         options.show_legend logical = false;
@@ -90,7 +91,7 @@ function [fig, ax] = ram(options)
         %% R0 vs amplitude
         power = R0;
         power_max = max(power);
-        x0 = [(power_max-min(power)), .16];
+        x0 = [(power_max-min(power)), 1/options.f0];
         F = @(x, A) x(1)*(besselj(0, 2*.92*sin(.5*pi*x(2)*A))-1);
         x = lsqcurvefit(F, x0, A, power-power_max);
         power_ideal = power_max + x(1)*(besselj(0, 2*.92*sin(.5*pi*x(2)*A))-1);
@@ -110,7 +111,7 @@ function [fig, ax] = ram(options)
         power = R2;
         power_min = min(power);
         F = @(x, A) power_min + x(1)*abs(besselj(2, 2*.92*sin(.5*pi*x(2)*A) ));
-        x0 = [max(power), .16];
+        x0 = [max(power), 1/options.f0];
         x = lsqcurvefit(F, x0, A, power);
         power_ideal = power_min + x(1)*abs(besselj(2, 2*.92*sin(.5*pi*x(2)*A) ));
         if verbose

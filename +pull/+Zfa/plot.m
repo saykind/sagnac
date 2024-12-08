@@ -13,8 +13,8 @@ function [F,A,R0] = plot(graphics, logdata)
     a = logdata.sweep.range(2,:);
 
     r0 = 1e3*logdata.lockin.auxin0(:,1);
-    x1 = 1e3*logdata.lockin.x(:,1);
-    y1 = 1e3*logdata.lockin.y(:,1);
+    x1 = 1e6*logdata.lockin.x(:,1);
+    y1 = 1e6*logdata.lockin.y(:,1);
     r1 = sqrt(x1.^2 + y1.^2);
     x2 = 1e3*logdata.lockin.x(:,2);
     y2 = 1e3*logdata.lockin.y(:,2);

@@ -63,14 +63,14 @@ function [fig, ax] = lockin(options)
         aux2 = logdata.lockin.auxin1(:,1);
 
         % normalize
-        dc = mean(aux1);
-        %x1 = x1/dc;
-        %y1 = y1/dc;
-        %x2 = x2/dc;
-        %y2 = y2/dc;
+        x1 = x1./aux1;
+        y1 = y1./aux1;
+        x2 = x2./aux1;
+        y2 = y2./aux1;
 
         % Coarse-grain
         sweep = struct('rate', 16, 'pause', 8);
+        sweep = logdata.sweep;
         [A, X1, Y1, X2, Y2, R1, R2] = util.coarse.sweep(sweep, angle, x1, y1, x2, y2, r1, r2);
         %A = A(1:end-1);
         %X1 = X1(1:end-1);

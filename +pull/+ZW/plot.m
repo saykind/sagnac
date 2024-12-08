@@ -14,16 +14,16 @@ function graphics = plot(graphics, logdata)
     end
 
     angle = logdata.waveplate.angle;
-    x1 = 1e3*logdata.lockin.x(:,1);
-    y1 = 1e3*logdata.lockin.y(:,1);
+    x1 = 1e6*logdata.lockin.x(:,1);
+    y1 = 1e6*logdata.lockin.y(:,1);
     r1 = sqrt(x1.^2 + y1.^2);
     q1 = atan2d(y1, x1);
     x2 = 1e3*logdata.lockin.x(:,2);
     y2 = 1e3*logdata.lockin.y(:,2);
     r2 = sqrt(x2.^2 + y2.^2);
     q2 = atan2d(y2, x2);
-    x3 = 1e3*logdata.lockin.x(:,3);
-    y3 = 1e3*logdata.lockin.y(:,3);
+    x3 = 1e6*logdata.lockin.x(:,3);
+    y3 = 1e6*logdata.lockin.y(:,3);
     r3 = sqrt(x3.^2 + y3.^2);
     q3 = atan2d(y3, x3);
     aux1 = 1e3*logdata.lockin.auxin0(:,1);

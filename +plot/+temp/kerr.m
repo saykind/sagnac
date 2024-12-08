@@ -1,4 +1,4 @@
-function [fig, ax] = kerr(options)
+function [fig, ax, plot_handle] = kerr(options)
 %Plots kerr data from several files.
 %   plot.kerr(Name, Value) specifies additional 
 %   options with one or more Name, Value pair arguments. 
@@ -99,9 +99,9 @@ end
         % Plot
         if options.errorbar
             K2 = K2*3;
-            errorbar(ax, T, K, K2, '.-', 'LineWidth', 1, 'DisplayName', name);
+            plot_handle = errorbar(ax, T, K, K2, '.-', 'LineWidth', 1, 'DisplayName', name);
         else
-            plot(ax, T, K, '.-', 'LineWidth', 1, 'DisplayName', name);
+            plot_handle = plot(ax, T, K, '.-', 'LineWidth', 1, 'DisplayName', name);
         end
     end
     
