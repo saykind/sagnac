@@ -1,4 +1,4 @@
-function [fig, ax] = kerr(options)
+function [fig, ax, plt] = kerr(options)
 %Plots kerr data from several files.
 %   plot.kerr(Name, Value) specifies additional 
 %   options with one or more Name, Value pair arguments. 

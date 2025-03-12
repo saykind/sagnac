@@ -25,8 +25,9 @@ function graphics = T()
         'YAxisLocation', 'right', ...
         'YColor', 'b');
     ylabel(axisB, "Temp B, K");
-    hold(axisA, 'on'); 
     hold(axisB, 'on');
+    hold(axisA, 'on'); 
+    
     xtickformat(axisA, '%.0f');
     a = [axisA, axisB];
 

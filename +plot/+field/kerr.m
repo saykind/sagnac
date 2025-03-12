@@ -1,4 +1,4 @@
-function [fig, ax] = kerr(options)
+function [fig, ax, plt] = kerr(options)
 %Plots kerr data from several files.
 %   plot.kerr(Name, Value) specifies additional 
 %   options with one or more Name, Value pair arguments. 
@@ -22,6 +22,7 @@ arguments
     options.ylim double {mustBeNumeric} = NaN;
     options.offset_range double {mustBeNumeric} = [0, 0];
     options.offset double {mustBeNumeric} = 0;
+    options.scale double {mustBeNumeric} = 1;
     options.x1_offset double {mustBeNumeric} = 0;
     options.slope double {mustBeNumeric} = 0;   %urad/mT
     options.sls double {mustBeNumeric} = 0.25;
@@ -31,6 +32,7 @@ arguments
     options.interp logical = false;
     options.show_legend logical = true;
     options.legends string = [];
+    options.color string = "#77AC30";
     options.mark_start_end logical = false;
     options.arrows logical = false;
     options.save logical = true;
@@ -110,7 +112,9 @@ end
         m = fix(n/k);
         KERR = mean(reshape(kerr, [k, m]),1);
         KERRstd = std(reshape(kerr, [k, m]),0,1);
-        FIELD = mean(reshape(field, [k, m]),1);      
+        FIELD = mean(reshape(field, [k, m]),1); 
+        KERR = KERR*options.scale;
+        KERRstd = KERRstd*options.scale;    
         
         % Smooth data
         if options.interp
@@ -123,11 +127,11 @@ end
 
         % Plot
         if options.errorbar
-            errorbar(ax, FIELD, KERR, KERRstd, '.', ...
+            plt = errorbar(ax, FIELD, KERR, KERRstd, '.', ...
             'MarkerSize', 10, 'CapSize', 10, 'LineWidth', 2, 'DisplayName', name);
         else
-            plot(ax, FIELD, KERR, '.-', ...
-            'MarkerSize', 10, 'LineWidth', 1, 'DisplayName', name);
+            plt = plot(ax, FIELD, KERR, '.-', 'Color', options.color, ...
+            'MarkerSize', 6, 'LineWidth', .5, 'DisplayName', name);
         end
 
         % Mark start and end points
