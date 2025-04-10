@@ -1,4 +1,4 @@
-function resistance(varargin)
+function [fig, ax, plot_handle] = resistance(options)
 %Plots resistance data from files.
 %   resistance(...) plots resistance data from files specified by
 %   filepaths. filepaths is a cell array of strings containing the
@@ -24,54 +24,55 @@ function resistance(varargin)
 %       - lockinA.X - Resistance data.
 %
 
+arguments
+    options.filenames string = [];
+    options.ax = [];
+    options.xlim double {mustBeNumeric} = [-inf, inf];
+    options.ylim double {mustBeNumeric} = NaN;
+    options.plot_options struct = struct();
+    options.dT double {mustBeNumeric} = 0.6;
+    options.derivative logical = false;
+    options.current double {mustBeNumeric} = .1;
+    options.legends string = [];    
+    options.ylabel string = 'Resistance (\Omega)';
+    options.color string = [];
+    options.save logical = true;
+    options.save_folder string = 'output';
+    options.verbose logical = false;
+end
 
-    %%% Parse input
-    p = inputParser;
-    addParameter(p, 'filenames', [], @isstring);
-    addParameter(p, 'foldername', "", @isstring);
-    addParameter(p, 'current', .1, @isnumeric);
-    addParameter(p, 'derivative', false, @islogical);
-    addParameter(p, 'verbose', false, @islogical);
-    parse(p, varargin{:});
-    parameters = p.Results;
-    filenames = parameters.filenames;
-    foldername = parameters.foldername;
-    curr = parameters.current;
+    filenames = options.filenames;
+    ax = options.ax;
+    curr = options.current;
 
     % If no filename is given, open file browser
     if isempty(filenames)
-        [files, foldername] = uigetfile('*.mat', 'Select data files', 'MultiSelect', 'on');
-        if foldername == 0  % User clicked "Cancel"
-            return;
-        end
-        if ischar(files)  % Single file selected
-            files = {files};
-        end
-        filenames = fullfile(foldername, files);
-    else
-        % If foldername is given, add it to filenames
-        if ~isempty(foldername)
-            filenames = fullfile(foldername, filenames);
-        end
+        filenames = convertCharsToStrings(util.filename.select());
+        options.filenames = filenames;
     end
-    filenames = string(filenames);
+    if isempty(filenames)
+        util.msg('No file selected.');
+        return;
+    end
 
     % Current (Voltage/resistance coefficient)
-    if parameters.verbose
+    if options.verbose
         disp('Current: ' + string(curr) + ' A');
     end
 
-    %%% Make figure
-    fig = figure('Name', 'Resistance', ...
-        'Units', 'centimeters', ...
-        'Position', [0 0 27 10]);
-    set(fig, 'PaperUnits', 'centimeters', 'PaperSize', [9 16]);
-    ax = axes(fig);
+    % Create figure
+    if isempty(ax)
+        fig = figure('Name', 'Kerr Signal', ...
+            'Units', 'centimeters', ...
+            'Position', [0 0 20.5 12.9]);
+        set(fig, 'PaperUnits', 'centimeters', 'PaperSize', [11 9]);
+        ax = axes(fig);
+    else
+        fig = get(ax, 'Parent');
+    end
     hold(ax, 'on'); 
     grid(ax, 'on');
-    xlabel('Temperature (K)');
-    ylabel('Resistance (\Omega)');
-    title('Resistance vs Temperature');
+    xlim(options.xlim);
 
     %%% Plot data
     for i = 1:length(filenames)
@@ -83,7 +84,7 @@ function resistance(varargin)
         r = logdata.lockinA.X/curr;
 
         % Plot data
-        if parameters.derivative
+        if options.derivative
             % coarse grain
             [t, r] = util.coarse.grain(.5, t, r);
             % spline interpolation
@@ -94,16 +95,14 @@ function resistance(varargin)
             r = diff(r)./diff(t);
             t = t(1:end-1);
         end
-        plot(ax, t, r, 'DisplayName', name);
+        plot_handle = plot(ax, t, r, 'DisplayName', name);
+        if ~isempty(options.color), plot_handle.Color = options.color; end
     end
 
-    % Add legend
-    % FIXME Turn off latex interpreter for legend
-    lgd = legend('Location', 'best');
-    lgd.Interpreter = 'none';
-
-    % Hold off for further plotting
-    hold off;
+    % Legend
+    if ~isempty(options.legends)
+        legend(ax, options.legends, 'Location', 'best');
+    end
 
 end
 

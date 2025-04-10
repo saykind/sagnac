@@ -6,7 +6,7 @@ function c = stanford(name)
 
     switch name
         % RED (CARDINAL)
-        case {'red', 'r'}
+        case {'red', 'r', 'cardinal'}
             c = " #8C1515";  % cardinal
         case 'light red'
             c = " #B83A4B";  % light red
@@ -22,7 +22,7 @@ function c = stanford(name)
             c = " #006B81";  % dark blue
         %
         % SKY BLUE
-        case {'sky'}
+        case {'sky', 'cyan'}
             c = " #00A5DF";  % sky
         case 'light sky'
             c = " #67AFD2";  % light sky
@@ -37,11 +37,11 @@ function c = stanford(name)
             c = " #417865";  % dark bay
         %
         % GREEN (PALO VERDE)
-        case {'green', 'palo verde'}
+        case 'palo verde'
             c = " #279989";  % palo verde
-        case {'light green', 'light palo verde'}
+        case 'light palo verde'
             c = " #59B3A9";  % light green
-        case {'dark green', 'dark palo verde'}
+        case 'dark palo verde'
             c = " #017E7C";  % dark green
         %
         % PALO ALTO
@@ -53,7 +53,7 @@ function c = stanford(name)
             c = " #014240";  % dark palo alto
         %
         % OILVE
-        case 'olive'
+        case {'green', 'olive'}
             c = " #8F993E";  % olive
         case 'light olive'
             c = " #A6B168";  % light olive

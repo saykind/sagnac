@@ -18,5 +18,7 @@ function c = xkcd(name)
     end
 
     c = strtrim(c);
+    c = upper(c);
+    c = convertCharsToStrings(c);
 
 end

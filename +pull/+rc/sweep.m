@@ -5,9 +5,12 @@ function s = sweep(instruments, s, cnt)
 %   nargin=3: make sweep step
 
     if nargin == 0      % Create sweep structure
-        %s = struct('rate', 10, 'pause', 6, 'range', 1e6*(.2:.01:15));
-        %s = struct('rate', 10, 'pause', 6, 'range', 1e6*(6:.01:6.3));
-        s = struct('rate', 10, 'pause', 6, 'range', 1e6*(.1:.01:20));
+        v1 = 5;
+        v2 = 1.3;
+        step = -0.02;
+        range = [v1:step:v2];
+        s = struct('rate', 2, 'pause', 1, 'range', range);
+
         s.datapoints = sweep_datapoints(s);
         s.points = sweep_points(s);
         s.record = @(cnt) rem(cnt, s.rate) > s.pause-1;
@@ -17,14 +20,22 @@ function s = sweep(instruments, s, cnt)
 
     if nargin == 2      % Configure instrument settings (before the measurement)
         val = s.range(1);
-        instruments.lockin.set('oscillator_frequency', val);
+
+        v0 = instruments.lockinA.get('AUXV1');
+        if abs(v0-val) > 2e-3
+            error("[11682] Voltage sweep range has incorrect v0.")
+        else
+            %instruments.lockin.ramp(val);
+            instruments.lockinA.set('AUXV1', val);
+        end
+
         return
     end
 
     if nargin == 3      % Make a sweep step
         i = fix(cnt/s.rate)+1;
         val = s.range(i);
-        instruments.lockin.set('oscillator_frequency', val);
+        instruments.lockinA.set('AUXV1', val);
         return
     end
 end

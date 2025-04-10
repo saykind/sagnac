@@ -3,16 +3,18 @@ function c = matlab(name)
 % from https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html
 
     switch name
-        case {'red', 'orange', 'brick'}
+        case {'red', 'scarlet'}
+            c = " #A2142F";  % (dark red) scarlet
+        case {'orange', 'brick'}
             c = " #D95319";  % (orange) red
         case 'blue'
             c = " #0072BD";  % blue
+        case 'cyan'
+            c = " #4DBEEE";  % cyan
         case 'green'
             c = " #77AC30";  % green
         case 'yellow'
             c = " #EDB120";  % yellow
-        case {'scarlet', 'dark red'}
-            c = " #A2142F";  % (dark red) scarlet
         case 'purple'
             c = " #7E2F8E";  % purple
         case 'white'

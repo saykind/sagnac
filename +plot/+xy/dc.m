@@ -123,37 +123,30 @@ function [fig, ax] = dc(options)
     n_xypoints = length(logdata.sweep.range);
     
     % Acquire data
-    v0 = 1e3*logdata.voltmeter.v1;                          % DC voltage in mV
-    kerr = util.logdata.kerr(logdata.lockin);
+    try
+        v0 = 1e3*logdata.voltmeter.v1;                          % DC voltage in mV
+    catch
+        v0 = 1e3*logdata.lockin.auxin0(:,1);
+    end
 
-    n_datapoint = numel(kerr);                          % total number of raw datapoints
+
+    n_datapoint = numel(v0);                          % total number of raw datapoints
     n_wait = logdata.sweep.rate-logdata.sweep.pause;    % number of raw datapoints to average into one datapoint
     n_position = fix(n_datapoint/n_wait);               % number of different positions in the scan
     if n_position < n_xypoints
         fprintf("Number of datapositions (%d) is less than the number of xy points (%d).\n", n_position, n_xypoints);
         fprintf("Filling the rest of the data with last value...\n");
-        kerr = [kerr; repmat(kerr(n_position), 1, n_wait*(n_xypoints-n_position))'];
         v0 = [v0; repmat(v0(n_position), 1, n_wait*(n_xypoints-n_position))'];
         n_position = n_xypoints;
     end
     shape_avg = [n_wait, n_position];                   % shape to use for averaging
-    kerr = mean(reshape(kerr, shape_avg), 1);
     v0 = mean(reshape(v0, shape_avg), 1);
 
-    % Substract kerr offset
-    if offset ~= 0
-        kerr = kerr - offset;
-    end
 
     V0 = util.mesh.combine(v0, shape_xy);
-    KERR = util.mesh.combine(kerr, shape_xy);
 
 
     %% Plot histogram and dc data
-    if plot_histogram
-        [fig, ax] = plot_kerr_histogram(KERR, V0);
-    end
-
     % Interpolate data
     if interp_factor > 1
         x = X(1,:);
@@ -161,7 +154,6 @@ function [fig, ax] = dc(options)
         xq = linspace(min(x), max(x), length(x)*interp_factor);
         yq = linspace(min(y), max(y), length(y)*interp_factor);
         [Xq, Yq] = meshgrid(xq, yq);
-        KERR = interp2(X, Y, KERR, Xq, Yq, 'spline');
         V0 = interp2(X, Y, V0, Xq, Yq, 'spline');
         x = xq;
         y = yq;
@@ -172,7 +164,6 @@ function [fig, ax] = dc(options)
     %% Ignore data points with V0 < cutoff
     if v0_cutoff > 0
         mask = V0 < v0_cutoff;
-        KERR(mask) = NaN;
         V0(mask) = NaN;
     end
 

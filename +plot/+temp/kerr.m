@@ -27,7 +27,10 @@ arguments
     options.dT double {mustBeNumeric} = 0.6;
     options.sls double {mustBeNumeric} = 0.25;
     options.errorbar logical = true;
-    options.legends string = [];
+    options.show_legends logical = true;
+    options.legends string = [];    
+    options.ylabel string = '\theta_K (\murad)';
+    options.color string = [];
     options.save logical = true;
     options.save_folder string = 'output';
     options.verbose logical = false;
@@ -100,21 +103,25 @@ end
         if options.errorbar
             K2 = K2*3;
             plot_handle = errorbar(ax, T, K, K2, '.-', 'LineWidth', 1, 'DisplayName', name);
+            if ~isempty(options.color), plot_handle.Color = options.color; end
         else
             plot_handle = plot(ax, T, K, '.-', 'LineWidth', 1, 'DisplayName', name);
+            if ~isempty(options.color), plot_handle.Color = options.color; end
         end
     end
     
     % Format plot
     if ~isnan(options.ylim), ylim(options.ylim); end
-    ylabel(ax, '\DeltaKerr (\murad)');
+    ylabel(ax, options.ylabel);
     xlabel(ax, 'Temperature (K)');
-    if isempty(options.legends)
-        l = legend(ax, 'Location', 'best');
-    else
-        l = legend(ax, options.legends);
+    if options.show_legends
+        if isempty(options.legends)
+            l = legend(ax, 'Location', 'best');
+        else
+            l = legend(ax, options.legends);
+        end
+        set(l, 'Interpreter', 'none');
     end
-    set(l, 'Interpreter', 'none');
 
     
     % Save figure

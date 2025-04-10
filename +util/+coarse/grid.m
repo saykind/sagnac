@@ -36,17 +36,16 @@ function X = grid(dx, x1, xmax)
     end
 
     step = abs(dx);
-
-    if dx > 0
-        xmin = xmin - step/2;
-    end
+    xmin = xmin - step/2;
 
     n = floor((xmax-xmin)/step);
-    if dx > 0
-        n = n + 1;
-    end
-
+    n = n + 1;
     xmax = xmin + n*step;
 
     X = linspace(xmin,xmax,n+1);
+
+    % If dx < 0, return midpoints of the grid points
+    if dx < 0
+        X = X(2:end) - step/2;
+    end
 end

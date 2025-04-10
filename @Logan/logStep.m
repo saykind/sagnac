@@ -18,7 +18,7 @@ function logStep(obj, event)
     obj.loginfo.timer.TasksExecuted = cnt;
 
     % Plot data
-    plot_rate = 10;
+    plot_rate = 2;
     if ~isempty(obj.graphics) && isgraphics(obj.graphics.figure) && (rem(cnt, plot_rate) > plot_rate-2)
         try
             pull.(obj.seed).plot(obj.graphics, obj.logdata);
