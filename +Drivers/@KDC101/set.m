@@ -7,14 +7,15 @@ function set(obj, options)
     %
     %   Usage example:
     %   obj.set('v', 5);
-    %   obj.set('angle', 180);
+    %   obj.set('position', 1);
 
     arguments
         obj;
         % Parameters
         options.velocity double = [];
         options.acceleration double = [];
-        options.angle double = [];
+        options.backlash double = [];
+        options.position double = [];
     end
     
     % Velocity
@@ -27,10 +28,15 @@ function set(obj, options)
         obj.handle.SetVelocityParams(obj.velocity, options.acceleration);
     end
 
+    % Backlash
+    if ~isempty(options.backlash)
+        obj.handle.SetBacklash(options.backlash);
+    end
+
     % Angle
-    if ~isempty(options.angle)
+    if ~isempty(options.position)
         timeout = 0;
-        obj.handle.MoveTo(options.angle, timeout);
+        obj.handle.MoveTo(options.position, timeout);
     end
 
 end

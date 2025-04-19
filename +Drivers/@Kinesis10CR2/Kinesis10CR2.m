@@ -2,6 +2,8 @@ classdef Kinesis10CR2 < Drivers.Device
 %Kinesis10CR2 instrument driver for Thorlabs K10CR2 cage rotation mount.
 %   Release date: November, 2024.
 %
+%   Documentation: Thorlabs.MotionControl.DotNET_API.chm
+%
 %   Usage example:
 %   obj = Drivers.Kinesis10CR2();
 
