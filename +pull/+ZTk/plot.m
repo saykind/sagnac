@@ -36,9 +36,9 @@ function graphics = plot(graphics, logdata)
     plot(ax_T_1f, TA, x1, 'r-');
 
     yyaxis(ax_T_2f, 'right');
-    plot(ax_T_2f, TA, r2, 'b-');
+    plot(ax_T_2f, TA, r2./dc, 'b-');
     yyaxis(ax_T_2f, 'left');
-    plot(ax_T_2f, TA, r1, 'r-');
+    plot(ax_T_2f, TA, r2, 'r-');
 
     %% TAB: Kerr vs time
     yyaxis(ax_t_kerr, 'right');

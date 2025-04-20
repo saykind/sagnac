@@ -1,0 +1,23 @@
+function s = schema()
+%Create and save table with instrument information for a given experiment.
+
+    name =      ["lockin";   "X";               "Y"];
+    driver =    ["HF2LI";    "KDC101";          "KDC101"];
+    interface = ["ziDAQ";    "Kinesis";         "Kinesis"];
+    address =   [NaN;         27006521;         27006520];
+    parameters = ...
+                {{}; ...                
+                {nan}; ...
+                {nan}};
+    fields =    {{'sample'}; ...
+                {'position'}; ...
+                {'position'}};
+
+    s = table(name, driver, interface, address, parameters, fields);
+
+    % Custom properties
+    s = addprop(s,{'Seed', 'SourceFile', 'ExperimentDescription'}, {'table', 'table', 'table'});
+    s.Properties.CustomProperties.SourceFile = string(mfilename('fullpath'));
+    s.Properties.CustomProperties.ExperimentDescription = "Kerr vs XY coordinates (KDC101).";
+end
+    
