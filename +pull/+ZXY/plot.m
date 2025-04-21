@@ -35,25 +35,25 @@ end
         y = y - 1e3*logdata.sweep.origin(2);
     end
 
-    X = reshape(x', shape);
-    Y = reshape(y', shape);
+    X = util.mesh.column.fold(x, shape);
+    Y = util.mesh.column.fold(y, shape);
     n0 = length(logdata.sweep.range);
     n_curr = length(P0);
 
     p0 = zeros(1, n0);
     p0(1:n_curr) = P0;
     if n_curr ~= n0, p0(n_curr:end) = p0(1); end
-    P0 = reshape(p0', shape);
+    P0 = util.mesh.column.fold(p0, shape);
 
     kerr = zeros(1, n0);
     kerr(1:n_curr) = KERR;
     if n_curr ~= n0, kerr(n_curr:end) = kerr(1); end
-    KERR = reshape(kerr', shape);
+    KERR = util.mesh.column.fold(kerr, shape);
 
     x1 = zeros(1, n0);
     x1(1:n_curr) = X1;
     if n_curr ~= n0, x1(n_curr:end) = x1(1); end
-    X1 = reshape(x1', shape);
+    X1 = util.mesh.column.fold(x1', shape);
 
     % Substract Kerr vs 1/P0 dependence
     if options.correct_offset

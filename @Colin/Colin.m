@@ -1,6 +1,6 @@
 classdef Colin < handle
 %Colin Superclass for data collection (acquisition).
-%   LOGAN is able to intialize experiment scheme, create instrument intefaces, 
+%   COLIN is able to intialize experiment scheme, create instrument intefaces, 
 %   log (record) single data point from each instrument, and save data to file.
 
     properties

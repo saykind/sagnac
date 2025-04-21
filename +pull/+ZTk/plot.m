@@ -52,9 +52,9 @@ function graphics = plot(graphics, logdata)
     plot(ax_t_1f, time, x1, 'r-');
 
     yyaxis(ax_t_2f, 'right');
-    plot(ax_t_2f, time, r2, 'b-');
+    plot(ax_t_2f, time, r2./dc, 'b-');
     yyaxis(ax_t_2f, 'left');
-    plot(ax_t_2f, time, r1, 'r-');
+    plot(ax_t_2f, time, r2, 'r-');
     
 
 end
