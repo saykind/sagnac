@@ -42,7 +42,7 @@ function graphics = plot(graphics, logdata)
 
     %% TAB: Kerr vs time
     yyaxis(ax_t_kerr, 'right');
-    plot(ax_t_kerr, time, dc, 'b.');
+    plot(ax_t_kerr, time, dc, 'b.-');
     yyaxis(ax_t_kerr, 'left');
     plot(ax_t_kerr, time, kerr, 'r.-');
 

@@ -19,8 +19,8 @@ function graphics = canvas()
 
     % Set axis labels
     ylabel(ax_norm(1), "DC_1 (mV)");
-    ylabel(ax_norm(2), "10^3 R_{1\omega}/DC");
-    ylabel(ax_norm(3), "10^3 R_{2\omega}/DC");
+    ylabel(ax_norm(2), "R_{1\omega} (\muV)");
+    ylabel(ax_norm(3), "R_{2\omega} (mV)");
 
     %% TAB: 1f
     [~, ax_1f] = plot.paper.measurement(...

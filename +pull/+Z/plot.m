@@ -14,6 +14,7 @@ function graphics = plot(graphics, logdata)
 
     t = logdata.watch.datetime;
     t = t - t(1);
+    t = minutes(t);
     dc = 1e3*logdata.lockin.auxin0(:,1);
     
     x1 = 1e3*logdata.lockin.x(:,1);
@@ -43,8 +44,8 @@ function graphics = plot(graphics, logdata)
 
     %% TAB: Normalized
     plot(ax_dc_dc, t, dc, 'k-');
-    plot(ax_dc_1f, t, 1e3*r1n, 'k-');
-    plot(ax_dc_2f, t, 1e3*r2n, 'k-');
+    plot(ax_dc_1f, t, 1e3*r1, 'k-');
+    plot(ax_dc_2f, t, r2, 'k-');
     
     %% TAB: 1f
     yyaxis(ax_1f_RQ, 'right');
