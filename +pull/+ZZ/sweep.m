@@ -5,12 +5,12 @@ function s = sweep(instruments, s, cnt)
 %   nargin=3: make sweep step
 
     if nargin == 0      % Create sweep structure
-        z0 = 10.6;        
-        z = z0 + (-.2:.005:.2);
+        z0 = 7.4;        
+        z = z0 + (-.5:.005:.5);
 
         %DC measurement min rate is 3s, pause 2s
         %Kerr measurement min rate is 9s, pause 8s
-        s = struct('rate', 3, 'pause', 2, 'range', z);
+        s = struct('rate', 5, 'pause', 1, 'range', z);
         s.datapoints = sweep_datapoints(s);
         s.points = sweep_points(s);
         s.record = @(cnt) rem(cnt, s.rate) > s.pause-1;
@@ -20,7 +20,7 @@ function s = sweep(instruments, s, cnt)
 
     if nargin == 2      % Configure instrument settings (before the measurement)
         val = s.range(1);
-        instruments.Z.set('position', val);
+        instruments.Z.set(position=val, timeout=NaN);
         return
     end
 
@@ -32,7 +32,7 @@ function s = sweep(instruments, s, cnt)
             util.msg("Failed at cnt=%d.\n", cnt);
             rethrow(ME);
         end
-        instruments.Z.set('position', val);
+        instruments.Z.set(position=val, timeout=NaN);
         return
     end
 end

@@ -43,7 +43,7 @@ function [data, g] = data(filename, varargin)
             g = pull.(seed).plot(g, data.logdata);
         catch ME
             util.msg("failed to use pull.graphics()");
-            util.msg(ME);
+            disp(ME);
         end
     end
 end

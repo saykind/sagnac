@@ -29,7 +29,7 @@ function set(obj, options)
 
     % Angle
     if ~isempty(options.angle)
-        timeout = 0;
+        timeout = 60e3;
         obj.handle.MoveTo(options.angle, timeout);
     end
 

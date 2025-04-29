@@ -19,6 +19,10 @@ function logStep(obj, event)
 
     % Plot data
     plot_rate = 2;
+    try
+        plot_rate = obj.sweep.rate;
+    catch
+    end
     if ~isempty(obj.graphics) && isgraphics(obj.graphics.figure) && (rem(cnt, plot_rate) > plot_rate-2)
         try
             pull.(obj.seed).plot(obj.graphics, obj.logdata);

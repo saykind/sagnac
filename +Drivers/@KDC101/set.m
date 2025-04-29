@@ -16,6 +16,7 @@ function set(obj, options)
         options.acceleration double = [];
         options.backlash double = [];
         options.position double = [];
+        options.timeout double = NaN;
     end
     
     % Velocity
@@ -35,7 +36,11 @@ function set(obj, options)
 
     % Angle
     if ~isempty(options.position)
-        timeout = 0;
+        if isnan(options.timeout)
+            timeout = obj.timeout;
+        else
+            timeout = options.timeout;
+        end
         obj.handle.MoveTo(options.position, timeout);
     end
 

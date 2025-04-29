@@ -34,7 +34,7 @@ function graphics = plot(graphics, logdata)
         [z, aux1, x1, y1, r1, q1, x2, y2, r2, q2, x3, y3, r3, q3] = ...
             util.coarse.sweep(logdata.sweep, z, aux1, x1, y1, r1, q1, x2, y2, r2, q2, x3, y3, r3, q3);
     catch
-        util.msg('No sweep information found.');
+        util.msg('Problem with util.coarse.sweep.');
     end
 
     % Normalize

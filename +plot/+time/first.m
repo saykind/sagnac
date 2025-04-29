@@ -1,4 +1,4 @@
-function [fig, ax, plt] = kerr(options)
+function [fig, ax, plt] = first(options)
 %Plots first harmonic from several files.
 %   plot.time.first(Name, Value) specifies additional 
 %   options with one or more Name, Value pair arguments. 
@@ -20,6 +20,7 @@ arguments
     options.ax = [];
     options.xlim double {mustBeNumeric} = NaN;
     options.ylim double {mustBeNumeric} = NaN;
+    options.ylim_right double {mustBeNumeric} = NaN;
     options.color string = [];
     options.time_shift double {mustBeNumeric} = 0;
     options.offset_range double {mustBeNumeric} = [0, 0];
@@ -74,12 +75,15 @@ end
             xlabel = "time (min)" ...
             );
             % Format plot
-        if ~isnan(options.xlim), xlim(options.xlim); end
-        if ~isnan(options.ylim), ylim(options.ylim); end
         yyaxis(ax, 'right');
         ylabel(ax, 'Y_{1f} (\muV)');
+        if ~isnan(options.xlim), xlim(options.xlim); end
+        if ~isnan(options.ylim), ylim(options.ylim); end
+        if ~isnan(options.ylim_right), ylim(options.ylim_right); end
         yyaxis(ax, 'left');
         ylabel(ax, 'X_{1f} (\muV)');
+        if ~isnan(options.xlim), xlim(options.xlim); end
+        if ~isnan(options.ylim), ylim(options.ylim); end
         xlabel(ax, 'time (min)');
         ax.YAxis(1).Color = 'r';
         ax.YAxis(2).Color = 'b';
@@ -136,9 +140,9 @@ end
             '.-', 'LineWidth', 1, 'Color', 'r', 'DisplayName', 'In-phase');
         else
             yyaxis(ax, 'right');
-            plt = plot(ax, T, Y1, '.-', 'LineWidth', 1, 'Color', 'b', 'DisplayName', 'Quadrature');
+            plt = plot(ax, T/60, Y1, '.-', 'LineWidth', 1, 'Color', 'b', 'DisplayName', 'Quadrature');
             yyaxis(ax, 'left');
-            plt = plot(ax, T, X1, '.-', 'LineWidth', 1, 'Color', 'r', 'DisplayName', 'In-phase');
+            plt = plot(ax, T/60, X1, '.-', 'LineWidth', 1, 'Color', 'r', 'DisplayName', 'In-phase');
         end
             
         if options.show_legend, l = legend(ax, 'Location', 'best'); set(l, 'Interpreter', 'none'); end

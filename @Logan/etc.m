@@ -1,4 +1,5 @@
 function s = etc(obj)
+%ETC Estimate time of completion
     if obj.logger.TasksToExecute < inf
         duration = obj.logger.Period*seconds(obj.logger.TasksToExecute);
         duration = duration + seconds(obj.logger.StartDelay);
