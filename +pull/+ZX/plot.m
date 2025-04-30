@@ -13,7 +13,7 @@ function graphics = plot(graphics, logdata)
         yyaxis(ax, 'right'); cla(ax);
     end
 
-    z = logdata.Z.position;
+    x = logdata.X.position;
     x1 = 1e6*logdata.lockin.x(:,1);
     y1 = 1e6*logdata.lockin.y(:,1);
     r1 = sqrt(x1.^2 + y1.^2);
@@ -31,52 +31,52 @@ function graphics = plot(graphics, logdata)
     %aux2 = 1e3*logdata.lockin.auxin1(:,1);
 
     try
-        [z, aux1, x1, y1, r1, q1, x2, y2, r2, q2, x3, y3, r3, q3] = ...
-            util.coarse.sweep(logdata.sweep, z, aux1, x1, y1, r1, q1, x2, y2, r2, q2, x3, y3, r3, q3);
+        [x, aux1, x1, y1, r1, q1, x2, y2, r2, q2, x3, y3, r3, q3] = ...
+            util.coarse.sweep(logdata.sweep, x, aux1, x1, y1, r1, q1, x2, y2, r2, q2, x3, y3, r3, q3);
     catch
         util.msg('Problem with util.coarse.sweep.');
     end
 
-    % Normalize
+    % Normalixe
     r1n = r1./aux1;
     r2n = r2./aux1;
 
     %% TAB: Normalized
-    plot(ax_dc_dc, z, aux1, 'k-');
-    plot(ax_dc_1f, z, 1e3*r1n, 'k-');
-    plot(ax_dc_2f, z, 1e3*r2n, 'k-');
+    plot(ax_dc_dc, x, aux1, 'k-');
+    plot(ax_dc_1f, x, 1e3*r1n, 'k-');
+    plot(ax_dc_2f, x, 1e3*r2n, 'k-');
     
     %% TAb: 1f
     yyaxis(ax_1f_RQ, 'right');
-    plot(ax_1f_RQ, z, q1, 'b-');
+    plot(ax_1f_RQ, x, q1, 'b-');
     yyaxis(ax_1f_RQ, 'left');
-    plot(ax_1f_RQ, z, r1, 'r-');
+    plot(ax_1f_RQ, x, r1, 'r-');
 
     yyaxis(ax_1f_XY, 'right');
-    plot(ax_1f_XY, z, y1, 'b-');
+    plot(ax_1f_XY, x, y1, 'b-');
     yyaxis(ax_1f_XY, 'left');
-    plot(ax_1f_XY, z, x1, 'r-');
+    plot(ax_1f_XY, x, x1, 'r-');
 
     %% TAB: 2f
     yyaxis(ax_2f_RQ, 'right');
-    plot(ax_2f_RQ, z, q2, 'b-');
+    plot(ax_2f_RQ, x, q2, 'b-');
     yyaxis(ax_2f_RQ, 'left');
-    plot(ax_2f_RQ, z, r2, 'r-');
+    plot(ax_2f_RQ, x, r2, 'r-');
 
     yyaxis(ax_2f_XY, 'right');
-    plot(ax_2f_XY, z, y2, 'b-');
+    plot(ax_2f_XY, x, y2, 'b-');
     yyaxis(ax_2f_XY, 'left');
-    plot(ax_2f_XY, z, x2, 'r-');
+    plot(ax_2f_XY, x, x2, 'r-');
 
     %% TAB: 3f
     yyaxis(ax_3f_RQ, 'right');
-    plot(ax_3f_RQ, z, q3, 'b-');
+    plot(ax_3f_RQ, x, q3, 'b-');
     yyaxis(ax_3f_RQ, 'left');
-    plot(ax_3f_RQ, z, r3, 'r-');
+    plot(ax_3f_RQ, x, r3, 'r-');
 
     yyaxis(ax_3f_XY, 'right');
-    plot(ax_3f_XY, z, y3, 'b-');
+    plot(ax_3f_XY, x, y3, 'b-');
     yyaxis(ax_3f_XY, 'left');
-    plot(ax_3f_XY, z, x3, 'r-');
+    plot(ax_3f_XY, x, x3, 'r-');
     
 end
