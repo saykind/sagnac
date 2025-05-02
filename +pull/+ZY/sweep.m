@@ -5,8 +5,8 @@ function s = sweep(instruments, s, cnt)
 %   nargin=3: make sweep step
 
     if nargin == 0      % Create sweep structure
-        y0 = 16.465;        
-        y = y0 + (-.02:.002:.02);
+        y0 = 16.3;        
+        y = y0 + (-.02:.001:.02);
 
         %DC measurement min rate is 3s, pause 2s
         %Kerr measurement min rate is 9s, pause 8s
