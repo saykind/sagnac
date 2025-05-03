@@ -4,7 +4,7 @@ function s = schema()
     name =      ["tempcont";     "lockinA";];
     driver =    ["LSCI331";      "SR830";];
     interface = ["gpib";         "visa";];
-    address =   [23;            12;];
+    address =   [23;              12;];
     parameters = ...
                 {{nan}; ...
                 {'amplitude', 'frequency'}};
