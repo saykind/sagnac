@@ -26,21 +26,24 @@ function graphics = plot(graphics, logdata)
 
     tempA = logdata.tempcont.A;         % Temperature, K
     tempB = logdata.tempcont.B;         % Temperature, K
-    Vout = logdata.lockinA.amplitude;   % Output Amplitude, V
+    % Vout = logdata.lockinA.amplitude;   % Output Amplitude, V
     Ixx = 1e9*logdata.lockinA.X;        % Current, nA
-    IxxY = 1e9*logdata.lockinA.Y;       % Current, nA
+    % IxxY = 1e9*logdata.lockinA.Y;       % Current, nA
     VxxX = 1e6*logdata.lockinB.X;       % X channel, uV
-    VxxY = 1e6*logdata.lockinB.Y;       % Y channel, uV
+    % VxxY = 1e6*logdata.lockinB.Y;       % Y channel, uV
     VyxX = 1e6*logdata.lockinC.X;       % X channel, uV
-    VyxY = 1e6*logdata.lockinC.Y;       % Y channel, uV
+    % VyxY = 1e6*logdata.lockinC.Y;       % Y channel, uV
     Rxx = VxxX./Ixx;                    % Resistance XX, kOhm
     Ryx = VyxX./Ixx;                    % Resistance YX, kOhm
+
+    [Field, Ixx, Rxx, Ryx, kerr] = ...
+        util.coarse.sweep(logdata.sweep, Field, Ixx, Rxx, Ryx, kerr);
 
     % Time domain
     yyaxis(ax_time_A, 'left');
     plot(ax_time_A, t, MagnetCurrent, 'r-');
     yyaxis(ax_time_A, 'right');
-    plot(ax_time_A, t, MagnetVoltage, 'b-');
+    plot(ax_time_A, t, Vg, 'b-');
 
     yyaxis(ax_time_B, 'left');
     plot(ax_time_B, t, tempA, 'r-');

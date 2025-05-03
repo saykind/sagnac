@@ -3,8 +3,8 @@ function graphics = canvas()
 
     fig = plot.paper.measurement(subplots=[0,0], title = "Resistance vs Temperature");
     tg = uitabgroup(fig);
-    tab_res = uitab(tg, 'Title', 'Resistance');
-    tab_volt = uitab(tg, 'Title', 'Voltage');
+    tab_res = uitab(tg, 'Title', 'Temp vs Time');
+    tab_volt = uitab(tg, 'Title', 'Res vs Field');
 
     %% TAB: Resistance 
     [~, ax_time] = plot.paper.measurement(...
@@ -17,7 +17,7 @@ function graphics = canvas()
     yyaxis(ax_time(1), 'left');
     ylabel(ax_time(1), "Magnet Current (A)");
     yyaxis(ax_time(1), 'right');
-    ylabel(ax_time(1), "Magnet Voltage (V)");
+    ylabel(ax_time(1), "Bottom Gate Voltage (V)");
 
     yyaxis(ax_time(2), 'left');
     ylabel(ax_time(2), "Temperature A (K)");

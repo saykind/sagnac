@@ -5,9 +5,9 @@ function s = sweep(instruments, s, cnt)
 %   nargin=3: make sweep step
 
     if nargin == 0      % Create sweep structure
-        v0 = 5;
-        mag = -5;
-        step = -.05;
+        v0 = 0;
+        mag = 2.1;
+        step = .05;
         range = [v0:step:mag];
 
         s = struct('rate', 4, 'pause', 3, 'range', range);
