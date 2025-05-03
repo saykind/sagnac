@@ -8,8 +8,8 @@ function s = sweep(instruments, s, cnt)
         x0 = 9.85;
         y0 = 8.37;
         
-        x = x0 + (-.2:.0025:.2);
-        y = y0 + (-.2:.0025:.2);
+        x = x0 + (-.2:.005:.2);
+        y = y0 + (-.2:.005:.2);
 
         [X,Y] = meshgrid(x,y);
         [n,m] = size(X);

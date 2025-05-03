@@ -1,7 +1,7 @@
 function graphics = canvas()
 %Graphics initialization function.
 
-    fig = plot.paper.measurement(subplots=[0,0], title = "Current sweep");
+    fig = plot.paper.measurement(subplots=[0,0], title = "Resistance vs Temperature");
     tg = uitabgroup(fig);
     tab_res = uitab(tg, 'Title', 'Resistance');
     tab_volt = uitab(tg, 'Title', 'Voltage');
@@ -10,20 +10,29 @@ function graphics = canvas()
     [~, ax_res] = plot.paper.measurement(...
         fig = fig, ...
         tab = tab_res, ...
-        right_yaxis = false, ...
         subplots = [2,1], ...
-        xlabel = "Current (nA)");
+        single_xticks = false, ...
+        xlabel = "Sample Temperature (K)");
 
     % Set axis labels
-    ylabel(ax_res(1), "R_{xx}, kOhm");
-    ylabel(ax_res(2), "R_{yx}, kOhm");
+    yyaxis(ax_res(1), 'left');
+    ylabel(ax_res(1), "R_{xx} (kOhm)");
+    yyaxis(ax_res(1), 'right');
+    ylabel(ax_res(1), "R_{yx} (kOhm)");
+    xlabel(ax_res(1), "Sample Temperature (K)");
+
+    yyaxis(ax_res(2), 'left');
+    ylabel(ax_res(2), "Temperature A (K)");
+    yyaxis(ax_res(2), 'right');
+    ylabel(ax_res(2), "Temperature B (K)");
+    xlabel(ax_res(2), "Time (min)");
 
     %% TAB: Voltage
     [~, ax_volt] = plot.paper.measurement(...
         fig = fig, ...
         tab = tab_volt, ...
         subplots = [3,1], ...
-        xlabel = "Input Voltage (mV)");
+        xlabel = "Sample Temperature (K)");
 
     % Set axis labels    
     yyaxis(ax_volt(1), 'left');
