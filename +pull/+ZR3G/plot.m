@@ -31,6 +31,9 @@ function graphics = plot(graphics, logdata)
     Rxx = VxxX./Ixx;                    % Resistance XX, kOhm
     Ryx = VyxX./Ixx;                    % Resistance YX, kOhm
 
+    [Vbg, Ixx, Rxx, Ryx, kerr] = ...
+        util.coarse.sweep(logdata.sweep, Vg, Ixx, Rxx, Ryx, kerr);
+
     % Time domain
     yyaxis(ax_time_A, 'left');
     plot(ax_time_A, t, Vg, 'r-');
@@ -44,13 +47,13 @@ function graphics = plot(graphics, logdata)
 
     % Gate voltage domain
     yyaxis(ax_volt_A, 'left');
-    plot(ax_volt_A, Vg, Rxx, 'r-');
+    plot(ax_volt_A, Vbg, Rxx, 'r-');
     yyaxis(ax_volt_A, 'right');
-    plot(ax_volt_A, Vg, Ixx, 'b--');
+    plot(ax_volt_A, Vbg, Ixx, 'b--');
 
     yyaxis(ax_volt_B, 'left');
-    plot(ax_volt_B, Vg, Ryx, 'r-');
+    plot(ax_volt_B, Vbg, Ryx, 'r-');
     yyaxis(ax_volt_B, 'right');
-    plot(ax_volt_B, Vg, kerr, 'b-');
+    plot(ax_volt_B, Vbg, kerr, 'b-');
 
 end
