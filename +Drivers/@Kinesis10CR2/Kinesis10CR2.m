@@ -61,5 +61,14 @@ classdef Kinesis10CR2 < Drivers.Device
             % Blink the LED on the device 5 times.
             obj.handle.IdentifyDevice();
         end
+
+        function home(obj, timeout)
+            % Move the device to the home position.
+            arguments
+                obj
+                timeout (1,1) double = obj.timeout
+            end
+            obj.handle.Home(timeout);
+        end
     end
 end

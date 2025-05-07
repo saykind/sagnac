@@ -71,9 +71,13 @@ classdef KDC101 < Drivers.Device
             obj.handle.IdentifyDevice();
         end
 
-        function home(obj)
+        function home(obj, timeout)
             % Move the device to the home position.
-            obj.handle.Home(obj.timeout);
+            arguments
+                obj
+                timeout (1,1) double = obj.timeout
+            end
+            obj.handle.Home(timeout);
         end
 
         function stop(obj)
