@@ -22,25 +22,25 @@ function graphics = plot(graphics, logdata)
     tempA = logdata.tempcont.A;         % Temperature, K
     tempB = logdata.tempcont.B;         % Temperature, K
     Vout = logdata.lockinA.amplitude;   % Output Amplitude, V
-    Ixx = 1e9*logdata.lockinA.X;        % Current, nA
-    IxxY = 1e9*logdata.lockinA.Y;       % Current, nA
+    IxxX = 1e12*logdata.lockinA.X;      % Current, pA
+    IxxY = 1e12*logdata.lockinA.Y;      % Current, pA
     VxxX = 1e6*logdata.lockinB.X;       % X channel, uV
     VxxY = 1e6*logdata.lockinB.Y;       % Y channel, uV
     VyxX = 1e6*logdata.lockinC.X;       % X channel, uV
     VyxY = 1e6*logdata.lockinC.Y;       % Y channel, uV
-    Rxx = VxxX./Ixx;                    % Resistance XX, kOhm
-    Ryx = VyxX./Ixx;                    % Resistance YX, kOhm
+    Rxx = VxxX./IxxX;                    % Resistance XX, kOhm
+    Ryx = VyxX./IxxX;                    % Resistance YX, kOhm
 
     angle = logdata.waveplate.angle;
 
-    [Vbg, Rxx, Ryx, VxxX, VxxY, dc, kerr, angle] = ...
-        util.coarse.sweep(logdata.sweep, Vg, Rxx, Ryx, VxxX, VxxY, dc, kerr, angle);
+    [Vbg, IxxX, IxxY, VxxX, VxxY, DC, angle] = ...
+        util.coarse.sweep(logdata.sweep, Vg, IxxX, IxxY, VxxX, VxxY, dc, angle);
 
     % Time domain
     yyaxis(ax_time_A, 'left');
     plot(ax_time_A, t, Vg, 'r.-');
     yyaxis(ax_time_A, 'right');
-    plot(ax_time_A, t, Ig, 'b.-');
+    plot(ax_time_A, t, dc, 'b.-');
 
     yyaxis(ax_time_B, 'left');
     plot(ax_time_B, t, tempA, 'r.-');
@@ -49,9 +49,9 @@ function graphics = plot(graphics, logdata)
 
     % Gate voltage domain
     yyaxis(ax_volt_A, 'left');
-    plot(ax_volt_A, angle, Rxx, 'r-');
+    plot(ax_volt_A, angle, IxxX, 'r-');
     yyaxis(ax_volt_A, 'right');
-    plot(ax_volt_A, angle, Ryx, 'b-');
+    plot(ax_volt_A, angle, IxxY, 'b-');
 
     yyaxis(ax_volt_B, 'left');
     plot(ax_volt_B, angle, VxxX, 'r-');

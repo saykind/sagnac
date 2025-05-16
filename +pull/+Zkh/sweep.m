@@ -6,7 +6,7 @@ function s = sweep(instruments, s, cnt)
 
     if nargin == 0      % Create sweep structure
         curr1 = 0;
-        curr2 = 1;
+        curr2 = .5;
         step = 0.1;
         range = [curr1:step:curr2, curr2-step/2:-step:curr1, 0];
         s = struct('rate', 15, 'pause', 10, 'range', range);

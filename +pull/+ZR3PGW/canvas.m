@@ -3,8 +3,8 @@ function graphics = canvas()
 
     fig = plot.paper.measurement(subplots=[0,0], title = "Resistance vs Temperature");
     tg = uitabgroup(fig);
-    tab_res = uitab(tg, 'Title', 'Voltage vs Time');
-    tab_volt = uitab(tg, 'Title', 'Res, Kerr vs Voltage');
+    tab_res = uitab(tg, 'Title', 'Gate, Temp vs Time');
+    tab_volt = uitab(tg, 'Title', 'Curr, Volt vs Angle');
 
     %% TAB: Resistance 
     [~, ax_time] = plot.paper.measurement(...
@@ -17,7 +17,7 @@ function graphics = canvas()
     yyaxis(ax_time(1), 'left');
     ylabel(ax_time(1), "V_{bg} (V)");
     yyaxis(ax_time(1), 'right');
-    ylabel(ax_time(1), "I_{bg} (nA)");
+    ylabel(ax_time(1), "V_{DC} (mV)");
 
     yyaxis(ax_time(2), 'left');
     ylabel(ax_time(2), "Temperature A (K)");
@@ -33,9 +33,9 @@ function graphics = canvas()
 
     % Set axis labels    
     yyaxis(ax_volt(1), 'left');
-    ylabel(ax_volt(1), "R_{xx}, (kOhm)");
+    ylabel(ax_volt(1), "Re I_{xx}, (pA)");
     yyaxis(ax_volt(1), 'right');
-    ylabel(ax_volt(1), "R_{yx}, (kOhm)");
+    ylabel(ax_volt(1), "Im I_{xx}, (pA)");
 
     yyaxis(ax_volt(2), 'left');
     ylabel(ax_volt(2), "Re V_{xx}, uV");

@@ -5,12 +5,7 @@ function s = sweep(instruments, s, cnt)
 %   nargin=3: make sweep step
 
     if nargin == 0      % Create sweep structure
-        curr1 = 0;
-        curr2 = 2.4;
-        step = 0.1;
-        range = [1.6:step:curr2, curr2-step/2:-step:curr1, 0];
-
-        s = struct('rate', 15, 'pause', 9, 'range', range);
+        s = struct('rate', 10, 'pause', 2, 'range', (0:2:359.99));
 
         s.datapoints = sweep_datapoints(s);
         s.points = sweep_points(s);
@@ -21,14 +16,14 @@ function s = sweep(instruments, s, cnt)
 
     if nargin == 2      % Configure instrument settings (before the measurement)
         val = s.range(1);
-        instruments.magnet.output(val);
+        instruments.waveplate.set('angle', val);
         return
     end
 
     if nargin == 3      % Make a sweep step
         i = fix(cnt/s.rate)+1;
         val = s.range(i);
-        instruments.magnet.output(val);
+        instruments.waveplate.set('angle', val);
         return
     end
 end

@@ -3,8 +3,8 @@ function graphics = canvas()
 
     fig = plot.paper.measurement(subplots=[0,0], title = "Resistance vs Temperature");
     tg = uitabgroup(fig);
-    tab_res = uitab(tg, 'Title', 'Voltage vs Time');
-    tab_volt = uitab(tg, 'Title', 'Res, Kerr vs Voltage');
+    tab_res = uitab(tg, 'Title', 'Gate, Temp vs Time');
+    tab_volt = uitab(tg, 'Title', 'Curr, Volt vs Voltage');
 
     %% TAB: Resistance 
     [~, ax_time] = plot.paper.measurement(...

@@ -5,12 +5,17 @@ function s = sweep(instruments, s, cnt)
 %   nargin=3: make sweep step
 
     if nargin == 0      % Create sweep structure
-        v0 = -5;
-        mag = 5;
+        v0 = 3;
+        mag = -4;
         step = .1;
+        if mag < v0
+            step = -abs(step);
+        else
+            step = abs(step);
+        end
         range = [v0:step:mag];
 
-        s = struct('rate', 6, 'pause', 2, 'range', range);
+        s = struct('rate', 8, 'pause', 2, 'range', range);
 
         s.datapoints = sweep_datapoints(s);
         s.points = sweep_points(s);

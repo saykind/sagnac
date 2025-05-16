@@ -7,7 +7,12 @@ function s = sweep(instruments, s, cnt)
     if nargin == 0      % Create sweep structure
         v0 = 0;
         mag = 3;
-        step = .1;
+        step = .2;
+        if mag < v0
+            step = -abs(step);
+        else
+            step = abs(step);
+        end
         range = [v0:step:mag];
 
         s = struct('rate', 16, 'pause', 8, 'range', range);
