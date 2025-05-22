@@ -21,7 +21,7 @@ function cat(varargin)
     addParameter(p, 'filenames', [], @isstring);
     addParameter(p, 'saveas',   '', @ischar);
     addParameter(p, 'dim',   1, @isnumeric);
-    addParameter(p, 'verbose', true, @islogical);
+    addParameter(p, 'verbose', false, @islogical);
     addParameter(p, 'reverse', false, @islogical);
     parse(p, varargin{:});
     parameters = p.Results;
@@ -55,15 +55,28 @@ function cat(varargin)
         % Loop over structure with two level depth
         fn1 = fieldnames(logdata);
         for i = 1:numel(fn1)
+            if verbose, fprintf("\t field = %s\n", fn1{i}); end
             if strcmp(fn1{i}, 'sweep')
                 new_logdata.sweep = logdata.sweep;
                 continue
             end
             fn2 = fieldnames(logdata.(fn1{i}));
             for j = 1:numel(fn2)
-                if ~isnumeric(logdata.(fn1{i}).(fn2{j})), continue; end
+                if verbose, fprintf("\t\t subfield = %s\n", fn2{j}); end
+                if ~isnumeric(logdata.(fn1{i}).(fn2{j})) && ~isdatetime(logdata.(fn1{i}).(fn2{j}))
+                    if verbose, fprintf("\t\t\t Not numeric or datetime. Skipping.\n"); end
+                    continue
+                end
+                size1 = size(new_logdata.(fn1{i}).(fn2{j}));
                 new_logdata.(fn1{i}).(fn2{j}) = cat(dim, ...
                     new_logdata.(fn1{i}).(fn2{j}), logdata.(fn1{i}).(fn2{j}));
+                if verbose
+                    size2 = size(logdata.(fn1{i}).(fn2{j}));
+                    size_new = size(new_logdata.(fn1{i}).(fn2{j}));
+                    fprintf("\t\t\t size1 = %s\n", mat2str(size1));
+                    fprintf("\t\t\t size2 = %s\n", mat2str(size2));
+                    fprintf("\t\t\t new size = %s\n", mat2str(size_new));
+                end
             end
         end
     end

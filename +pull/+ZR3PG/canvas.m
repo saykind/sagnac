@@ -33,14 +33,14 @@ function graphics = canvas()
 
     % Set axis labels    
     yyaxis(ax_volt(1), 'left');
-    ylabel(ax_volt(1), "Re I_{xx}, (nA)");
+    ylabel(ax_volt(1), "Re I_{xx}, (pA)");
     yyaxis(ax_volt(1), 'right');
-    ylabel(ax_volt(1), "Im I_{xx}, (nA)");
+    ylabel(ax_volt(1), "Im I_{xx}, (pA)");
 
     yyaxis(ax_volt(2), 'left');
-    ylabel(ax_volt(2), "Re V_{xx}, uV");
+    ylabel(ax_volt(2), "Re V_{xx} (uV)");
     yyaxis(ax_volt(2), 'right');
-    ylabel(ax_volt(2), "Im V_{xx}, uV");
+    ylabel(ax_volt(2), "Im V_{xx} (uV)");
 
 
     %% Epiloge

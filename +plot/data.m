@@ -40,9 +40,15 @@ function [data, g] = data(filename, varargin)
         try
             seed = data.schema.Properties.CustomProperties.Seed;
             g = pull.(seed).canvas();
+        catch ME
+            util.msg("failed to use pull.canvas()");
+            disp(ME);
+        end
+
+        try 
             g = pull.(seed).plot(g, data.logdata);
         catch ME
-            util.msg("failed to use pull.graphics()");
+            util.msg("failed to use pull.plot()");
             disp(ME);
         end
     end

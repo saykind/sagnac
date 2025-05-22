@@ -39,6 +39,14 @@ function graphics = plot(graphics, logdata)
     [Field, Ixx, Rxx, Ryx, kerr] = ...
         util.coarse.sweep(logdata.sweep, Field, Ixx, Rxx, Ryx, kerr);
 
+    % Substract kerr value corresponding to the zero magnetic field
+    try
+        kerr_offset = mean(kerr(abs(Field) < .5));
+        kerr = kerr - kerr_offset;
+    catch
+        util.msg('No kerr offset found.');
+    end
+
     % Time domain
     yyaxis(ax_time_A, 'left');
     plot(ax_time_A, t, MagnetCurrent, 'r.-');

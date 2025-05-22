@@ -1,8 +1,8 @@
 function graphics = plot(graphics, logdata)
 %Graphics plotting function.
 
-    [ax_time_A, ax_time_B, ax_volt_A, ax_volt_B] = util.unpack(graphics.axes);
-    for ax = [ax_time_A, ax_time_B, ax_volt_A, ax_volt_B]
+    [ax_time_A, ax_time_B, ax_volt_A, ax_volt_B, ax_curr_A, ax_curr_B] = util.unpack(graphics.axes);
+    for ax = [ax_time_A, ax_time_B, ax_volt_A, ax_volt_B, ax_curr_A, ax_curr_B]
         yyaxis(ax, 'left'); cla(ax);
         yyaxis(ax, 'right'); cla(ax);
     end
@@ -13,8 +13,8 @@ function graphics = plot(graphics, logdata)
     t = minutes(t);                     % Time, minutes
 
     % Lockin data
-    dc = 1e3*logdata.lockin.auxin0(:,1);
-    [x1, y1, x2, y2, r1, r2, kerr] = util.logdata.lockin(logdata.lockin);
+    dc = 1e3*logdata.lockin.auxin0(:,1);    % DC voltage, mV
+    %[x1, y1, x2, y2, r1, r2, kerr] = util.logdata.lockin(logdata.lockin);
     
     Vg = logdata.source.V;               % Gate voltage, V
     Ig = 1e9*logdata.source.I;           % Gate leakadge current, nA
@@ -33,29 +33,40 @@ function graphics = plot(graphics, logdata)
 
     angle = logdata.waveplate.angle;
 
-    [Vbg, Rxx, Ryx, VxxX, VxxY, dc, kerr, angle] = ...
-        util.coarse.sweep(logdata.sweep, Vg, Rxx, Ryx, VxxX, VxxY, dc, kerr, angle);
+    [Vbg, Rxx, Ryx, VxxX, VxxY, VyxX, VyxY, Ixx, IxxY, DC, angle] = ...
+        util.coarse.sweep(logdata.sweep, Vg, Rxx, Ryx, VxxX, VxxY, VyxX, VyxY, Ixx, IxxY, dc, angle);
 
     % Time domain
     yyaxis(ax_time_A, 'left');
     plot(ax_time_A, t, Vg, 'r.-');
     yyaxis(ax_time_A, 'right');
-    plot(ax_time_A, t, Ig, 'b.-');
+    plot(ax_time_A, t, dc, 'b.-');
 
     yyaxis(ax_time_B, 'left');
     plot(ax_time_B, t, tempA, 'r.-');
     yyaxis(ax_time_B, 'right');
     plot(ax_time_B, t, tempB, 'b.-');
 
-    % Gate voltage domain
+    % Waveplate angle domain
     yyaxis(ax_volt_A, 'left');
     plot(ax_volt_A, angle, Rxx, 'r-');
     yyaxis(ax_volt_A, 'right');
     plot(ax_volt_A, angle, Ryx, 'b-');
 
     yyaxis(ax_volt_B, 'left');
-    plot(ax_volt_B, angle, VxxX, 'r-');
+    plot(ax_volt_B, angle, VyxX, 'r-');
     yyaxis(ax_volt_B, 'right');
-    plot(ax_volt_B, angle, VxxY, 'b-');
+    plot(ax_volt_B, angle, VyxY, 'b-');
+
+    % 
+    yyaxis(ax_curr_A, 'left');
+    plot(ax_curr_A, angle, Ixx, 'r-');
+    yyaxis(ax_curr_A, 'right');
+    plot(ax_curr_A, angle, IxxY, 'b-');
+
+    yyaxis(ax_curr_B, 'left');
+    plot(ax_curr_B, angle, VxxX, 'r-');
+    yyaxis(ax_curr_B, 'right');
+    plot(ax_curr_B, angle, VxxY, 'b-');
 
 end
