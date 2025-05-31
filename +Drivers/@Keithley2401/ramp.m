@@ -5,7 +5,7 @@ function ramp(obj, V1, rate, period)
     %Default 'rate' is 0.05 V/sec.
     %Deafult 'period' is 0.5 sec.
         if nargin < 2, return; end
-        if nargin < 3, rate = 0.05; end
+        if nargin < 3, rate = 0.1; end
         if nargin < 4, period = .5; end
         
         util.timers.clearall(0, 'Keithley2401');

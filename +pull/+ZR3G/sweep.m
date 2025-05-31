@@ -5,8 +5,8 @@ function s = sweep(instruments, s, cnt)
 %   nargin=3: make sweep step
 
     if nargin == 0      % Create sweep structure
-        v0 = 2.5;
-        mag = -.5;
+        v0 = 4;
+        mag = -4;
         step = .01;
         if mag < v0
             step = -abs(step);

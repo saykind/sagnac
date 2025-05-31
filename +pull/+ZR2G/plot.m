@@ -13,8 +13,8 @@ function graphics = plot(graphics, logdata)
     t = minutes(t);                     % Time, minutes
 
     % Lockin data
-    dc = 1e3*logdata.lockin.auxin0(:,1);
-    [x1, y1, x2, y2, r1, r2, kerr] = util.logdata.lockin(logdata.lockin);
+    % dc = 1e3*logdata.lockin.auxin0(:,1);
+    % [x1, y1, x2, y2, r1, r2, kerr] = util.logdata.lockin(logdata.lockin);
     
     Vg = logdata.source.V;               % Gate voltage, V
     Ig = 1e9*logdata.source.I;           % Gate leakadge current, nA
@@ -22,40 +22,35 @@ function graphics = plot(graphics, logdata)
     tempA = logdata.tempcont.A;         % Temperature, K
     tempB = logdata.tempcont.B;         % Temperature, K
     Vout = logdata.lockinA.amplitude;   % Output Amplitude, V
-    IxxX = 1e12*logdata.lockinA.X;      % Current, pA
-    IxxY = 1e12*logdata.lockinA.Y;      % Current, pA
+    Ixx = 1e9*logdata.lockinA.X;        % Current, nA
+    IxxY = 1e9*logdata.lockinA.Y;       % Current, nA
     VxxX = 1e6*logdata.lockinB.X;       % X channel, uV
     VxxY = 1e6*logdata.lockinB.Y;       % Y channel, uV
-    VyxX = 1e6*logdata.lockinC.X;       % X channel, uV
-    VyxY = 1e6*logdata.lockinC.Y;       % Y channel, uV
-    Rxx = VxxX./IxxX;                    % Resistance XX, kOhm
-    Ryx = VyxX./IxxX;                    % Resistance YX, kOhm
+    Rxx = VxxX./Ixx;                    % Resistance XX, kOhm
 
-    angle = logdata.waveplate.angle;
-
-    [Vbg, IxxX, IxxY, VxxX, VxxY, DC, Angle] = ...
-        util.coarse.sweep(logdata.sweep, Vg, IxxX, IxxY, VxxX, VxxY, dc, angle);
+    [Vbg, Ixx, Rxx] = ...
+        util.coarse.sweep(logdata.sweep, Vg, Ixx, Rxx);
 
     % Time domain
     yyaxis(ax_time_A, 'left');
-    plot(ax_time_A, angle, Vg, 'r.-');
+    plot(ax_time_A, t, Vg, 'r-');
     yyaxis(ax_time_A, 'right');
-    plot(ax_time_A, angle, dc, 'b.-');
+    plot(ax_time_A, t, Ig, 'b-');
 
     yyaxis(ax_time_B, 'left');
-    plot(ax_time_B, t, tempA, 'r.-');
+    plot(ax_time_B, t, tempA, 'r-');
     yyaxis(ax_time_B, 'right');
-    plot(ax_time_B, t, tempB, 'b.-');
+    plot(ax_time_B, t, tempB, 'b-');
 
     % Gate voltage domain
     yyaxis(ax_volt_A, 'left');
-    plot(ax_volt_A, Angle, IxxX, 'r-');
-    yyaxis(ax_volt_A, 'right');
-    plot(ax_volt_A, Angle, IxxY, 'b-');
+    plot(ax_volt_A, Vbg, Rxx, 'r-');
+    % yyaxis(ax_volt_A, 'right');
+    % plot(ax_volt_A, Vbg, Ixx, 'b--');
 
     yyaxis(ax_volt_B, 'left');
-    plot(ax_volt_B, Angle, VxxX, 'r-');
-    yyaxis(ax_volt_B, 'right');
-    plot(ax_volt_B, Angle, VxxY, 'b-');
+    plot(ax_volt_B, Vbg, Ixx, 'r-');
+    % yyaxis(ax_volt_B, 'right');
+    % plot(ax_volt_B, Vbg, kerr, 'b-');
 
 end
