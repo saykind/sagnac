@@ -12,8 +12,7 @@ function graphics = plot(graphics, logdata)
     t = t - t(1);                       % Time, seconds
     t = minutes(t);                     % Time, minutes
     
-    Vg = logdata.source.V;               % Gate voltage, V
-    Ig = 1e9*logdata.source.I;           % Gate leakadge current, nA
+    Vg = logdata.lockinA.AUXV1;         % Gate voltage, V
 
     tempA = logdata.tempcont.A;         % Temperature, K
     tempB = logdata.tempcont.B;         % Temperature, K
@@ -30,8 +29,6 @@ function graphics = plot(graphics, logdata)
     % Time domain
     yyaxis(ax_time_A, 'left');
     plot(ax_time_A, t, Vg, 'r-');
-    yyaxis(ax_time_A, 'right');
-    plot(ax_time_A, t, Ig, 'b-');
 
     yyaxis(ax_time_B, 'left');
     plot(ax_time_B, t, tempA, 'r-');

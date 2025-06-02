@@ -23,14 +23,14 @@ classdef SR830 < Drivers.Device
         timeConstant;               %   Time constant (sec)
         % Instrument Fields 
         % (cannot be set, can be read)
-        X;                          %   Re part of the signal
-        Y;                          %   Im part of the signal
-        R;                          %   Signal Magnitude
-        Q;                          %   Signal Phase
-        AUX1;
-        AUX2;
-        AUXV1;
-        AUXV2;
+        X;                          %   Re part of the signal (V)
+        Y;                          %   Im part of the signal (V)
+        R;                          %   Signal Magnitude (V)
+        Q;                          %   Signal Phase (deg)
+        AUX1;                       %   Auxiliary input 1 (V)  
+        AUX2;                       %   Auxiliary input 2 (V)
+        AUXV1;                      %   Auxiliary output 1 (V)
+        AUXV2;                      %   Auxiliary output 2 (V)
         % Ramp timer
         ramper;
         rampInfo;
@@ -57,6 +57,8 @@ classdef SR830 < Drivers.Device
         function f = get.frequency(obj), f = obj.get('frequency'); end
         function ph = get.phase(obj), ph = obj.get('phase'); end
         function a = get.amplitude(obj), a = obj.get('amplitude'); end
+        function AUX1 = get.AUX1(obj), AUX1 = obj.get('AUX1'); end
+        function AUX2 = get.AUX2(obj), AUX2 = obj.get('AUX2'); end
         function AUXV1 = get.AUXV1(obj), AUXV1 = obj.get('AUXV1'); end
         function AUXV2 = get.AUXV2(obj), AUXV2 = obj.get('AUXV2'); end
 
@@ -70,7 +72,7 @@ classdef SR830 < Drivers.Device
         function ramp(obj, V1, rate, period)
         %Ramp AUXV1 voltage to specified value
         %at specified rate (V/s).
-        %Default rate is 0.01 V/s
+        %Default rate is 0.02 V/s
             if nargin < 2, return; end
             if nargin < 3, rate = 0.02; end
             if nargin < 4, period = .5; end
