@@ -4,6 +4,11 @@ function ramp_on = ramp(obj, setp, rate)
         setp (1,1) double = nan
         rate (1,1) double = obj.get('ramp_rate')
     end
+
+    if nargin > 2 % check that rate is within bounds
+        if rate < 0.1, rate = 0.1; end
+        if rate > 100, rate = 100; end
+    end
     
     if isnan(setp) % turn ramping on or off.
         ramp_on = obj.get('ramp_on');
@@ -12,13 +17,8 @@ function ramp_on = ramp(obj, setp, rate)
         return;
     end
     
-    if nargin > 2 % check that rate is within bounds
-        if rate < 0.1, rate = 0.1; end
-        if rate > 100, rate = 100; end
-    end
-    
     if obj.get('heater_range') == 0
-        obj.set('heater_range', 5);
+        obj.set('heater_range', 4);
     end
 
     if obj.verbose

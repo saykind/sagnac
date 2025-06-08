@@ -73,6 +73,8 @@ end
     hold(ax, 'on'); 
     grid(ax, 'on');
     xlim(options.xlim);
+    ylabel(ax, options.ylabel);
+    xlabel(ax, 'Temperature (K)');
 
     %%% Plot data
     for i = 1:length(filenames)
@@ -80,8 +82,9 @@ end
         [~, name, ~] = fileparts(filename);
 
         logdata = load(filename).logdata;
-        t = logdata.tempcont.A;
-        r = logdata.lockinA.X/curr;
+        t = logdata.tempcont.B;
+        r = logdata.lockinB.X./logdata.lockinA.X;
+        q = atan2d(logdata.lockinB.Y, logdata.lockinB.X);
 
         % Plot data
         if options.derivative
@@ -95,7 +98,15 @@ end
             r = diff(r)./diff(t);
             t = t(1:end-1);
         end
-        plot_handle = plot(ax, t, r, 'DisplayName', name);
+
+        yyaxis(ax, 'left');
+        ax.YColor = 'r';
+        plot_handle = plot(ax, t, r, 'r', 'DisplayName', name);
+        yyaxis(ax, 'right');
+        ax.YColor = 'b';
+        plot(ax, t, q, 'b');
+        ylabel(ax, 'Phase (deg)');
+
         if ~isempty(options.color), plot_handle.Color = options.color; end
     end
 

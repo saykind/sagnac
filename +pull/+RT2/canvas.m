@@ -18,7 +18,7 @@ function graphics = canvas()
     yyaxis(ax_res(1), 'left');
     ylabel(ax_res(1), "R_{xx} (Ohm)");
     yyaxis(ax_res(1), 'right');
-    ylabel(ax_res(1), "I_{xx} (nA)");
+    ylabel(ax_res(1), "Phase, deg");
     xlabel(ax_res(1), "Sample Temperature (K)");
 
     yyaxis(ax_res(2), 'left');

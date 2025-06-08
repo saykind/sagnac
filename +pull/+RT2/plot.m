@@ -25,9 +25,9 @@ function graphics = plot(graphics, logdata)
     Rxx = 1e3*VxxX./Ixx;                    % Resistance XX, Ohm
 
     yyaxis(ax_res_A, 'left');
-    plot(ax_res_A, tempA, Rxx, 'r-');
+    plot(ax_res_A, tempA, Rxx, 'r.-');
     yyaxis(ax_res_A, 'right');
-    plot(ax_res_A, tempA, Ixx, 'b-');
+    plot(ax_res_A, tempA, atan2d(VxxY, VxxX), 'b-');
 
     yyaxis(ax_res_B, 'left');
     plot(ax_res_B, t, tempA, 'r-');
