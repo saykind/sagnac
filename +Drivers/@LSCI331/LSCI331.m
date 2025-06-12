@@ -68,6 +68,7 @@ classdef (Sealed = true) LSCI331 < Drivers.Device
         end
         
         ramp(obj, setp, rate)               %   Ramp temperature to setpoint 
+        base(obj)                           %   Ramp setpoint to base temperature quickly and turn heater off
 
         % Getters (Parameters)
         function cm = get.control_mode(obj), cm = obj.get('control_mode'); end
