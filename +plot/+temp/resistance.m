@@ -82,7 +82,7 @@ end
         [~, name, ~] = fileparts(filename);
 
         logdata = load(filename).logdata;
-        t = logdata.tempcont.B;
+        t = logdata.tempcont.B;                 % FIXME
         r = logdata.lockinB.X./logdata.lockinA.X;
         q = atan2d(logdata.lockinB.Y, logdata.lockinB.X);
 

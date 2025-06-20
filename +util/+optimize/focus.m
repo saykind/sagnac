@@ -217,8 +217,12 @@ function logStep(logger, ~)
     end
 
     % move to the next position
+    currentPosition = pos(instr);
     nextPosition = positions(mod(counter, length(positions)) + 1);
     move(instr, nextPosition, 60e3); % Move to the next position
+    if nextPosition < currentPosition
+        pause(3);
+    end
     if options.verbose
         util.msg(['Moved to position: ', num2str(nextPosition), ' mm']);
     end

@@ -5,7 +5,7 @@ function s = sweep(instruments, s, cnt)
 %   nargin=3: make sweep step
 
     if nargin == 0      % Create sweep structure
-        x0 = 8.03;
+        x0 = 8.05;
         y0 = 8.75;
         
         x = x0 + (-.2:.01:.2);
