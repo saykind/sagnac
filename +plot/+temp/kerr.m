@@ -27,6 +27,8 @@ arguments
     options.dT double {mustBeNumeric} = 0.6;
     options.sls double {mustBeNumeric} = 0.25;
     options.errorbar logical = true;
+    options.LineWidth double {mustBeNumeric} = .8;
+    options.MarkerSize double {mustBeNumeric} = 8;
     options.show_legends logical = true;
     options.legends string = [];    
     options.ylabel string = '\theta_K (\murad)';
@@ -68,13 +70,16 @@ end
             'Units', 'centimeters', ...
             'Position', [0 0 20.5 12.9]);
         set(fig, 'PaperUnits', 'centimeters', 'PaperSize', [11 9]);
-        ax = axes(fig);
+        ax = axes(fig);        
+        xlabel(ax, 'Temperature (K)');
     else
         fig = get(ax, 'Parent');
     end
     hold(ax, 'on'); 
     grid(ax, 'on');
-    xlim(options.xlim);
+    if options.xlim(1) ~= -inf && options.xlim(2) ~= inf
+        xlim(sort(options.xlim));
+    end
     
     for i = 1:numel(filenames)
         filename = filenames(i);
@@ -102,10 +107,16 @@ end
         % Plot
         if options.errorbar
             K2 = K2*3;
-            plot_handle = errorbar(ax, T, K, K2, '.-', 'LineWidth', 1, 'DisplayName', name);
+            plot_handle = errorbar(ax, T, K, K2, '.-', ...
+                'LineWidth', options.LineWidth, ...
+                'MarkerSize', options.MarkerSize, ...
+                'DisplayName', name);
             if ~isempty(options.color), plot_handle.Color = options.color; end
         else
-            plot_handle = plot(ax, T, K, '.-', 'LineWidth', 1, 'DisplayName', name);
+            plot_handle = plot(ax, T, K, '.-', ...
+                'LineWidth', options.LineWidth, ...
+                'MarkerSize', options.MarkerSize, ...
+                'DisplayName', name);
             if ~isempty(options.color), plot_handle.Color = options.color; end
         end
     end
@@ -113,7 +124,6 @@ end
     % Format plot
     if ~isnan(options.ylim), ylim(options.ylim); end
     ylabel(ax, options.ylabel);
-    xlabel(ax, 'Temperature (K)');
     if options.show_legends
         if isempty(options.legends)
             l = legend(ax, 'Location', 'best');
