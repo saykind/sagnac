@@ -63,19 +63,25 @@ function cat(varargin)
             fn2 = fieldnames(logdata.(fn1{i}));
             for j = 1:numel(fn2)
                 if verbose, fprintf("\t\t subfield = %s\n", fn2{j}); end
-                if ~isnumeric(logdata.(fn1{i}).(fn2{j})) && ~isdatetime(logdata.(fn1{i}).(fn2{j}))
+                if ~isnumeric(logdata.(fn1{i}).(fn2{j})) && isdatetime(logdata.(fn1{i}).(fn2{j}))
+                    if verbose, fprintf("\t\t\t Not numeric or datetime. Skipping.\n"); end
+                    continue
+                end
+                if ~isnumeric(new_logdata.(fn1{i}).(fn2{j})) && isdatetime(new_logdata.(fn1{i}).(fn2{j}))
                     if verbose, fprintf("\t\t\t Not numeric or datetime. Skipping.\n"); end
                     continue
                 end
                 size1 = size(new_logdata.(fn1{i}).(fn2{j}));
+                size2 = size(logdata.(fn1{i}).(fn2{j}));
+                if verbose
+                    fprintf("\t\t\t size1 = %s\n", mat2str(size1));
+                    fprintf("\t\t\t size2 = %s\n", mat2str(size2));
+                end
                 new_logdata.(fn1{i}).(fn2{j}) = cat(dim, ...
                     new_logdata.(fn1{i}).(fn2{j}), logdata.(fn1{i}).(fn2{j}));
                 if verbose
-                    size2 = size(logdata.(fn1{i}).(fn2{j}));
                     size_new = size(new_logdata.(fn1{i}).(fn2{j}));
-                    fprintf("\t\t\t size1 = %s\n", mat2str(size1));
-                    fprintf("\t\t\t size2 = %s\n", mat2str(size2));
-                    fprintf("\t\t\t new size = %s\n", mat2str(size_new));
+                    fprintf("\t\t\t size_new = %s\n", mat2str(size_new));
                 end
             end
         end

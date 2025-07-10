@@ -1,13 +1,11 @@
 function graphics = plot(graphics, logdata)
 %Graphics plotting function.
 
-    [ax_dc_dc, ax_dc_1f, ax_dc_2f, ...
+    [ax_dc_dc, ax_dc_1f, ...
         ax_1f_RQ, ax_1f_XY, ax_2f_RQ, ax_2f_XY, ...
         ax_3f_RQ, ax_3f_XY, ax_4f_RQ, ax_4f_XY] = util.unpack(graphics.axes);
-    for ax = [ax_dc_dc, ax_dc_1f, ax_dc_2f]
-        cla(ax);
-    end
-    for ax = [ax_1f_RQ, ax_1f_XY, ax_2f_RQ, ax_2f_XY, ax_3f_RQ, ax_3f_XY, ax_4f_RQ, ax_4f_XY]
+
+    for ax = util.unpack(graphics.axes);
         yyaxis(ax, 'left'); cla(ax);
         yyaxis(ax, 'right'); cla(ax);
     end
@@ -35,15 +33,23 @@ function graphics = plot(graphics, logdata)
     r4 = sqrt(x4.^2 + y4.^2);
     q4 = atan2d(y4, x4);
 
-    % Normalize
-    dc_avg = mean(dc);
-    r1n = r1/dc_avg;
-    r2n = r2/dc_avg;
+    % Kerr angle
+    kerr_x = util.math.kerr(x1, r2);
+    kerr_y = util.math.kerr(y1, r2);
+    r2n = r2./dc;
+
+    % Coarse grain
+    [CURR, DC, R2N, KERR_X, KERR_Y] =  util.coarse.sweep(logdata.sweep, curr, dc, r2n, kerr_x, kerr_y);
 
     %% TAB: Normalized
-    plot(ax_dc_dc, curr, dc, 'k-');
-    plot(ax_dc_1f, curr, 1e3*r1n, 'k-');
-    plot(ax_dc_2f, curr, 1e3*r2n, 'k-');
+    yyaxis(ax_dc_dc, 'left');
+    plot(ax_dc_dc, CURR, DC, 'r.-');
+    yyaxis(ax_dc_dc, 'right');
+    plot(ax_dc_dc, CURR, R2N, 'b.-');
+    yyaxis(ax_dc_1f, 'left');
+    plot(ax_dc_1f, CURR, KERR_X, 'r.-');
+    yyaxis(ax_dc_1f, 'right');
+    plot(ax_dc_1f, CURR, KERR_Y, 'b.-');
     
     %% TAB: 1f
     yyaxis(ax_1f_RQ, 'right');

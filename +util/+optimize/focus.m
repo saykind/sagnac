@@ -165,7 +165,7 @@ function logStep(logger, ~)
         end
 
         % Check if the vertex is within the position range hitory
-        if vertex_x < x_fit_min || vertex_x > x_fit_max || abs(vertex_y) < 0.03
+        if vertex_x < x_fit_min || vertex_x > x_fit_max || abs(vertex_y) < 0.005
             if step > 0.5
                 util.msg('Step size too large, cannot find optimal position.');
                 logger.UserData.optimalPosition = NaN; % Reset optimal position
