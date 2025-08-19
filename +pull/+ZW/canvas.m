@@ -1,7 +1,7 @@
 function graphics = canvas()
 %Graphics initialization function.
 
-    max_angle = 360;
+    max_angle = 180;
 
     fig = plot.paper.measurement(subplots=[0,0], title = "Linear polarization method");
     tg = uitabgroup(fig);

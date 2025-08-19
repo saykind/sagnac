@@ -127,7 +127,7 @@ end
     if ~isnan(options.xlim), xlim(options.xlim); end
     if ~isnan(options.ylim), ylim(options.ylim); end
     ylabel(ax, '\DeltaKerr (\murad)');
-    xlabel(ax, 'Times (min)');
+    xlabel(ax, 'Time (min)');
     if options.show_legend, l = legend(ax, 'Location', 'best'); set(l, 'Interpreter', 'none'); end
     if ~isempty(legends), legend(ax, legends, 'Location', 'best'); end
     

@@ -5,11 +5,11 @@ function s = sweep(instruments, s, cnt)
 %   nargin=3: make sweep step
 
     if nargin == 0      % Create sweep structure
-        x0 = 5;
-        y0 = 8.75;
+        x0 = 8;
+        y0 = 9;
         
-        x = x0 + (-1:.05:1);
-        y = y0 + (-2:.05:2);
+        x = x0 + (-.5:.03:.5);
+        y = y0 + (-.5:.03:.5);
 
         [X,Y] = meshgrid(x,y);
         [n,m] = size(X);
@@ -17,7 +17,7 @@ function s = sweep(instruments, s, cnt)
         Y_flat = util.mesh.column.flatten(Y);
         %DC measurement min rate is 3s, pause 2s
         %Kerr measurement min rate is 9s, pause 8s
-        s = struct('rate', 1, 'pause', 0, ...
+        s = struct('rate', 4, 'pause', 1, ...
             'range', [X_flat; Y_flat], 'shape', [n,m], ...
             'origin', [x0, y0]);
         s.datapoints = sweep_datapoints(s);

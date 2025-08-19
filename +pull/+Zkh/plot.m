@@ -34,9 +34,9 @@ function graphics = plot(graphics, logdata)
     plot(ax_A, field, kerr, 'r.-');
 
     yyaxis(ax_B, 'right');
-    plot(ax_B, field, y1, 'b-');
+    plot(ax_B, field, TB, 'b-');
     yyaxis(ax_B, 'left');
-    plot(ax_B, field, x1, 'r-');
+    plot(ax_B, field, TA, 'r-');
 
     yyaxis(ax_C, 'right');
     plot(ax_C, time, volt, 'b-');

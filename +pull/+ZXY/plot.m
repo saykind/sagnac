@@ -13,6 +13,7 @@ end
     axisB = graphics.axes(2);
     cla(axisA);
     cla(axisB);
+    pause(.1);
 
     p0  = 1e3*logdata.lockin.auxin0(:,1);                 % DC Power, uW
     p0  = p0 + 6;

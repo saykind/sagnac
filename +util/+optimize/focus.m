@@ -8,12 +8,21 @@ function focus(instr, options)
 
 arguments
     instr (1,1) struct;                         % Instrument structure with fields: Z, lockin
-    options.rate (1,1) double = .5;              % Measurement rate in Hz
+    options.rate (1,1) double = 1;              % Measurement rate in Hz
     options.range (1,2) double = [-0.32, 0.32];   % Initial range of Z position to sweep
     options.step (1,1) double = 0.08;           % Initial step size for sweeping
     options.timeout (1,1) double = 32;         % Stop after this many steps even if not converged
     options.verbose (1,1) logical = false;          % Print messages to console
 end
+
+    % Check that instr has 'Z', 'lockin' fields
+    try
+        instr.Z;
+        instr.lockin;
+    catch
+        util.msg("Structure <instr> needs to have <Z>, <lockin> fields");
+        return
+    end
 
     % Create figure for plotting
     [fig, axs] = plot.paper.measurement( ...
@@ -110,6 +119,21 @@ function logStep(logger, ~)
     counter = logger.TasksExecuted;
     axs = logger.UserData.axs;
 
+    if options.verbose
+        util.msg(['counter = ', num2str(counter)]);
+    end
+
+    % move to the next position
+    currentPosition = pos(instr);
+    nextPosition = positions(mod(counter-1, length(positions))+1);
+    move(instr, nextPosition, 60e3); % Move to the next position
+    if nextPosition < currentPosition
+        pause(2);
+    end
+    if options.verbose
+        util.msg(['Moved to position: ', num2str(nextPosition), ' mm']);
+    end
+
     elapsedTime = toc(logger.UserData.startTime);
 
     % Get current position and signal
@@ -132,7 +156,7 @@ function logStep(logger, ~)
         plot(axs(2), logger.UserData.datetimeHistory, logger.UserData.positionHistory, '-o');
     end
     
-    % Fit a parabola to the data
+    % Fit a gaussian to the data
     if rem(counter,length(positions)) == 0 && length(logger.UserData.positionHistory) > 4
         % Least squares fit to a gaussian function 
         fun = @(p, x) p(1) * exp(-(x-p(2)).^2/p(3));
@@ -149,8 +173,6 @@ function logStep(logger, ~)
 
         x_fit_min = min(logger.UserData.positionHistory);
         x_fit_max = max(logger.UserData.positionHistory);
-        x_fit = linspace(x_fit_min, x_fit_max, 100); % Generate points for fitting curve
-        y_fit = fun(p, x_fit);
         
         logger.UserData.fit_plot_flag = true; % Set flag to plot fit
         
@@ -176,7 +198,7 @@ function logStep(logger, ~)
             logger.UserData.currentStep = step * 2; % Double the step size
             util.msg(['Expanding range to: ', num2str(logger.UserData.currentRange)]);
             util.msg(['Expanding step size to: ', num2str(logger.UserData.currentStep)]);
-            if vertex_x > 2 && vertex_x < 23
+            if vertex_x > 1 && vertex_x < 24
                 logger.UserData.optimalPosition = vertex_x; % Update optimal position
                 util.msg(['Optimal position updated to: ', num2str(logger.UserData.optimalPosition), ' mm']);
             end
@@ -191,7 +213,6 @@ function logStep(logger, ~)
             logger.UserData.optimalPosition = vertex_x; % Update optimal position
             util.msg(['Reducing range to: ', num2str(logger.UserData.currentRange)]);
             util.msg(['Reducing step size to: ', num2str(logger.UserData.currentStep)]);
-            
         end
     end
 
@@ -216,16 +237,7 @@ function logStep(logger, ~)
         plot(axs(1), x_fit, y_fit, 'r--', 'DisplayName', 'Fit');
     end
 
-    % move to the next position
-    currentPosition = pos(instr);
-    nextPosition = positions(mod(counter, length(positions)) + 1);
-    move(instr, nextPosition, 60e3); % Move to the next position
-    if nextPosition < currentPosition
-        pause(3);
-    end
-    if options.verbose
-        util.msg(['Moved to position: ', num2str(nextPosition), ' mm']);
-    end
+
 end
 
 function move(instr, position, timeout)
@@ -241,7 +253,12 @@ end
 function signal = measure(instr)
 % Measure the signal from the instrument
     sample = instr.lockin.get('sample');
-    auxin0 = sample.auxin0;
-    signal = auxin0(1);
+    %auxin0 = sample.auxin0;
+    %signal = auxin0(1);
+
+    [~, x2] = sample.x;
+    [~, y2] = sample.y;
+    r2 = sqrt(x2.^2 + y2.^2);
+    signal = r2;
 end
 

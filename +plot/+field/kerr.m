@@ -26,7 +26,7 @@ arguments
     options.x1_offset double {mustBeNumeric} = 0;
     options.slope double {mustBeNumeric} = 0;   %urad/mT
     options.sls double {mustBeNumeric} = 0.25;
-    options.coil_const double {mustBeNumeric} = 25;   % mT/A
+    options.coil_const double {mustBeNumeric} = 100;   % mT/A
     options.errorbar logical = true;
     options.linear_fit logical = false;
     options.interp logical = false;
@@ -162,10 +162,10 @@ end
     ylabel(ax, '\theta_K (\murad)');
     xlabel(ax, 'Magnetic Field (mT)');
     if options.show_legend
-        l = legend(ax, 'Location', 'best'); 
+        l = legend(ax, 'Location', 'southeast'); 
         set(l, 'Interpreter', 'none'); 
     end
-    if ~isempty(legends), legend(ax, legends, 'Location', 'best'); end
+    if ~isempty(legends), legend(ax, legends, 'Location', 'southeast'); end
     
     % Save figure
     if options.save

@@ -28,7 +28,9 @@ function [data, g] = data(filename, varargin)
 
     if isfield(data, 'key') && isfield(data, 'logdata')
         try
-            g = make.graphics(data.key, make.graphics_init(data.key), data.logdata, varargin{:});
+            gr = make.graphics_init(data.key);
+            pause(.01);
+            g = make.graphics(data.key, gr, data.logdata, varargin{:});
             return
         catch ME
             util.msg("failed to use make.graphics()");

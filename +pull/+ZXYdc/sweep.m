@@ -6,10 +6,10 @@ function s = sweep(instruments, s, cnt)
 
     if nargin == 0      % Create sweep structure
         x0 = 8;
-        y0 = 9.5;
+        y0 = 9;
         
-        x = x0 + (-1:.1:1);
-        y = y0 + (-.75:.1:.75);
+        x = x0 + (-.5:.03:1);
+        y = y0 + (-.5:.03:.5);
 
         [X,Y] = meshgrid(x,y);
         [n,m] = size(X);

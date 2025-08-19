@@ -108,7 +108,7 @@ classdef (Sealed = true) KEPCO < Drivers.Device
             try
                 if obj.ramper.UserData == 1
                     if obj.I == 0
-                        obj.output();
+                        %obj.output();
                     end
                 end
             catch ME

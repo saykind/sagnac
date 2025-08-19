@@ -24,6 +24,7 @@ arguments
     options.single_yticks logical = true;
     options.xticks double {mustBeNumeric} = [];
     options.yticks double {mustBeNumeric} = [];
+    options.remove_yticks logical = true;
 end
 
     % Determine figure height based on number of subplots unless position(4) is specified
@@ -33,6 +34,11 @@ end
         else
             options.position(4) = 1.7 + 3.2*options.subplots(1);
         end
+    end
+
+    % Determine figure length based on number of subplots unless position(3) is specified
+    if options.position(3) == 8.6
+        options.position(3) = 1.2 + 7.4*options.subplots(2);
     end
 
     % Create figure
@@ -79,11 +85,14 @@ end
             end
         end
     end
-    % Remove ytics for all but the left plot
-    if options.single_yticks
-        for i = 1:options.subplots(1)
-            for j = 2:options.subplots(2)
-                set(axs(i, j) ,'yticklabel', {});
+
+    if options.remove_yticks
+        % Remove ytics for all but the left plot
+        if options.single_yticks
+            for i = 1:options.subplots(1)
+                for j = 2:options.subplots(2)
+                    set(axs(i, j) ,'yticklabel', {});
+                end
             end
         end
     end
