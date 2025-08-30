@@ -7,9 +7,9 @@ function s = sweep(instruments, s, cnt)
     if nargin == 0      % Create sweep structure
         curr1 = 0;
         curr2 = .25;
-        step = 0.002;
+        step = 0.05;
         range = [curr1:step:curr2, curr2-step/2:-step:curr1, 0];
-        s = struct('rate', 10, 'pause', 4, 'range', range);
+        s = struct('rate', 8, 'pause', 4, 'range', range);
 
         s.datapoints = sweep_datapoints(s);
         s.points = sweep_points(s);

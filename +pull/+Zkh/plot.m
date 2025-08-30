@@ -29,9 +29,9 @@ function graphics = plot(graphics, logdata)
     
 
     yyaxis(ax_A, 'right');
-    plot(ax_A, field, dc, 'b.');
+    plot(ax_A, field, y1, 'b.-');
     yyaxis(ax_A, 'left');
-    plot(ax_A, field, kerr, 'r.-');
+    plot(ax_A, field, x1, 'r.-');
 
     yyaxis(ax_B, 'right');
     plot(ax_B, field, TB, 'b-');

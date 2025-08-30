@@ -11,9 +11,11 @@ function graphics = canvas()
 
     % Set axis labels
     yyaxis(ax(1), 'left');
-    ylabel(ax(1), "Kerr angle (\murad)");    
+    ylabel(ax(1), "Kerr angle (\murad)");
+    ylabel(ax(1), "X1 (\muV)");
     yyaxis(ax(1), 'right');    
     ylabel(ax(1), "DC voltage (mV)");  
+    ylabel(ax(1), "Y1 (\muV)");
     
     yyaxis(ax(2), 'left');
     ylabel(ax(2), "Temprature A (K)");  

@@ -6,7 +6,7 @@ function [fig, axs] = graphics(options)
 
 arguments
     options.units string = 'centimeters';
-    options.position double {mustBeNumeric} = [1 2 8.6 7.6];
+    options.position double {mustBeNumeric} = [1 2 8.6 4.4];
     options.subplots double {mustBeNumeric} = [1, 1];
     options.TileSpacing string = 'tight';
     options.Padding string = 'compact';
@@ -28,7 +28,7 @@ arguments
 end
 
     % Determine figure height based on number of subplots unless position(4) is specified
-    if options.position(4) == 7.6
+    if options.position(4) == 4.4
         if isempty(options.title)
             options.position(4) = 1.2 + 3.2*options.subplots(1);
         else

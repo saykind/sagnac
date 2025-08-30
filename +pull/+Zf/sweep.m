@@ -5,9 +5,9 @@ function s = sweep(instruments, s, cnt)
 %   nargin=3: make sweep step
 
     if nargin == 0      % Create sweep structure
-        %s = struct('rate', 10, 'pause', 6, 'range', 1e6*(.2:.01:15));
-        %s = struct('rate', 10, 'pause', 6, 'range', 1e6*(6:.01:6.3));
-        s = struct('rate', 10, 'pause', 6, 'range', 1e6*(9.:.01:9.4));
+        s = struct('rate', 8, 'pause', 4, 'range', 1e6*(.01:.01:20));
+        %s = struct('rate', 10, 'pause', 6, 'range', 1e6*(5.8:.01:6.2));
+        %s = struct('rate', 10, 'pause', 6, 'range', 1e6*(8.7:.05:9.7));
         s.datapoints = sweep_datapoints(s);
         s.points = sweep_points(s);
         s.record = @(cnt) rem(cnt, s.rate) > s.pause-1;

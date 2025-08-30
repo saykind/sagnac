@@ -15,8 +15,9 @@ function [fig, ax] = ram(options)
     arguments
         options.filenames string = [];
         options.fig = [];
-        options.f0 double = 10;
+        options.f0 double = 9.2;
         options.scale double {mustBeNumeric} = 1;
+        options.proper double {mustBeNumeric} = NaN;
         options.xlim double {mustBeNumeric} = NaN;
         options.show_legend logical = false;
         options.save logical = true;
@@ -93,7 +94,7 @@ function [fig, ax] = ram(options)
         power_max = max(power);
         x0 = [(power_max-min(power)), 1/options.f0];
         F = @(x, A) x(1)*(besselj(0, 2*.92*sin(.5*pi*x(2)*A))-1);
-        x = lsqcurvefit(F, x0, A, power-power_max);
+        x = lsqcurvefit(F, x0, A, power-power_max, [], [], optimset('Display', 'off'));
         power_ideal = power_max + x(1)*(besselj(0, 2*.92*sin(.5*pi*x(2)*A))-1);
         if verbose
             fprintf('R0: A = %.1f mV, f0 = %5.4f MHz\n', x(1), 1/x(2));
@@ -111,8 +112,8 @@ function [fig, ax] = ram(options)
         power = R2;
         power_min = min(power);
         F = @(x, A) power_min + x(1)*abs(besselj(2, 2*.92*sin(.5*pi*x(2)*A) ));
-        x0 = [max(power), 1/options.f0];
-        x = lsqcurvefit(F, x0, A, power);
+        x0 = [3*max(power), 1/options.f0];
+        x = lsqcurvefit(F, x0, A, power, [], [], optimset('Display', 'off'));
         power_ideal = power_min + x(1)*abs(besselj(2, 2*.92*sin(.5*pi*x(2)*A) ));
         if verbose
             fprintf('R2: A = %.1f mV, f0 = %5.4f MHz\n', x(1), 1/x(2));
@@ -120,6 +121,13 @@ function [fig, ax] = ram(options)
 
         plot(ax(3), A, power, 'k.', 'MarkerSize', 5);
         plot(ax(3), A, power_ideal, 'b--', 'LineWidth', 1);
+    end
+
+    if ~isnan(options.proper)
+        % add vertical red dashed line to all plots
+        for j = 1:numel(ax)
+            xline(ax(j), options.proper, 'r--', 'LineWidth', 1);
+        end
     end
 
     % Save figure

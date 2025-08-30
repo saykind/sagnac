@@ -17,6 +17,7 @@ function [fig, ax] = ram(options)
         options.fig = [];
         options.scale double {mustBeNumeric} = 1;
         options.xlim double {mustBeNumeric} = NaN;
+        options.proper double {mustBeNumeric} = NaN;
         options.show_legend logical = false;
         options.legends string = [];
         options.save logical = true;
@@ -93,33 +94,49 @@ function [fig, ax] = ram(options)
         power = R0;
         x0 = [mean(power)/2, 1];
         F = @(x, A) x(1)*(besselj(0, 2*A*x(2))-1);
-        x = lsqcurvefit(F, x0, A, power-power(1));
+        x = lsqcurvefit(F, x0, A, power-power(1), [], [], optimset('Display', 'off'));
         power_ideal = power(1) + x(1)*(besselj(0, 2*A*x(2))-1);
         if verbose
             fprintf('R0: %.2f + %.2f (J0(2A*%.3f)-1)\n', power(1), x(1), x(2));
         end
 
-        plot(ax(1), A, power, 'k.', 'MarkerSize', 5);
+        plot(ax(1), A, power, 'k.', 'MarkerSize', 4);
         plot(ax(1), A, power_ideal, 'b--', 'LineWidth', 1);
 
         %% R1 vs angle
         power = R1;
+        R1_0 = power(1);
+        F = @(x, A) R1_0 + x(1)*abs(besselj(1, 2*A*x(2)));
+        x0 = [6*mean(power), 1];
+        x = lsqcurvefit(F, x0, A, power, [], [], optimset('Display', 'off'));
+        power_ideal = R1_0 + x(1)*abs(besselj(1, 2*A*x(2)));
+        if verbose
+            fprintf('R1: %.2f + %.2f J1(2A*%.3f)\n', R1_0, x(1), x(2));
+        end
 
-        plot(ax(2), A, power, 'k.', 'MarkerSize', 5);
+        plot(ax(2), A, power, 'k.', 'MarkerSize', 4);
+        plot(ax(2), A, power_ideal, 'b--', 'LineWidth', 1);
 
         %% R2 vs angle
         power = R2;
         R2_0 = power(1);
         F = @(x, A) R2_0 + x(1)*abs(besselj(2, 2*A*x(2)));
         x0 = [6*mean(power), 1];
-        x = lsqcurvefit(F, x0, A, power);
+        x = lsqcurvefit(F, x0, A, power, [], [], optimset('Display', 'off'));
         power_ideal = R2_0 + x(1)*abs(besselj(2, 2*A*x(2)));
         if verbose
             fprintf('R2: %.2f + %.2f J2(2A*%.3f)\n', R2_0, x(1), x(2));
         end
 
-        plot(ax(3), A, power, 'k.', 'MarkerSize', 5);
+        plot(ax(3), A, power, 'k.', 'MarkerSize', 4);
         plot(ax(3), A, power_ideal, 'b--', 'LineWidth', 1);
+    end
+
+    if ~isnan(options.proper)
+        % add vertical red dashed line to all plots
+        for j = 1:numel(ax)
+            xline(ax(j), options.proper, 'r--', 'LineWidth', 1);
+        end
     end
 
     % Save figure

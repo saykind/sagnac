@@ -46,7 +46,7 @@ function graphics = plot(graphics, logdata)
     yyaxis(ax_t_kerr, 'left');
     plot(ax_t_kerr, time, kerr, 'r.-');
     
-    ylim(ax_t_kerr, [-200,200]);
+    %ylim(ax_t_kerr, [-200,200]);
 
     yyaxis(ax_t_1f, 'right');
     plot(ax_t_1f, time, y1, 'b-');

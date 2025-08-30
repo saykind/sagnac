@@ -1,4 +1,4 @@
-function [fig, ax, plt] = kerr(options)
+function [fig, ax, plt] = rmcd(options)
 %Plots kerr data from several files.
 %   plot.kerr(Name, Value) specifies additional 
 %   options with one or more Name, Value pair arguments. 
@@ -74,7 +74,7 @@ end
             position = [1 2 8.6 6], ...
             TileSpacing = 'compact', ...
             xlabel = "Magnetic Field (mT)", ...
-            ylabel = "\theta_K (µrad)" ...
+            ylabel = "\epsilon_K (µrad)" ...
             );
     else
         fig = get(ax, 'Parent');
@@ -92,8 +92,8 @@ end
 
         % Extract data
         curr = logdata.magnet.I;         % Magnet curr, A
-        field = curr*options.coil_const; % Magnetic field, mT
-        kerr = util.logdata.kerr(logdata.lockin, 'sls', sls, 'x1_offset', x1_offset);
+        field = curr*options.coil_const; % Magnetic field, mT        
+        [x1, y1, x2, y2, r1, r2, kerr] = util.logdata.lockin(logdata.lockin, 'sls', sls, 'x1_offset', x1_offset);
 
         % Remove offset
         kerr_offset = 0;
@@ -108,45 +108,49 @@ end
             kerr = kerr - slope*field;
         end
 
+
         % Coarse-grain data
         n = numel(kerr);
         k = logdata.sweep.rate-logdata.sweep.pause;
         k = k(1);
         m = fix(n/k);
-        KERR = mean(reshape(kerr, [k, m]),1);
-        KERRstd = std(reshape(kerr, [k, m]),0,1);
+        X1 = mean(reshape(x1, [k, m]),1);
+        X1std = std(reshape(x1, [k, m]),0,1);
         FIELD = mean(reshape(field, [k, m]),1); 
-        KERR = KERR*options.scale;
-        KERRstd = KERRstd*options.scale;    
-        
+        X1 = X1*options.scale;
+        X1std = X1std*options.scale;
+
+        X1 = X1 - mean(X1);
+        X1 = 1e6*X1;
+
         % Smooth data
         if options.interp
             IDX = 1:numel(FIELD);
             IDXq = linspace(IDX(1), IDX(end), 3e2);
-            KERR = interp1(IDX, KERR, IDXq);
+            X1 = interp1(IDX, X1, IDXq);
             FIELD = interp1(IDX, FIELD, IDXq);
         end
             
 
         % Plot
         if options.errorbar
-            plt = errorbar(ax, FIELD, KERR, KERRstd, '.', ...
+            plt = errorbar(ax, FIELD, X1, X1std, '.', ...
             'MarkerSize', 10, 'CapSize', 10, 'LineWidth', 2, 'DisplayName', name);
         else
-            plt = plot(ax, FIELD, KERR, '.-', 'Color', options.color, ...
+            plt = plot(ax, FIELD, X1, '.-', 'Color', options.color, ...
             'MarkerSize', 6, 'LineWidth', .5, 'DisplayName', name);
         end
 
         % Mark start and end points
         if options.mark_start_end
-            plot(ax, FIELD(1), KERR(1), 'go', 'MarkerSize', 5, 'DisplayName', 'Start');
-            plot(ax, FIELD(end), KERR(end), 'ro', 'MarkerSize', 5, 'DisplayName', 'End');
+            plot(ax, FIELD(1), X1(1), 'go', 'MarkerSize', 5, 'DisplayName', 'Start');
+            plot(ax, FIELD(end), X1(end), 'ro', 'MarkerSize', 5, 'DisplayName', 'End');
         end
 
         % Connect each data point with an arrows using quiver
         if options.arrows
-            quiver(ax, FIELD(1:end-1), KERR(1:end-1), ...
-                FIELD(2:end)-FIELD(1:end-1), KERR(2:end)-KERR(1:end-1), 0, ...
+            quiver(ax, FIELD(1:end-1), X1(1:end-1), ...
+                FIELD(2:end)-FIELD(1:end-1), X1(2:end)-X1(1:end-1), 0, ...
                 'Color', 'black', 'MaxHeadSize', 0.02,'DisplayName', name);
         end
 
@@ -162,8 +166,8 @@ end
     
     % Format plot
     if ~isnan(options.ylim), ylim(options.ylim); end
-    ylabel(ax, '\theta_K (\murad)');
-    xlabel(ax, 'Magnetic Field (mT)');
+    %ylabel(ax, 'X_1 (\muV)');
+    %xlabel(ax, 'Magnetic Field (mT)');
     if options.show_legend
         l = legend(ax, 'Location', 'best'); 
         set(l, 'Interpreter', 'none'); 
